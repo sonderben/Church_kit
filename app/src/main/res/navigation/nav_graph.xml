@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_homeFragment_to_historyFragment"
             app:destination="@id/historyFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_listOptionFragment"
+            app:destination="@id/listOptionFragment" />
     </fragment>
     <fragment
         android:id="@+id/historyFragment"
@@ -41,4 +44,9 @@
             android:id="@+id/action_historyFragment_to_bookmarkFragment"
             app:destination="@id/bookmarkFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/listOptionFragment"
+        android:name="com.churchkit.churchkit.ui.ListOptionFragment"
+        android:label="fragment_list_option"
+        tools:layout="@layout/fragment_list_option" />
 </navigation>

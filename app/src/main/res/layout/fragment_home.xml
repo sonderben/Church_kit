@@ -43,7 +43,8 @@
                 app:strokeColor="@color/white"
                 app:strokeWidth="4dp"
                 app:cardElevation="20dp"
-                android:background="@mipmap/img_bg_french"
+
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/search">
@@ -94,6 +95,7 @@
                 app:cardCornerRadius="20dp"
                 app:strokeColor="@color/white"
                 app:strokeWidth="4dp"
+
                 app:cardElevation="20dp"
                 android:background="@mipmap/img_bg_french"
                 app:layout_constraintEnd_toEndOf="parent"
