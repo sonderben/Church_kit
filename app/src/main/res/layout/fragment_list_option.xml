@@ -5,12 +5,14 @@
     android:layout_height="match_parent"
     android:background="#F3F4F6"
     android:layout_marginHorizontal="3dp"
-    tools:context=".ui.ListOptionFragment">
+    tools:context=".ui.song.ListOptionFragment">
 
-<androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/recyclerview"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_centerVertical="true"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_margin="6dp"
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+         />
 
 </RelativeLayout>

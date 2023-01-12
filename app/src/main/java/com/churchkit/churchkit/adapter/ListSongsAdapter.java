@@ -1,0 +1,75 @@
+package com.churchkit.churchkit.adapter;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.churchkit.churchkit.Model.Song;
+import com.churchkit.churchkit.R;
+
+import java.util.List;
+
+public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.ListSongsViewHolder> {
+
+    List<Song>songList;
+
+    public ListSongsAdapter(List<Song>songList){this.songList=songList;}
+
+    @NonNull
+    @Override
+    public ListSongsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_song_item_view_holder,parent,false);
+        return new ListSongsViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ListSongsViewHolder holder, int position) {
+
+        holder.title.setText(songList.get(position).getTitle());
+        holder.number.setText( formatNumberToString( songList.get(position).getNumber() ) );
+        if( !songList.get(position).isBookmark() ){
+            holder.imgBookMark.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return songList.size();
+    }
+
+    class ListSongsViewHolder extends RecyclerView.ViewHolder{
+
+        TextView number,title;
+        ImageView imgBookMark;
+        public ListSongsViewHolder(@NonNull View itemView) {
+            super(itemView);
+            number = itemView.findViewById(R.id.number);
+            title = itemView.findViewById(R.id.title);
+            imgBookMark = itemView.findViewById(R.id.img_bookmark);
+
+            itemView.setOnClickListener(view -> {
+
+                NavController navController = Navigation.findNavController(view);
+                navController.getGraph().findNode(R.id.songFragment).setLabel("Reveillons-nous");
+                navController.navigate(R.id.action_listSongsFragment_to_songFragment);
+
+            } );
+        }
+    }
+    private String formatNumberToString(int number){
+        if(number >99)
+            return number+"";
+        if (number>9)
+            return "0"+number;
+
+        return "00"+number;
+
+    }
+}

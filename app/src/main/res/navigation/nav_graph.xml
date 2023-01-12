@@ -7,8 +7,8 @@
 
     <fragment
         android:id="@+id/bookmarkFragment"
-        android:name="com.churchkit.churchkit.ui.BookmarkFragment"
-        android:label="fragment_bookmark"
+        android:name="com.churchkit.churchkit.ui.bible.BookmarkFragment"
+        android:label="Bible"
         tools:layout="@layout/fragment_bookmark" >
         <action
             android:id="@+id/action_bookmarkFragment_to_homeFragment"
@@ -19,8 +19,8 @@
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.churchkit.churchkit.ui.HomeFragment"
-        android:label="fragment_home"
+        android:name="com.churchkit.churchkit.ui.song.SongHope"
+        android:label="@string/song_hope"
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeFragment_to_bookmarkFragment"
@@ -34,9 +34,9 @@
     </fragment>
     <fragment
         android:id="@+id/historyFragment"
-        android:name="com.churchkit.churchkit.ui.HistoryFragment"
-        android:label="fragment_history"
-        tools:layout="@layout/fragment_history" >
+        android:name="com.churchkit.churchkit.ui.more.MoreFragment"
+        android:label="Plus"
+        tools:layout="@layout/more_history" >
         <action
             android:id="@+id/action_historyFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
@@ -46,7 +46,25 @@
     </fragment>
     <fragment
         android:id="@+id/listOptionFragment"
-        android:name="com.churchkit.churchkit.ui.ListOptionFragment"
+        android:name="com.churchkit.churchkit.ui.song.ListOptionFragment"
         android:label="fragment_list_option"
-        tools:layout="@layout/fragment_list_option" />
+        tools:layout="@layout/fragment_list_option" >
+        <action
+            android:id="@+id/action_listOptionFragment_to_listSongsFragment"
+            app:destination="@id/listSongsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/listSongsFragment"
+        android:name="com.churchkit.churchkit.ui.song.ListSongsFragment"
+        android:label="fragment_list_songs"
+        tools:layout="@layout/fragment_list_songs" >
+        <action
+            android:id="@+id/action_listSongsFragment_to_songFragment"
+            app:destination="@id/songFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/songFragment"
+        android:name="com.churchkit.churchkit.ui.song.SongFragment"
+        android:label="fragment_song"
+        tools:layout="@layout/fragment_song" />
 </navigation>
