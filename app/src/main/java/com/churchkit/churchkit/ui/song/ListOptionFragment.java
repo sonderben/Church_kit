@@ -3,6 +3,7 @@ package com.churchkit.churchkit.ui.song;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
@@ -29,7 +30,11 @@ import java.util.List;
 public class ListOptionFragment extends Fragment {
 
 
-
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,7 +57,7 @@ public class ListOptionFragment extends Fragment {
 
         recyclerView.setAdapter(partAdapter);
 
-        onCreateMenu();
+       onCreateMenu();
 
         return root;
     }
@@ -61,25 +66,37 @@ public class ListOptionFragment extends Fragment {
         requireActivity().addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menu.clear();
                 menuInflater.inflate(R.menu.menu_column_list, menu);
             }
 
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-                if(gridLayoutManager.getSpanCount() != 2){
-                    gridLayoutManager.setSpanCount(2);
-                    menuItem.setIcon(R.drawable.list_24);
+                if (menuItem.getItemId()==R.id.recyclerview_style){
+                    if(gridLayoutManager.getSpanCount() != 2){
+                        gridLayoutManager.setSpanCount(2);
+                        menuItem.setIcon(R.drawable.list_24);
+                    }
+                    else {
+                        gridLayoutManager.setSpanCount(1);
+                        menuItem.setIcon(R.drawable.column_24);
+                    }
+                    partAdapter.notifyItemRangeChanged(0,partAdapter.getItemCount());
+                }else {
+                    getActivity().onBackPressed();
                 }
-                else {
-                    gridLayoutManager.setSpanCount(1);
-                    menuItem.setIcon(R.drawable.column_24);
-                }
-                partAdapter.notifyItemRangeChanged(0,partAdapter.getItemCount());
+
+
 
                 return true;
             }
         },getViewLifecycleOwner(), Lifecycle.State.RESUMED);
     }
+/*
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_column_list,menu);
+    }*/
 
     private void setParts() {
         parts =new ArrayList<>();

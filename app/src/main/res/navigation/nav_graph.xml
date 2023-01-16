@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/bookmarkFragment"
         android:name="com.churchkit.churchkit.ui.bible.BookmarkFragment"
-        android:label="Bible"
+        android:label="@string/bible"
         tools:layout="@layout/fragment_bookmark" >
         <action
             android:id="@+id/action_bookmarkFragment_to_homeFragment"
@@ -31,11 +31,14 @@
         <action
             android:id="@+id/action_homeFragment_to_listOptionFragment"
             app:destination="@id/listOptionFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_listSongsFragment2"
+            app:destination="@id/listSongsFragment" />
     </fragment>
     <fragment
         android:id="@+id/historyFragment"
         android:name="com.churchkit.churchkit.ui.more.MoreFragment"
-        android:label="Plus"
+        android:label="@string/more"
         tools:layout="@layout/more_history" >
         <action
             android:id="@+id/action_historyFragment_to_homeFragment"

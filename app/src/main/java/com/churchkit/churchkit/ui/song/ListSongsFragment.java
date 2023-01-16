@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.Model.Song;
-import com.churchkit.churchkit.adapter.ListSongsAdapter;
+import com.churchkit.churchkit.adapter.song.ListSongsAdapter;
 import com.churchkit.churchkit.databinding.FragmentListSongsBinding;
 
 import java.util.ArrayList;

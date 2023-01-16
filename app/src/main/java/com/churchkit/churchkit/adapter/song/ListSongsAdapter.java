@@ -1,4 +1,4 @@
-package com.churchkit.churchkit.adapter;
+package com.churchkit.churchkit.adapter.song;
 
 import android.view.LayoutInflater;
 import android.view.View;

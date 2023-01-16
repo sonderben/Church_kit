@@ -1,8 +1,12 @@
 package com.churchkit.churchkit.Model;
 
+import com.churchkit.churchkit.Model.song.Book;
+
 public class Part {
     private String title;
     private String titleAcronym;
+    private Book book;
+    String language;
 
     public int getImg() {
         return img;
