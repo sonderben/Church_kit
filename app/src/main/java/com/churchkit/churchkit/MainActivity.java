@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(activityMainBinding.getRoot());
 
 
+
         toolbar=activityMainBinding.toolbar;
         bottomNavigationView = activityMainBinding.bottomNav;
         drawerLayout = activityMainBinding.drawerLayout;

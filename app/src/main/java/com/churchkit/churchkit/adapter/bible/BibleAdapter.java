@@ -1,41 +1,38 @@
-package com.churchkit.churchkit.adapter.song;
+package com.churchkit.churchkit.adapter.bible;
 
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.R;
-import com.churchkit.churchkit.adapter.bible.BibleAdapter;
 import com.google.android.material.card.MaterialCardView;
 
-public class HomeAdapter extends RecyclerView.Adapter {
+public class BibleAdapter extends RecyclerView.Adapter {
 
 
     int typeView;
+    FragmentManager fm;
+
+    /*private final int GROUP_BY_TESTAMENT = 0;
+    private final int ALL_BOOK = 1;*/
 
 
-    public void setTypeView(int newTypeViewHolder,int oldTypeViewHolder) {
-        if (newTypeViewHolder == oldTypeViewHolder) // LIST==LIST || GRID==GRID || GROUP==GROUP => Just For security
-            return;
-        if (newTypeViewHolder != oldTypeViewHolder && (newTypeViewHolder == 0 || oldTypeViewHolder == 0) ) {
-            this.typeView = newTypeViewHolder;
-            notifyDataSetChanged();
-        }else {
-            this.typeView = newTypeViewHolder;
-            notifyItemRangeChanged(0, getItemCount());
-        }
+    public void setTypeView(int typeView) {
+        this.typeView = typeView;
+        notifyDataSetChanged();
     }
 
-    public HomeAdapter(int typeView) {
+    public BibleAdapter(int typeView,FragmentManager fm) {
+        this.fm = fm;
         this.typeView = typeView;
     }
 
@@ -44,14 +41,11 @@ public class HomeAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
        if(viewType == 0){
            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_part_group_by_lang,parent,false);
-           return new GroupByLanguageViewHolder(view);
-       }else if(viewType == 2) {
-           View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_part2,parent,false);
-           return new ListPartViewHolder(view);
+           return new GroupByTestamentViewHolder(view);
        }
        else {
            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_part,parent,false);
-           return new ListPartViewHolder(view);
+           return new AllBookViewHolder(view);
        }
     }
 
@@ -59,9 +53,19 @@ public class HomeAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (typeView ==0){
             if(position == 0)
-                ( (GroupByLanguageViewHolder) holder ).textView.setText("Français");
+            ( (GroupByTestamentViewHolder) holder ).textView.setText("Old Testament");
             else
-                ( (GroupByLanguageViewHolder) holder ).textView.setText("Kreyòl");
+                ( (GroupByTestamentViewHolder) holder ).textView.setText("New Testament");
+        }else {
+            if(position == 0) {
+                ((AllBookViewHolder) holder).title.setText("Jenèz");
+                ((AllBookViewHolder) holder).tileAcronym.setText("JZ");
+                ((AllBookViewHolder) holder).number.setText("50 chapter");
+            }else {
+                ((AllBookViewHolder) holder).title.setText("Egzod");
+                ((AllBookViewHolder) holder).tileAcronym.setText("ED");
+                ((AllBookViewHolder) holder).number.setText("40 chapter");
+            }
         }
     }
 
@@ -75,41 +79,46 @@ public class HomeAdapter extends RecyclerView.Adapter {
         return typeView;
     }
 
-    class GroupByLanguageViewHolder extends RecyclerView.ViewHolder{
-
+    class GroupByTestamentViewHolder extends RecyclerView.ViewHolder{
         TextView textView;
-        public GroupByLanguageViewHolder(@NonNull View itemView) {
+        public GroupByTestamentViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.name);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onClick(View view) {/*
                     NavController navController = Navigation.findNavController(view);
                     navController.getGraph().findNode(R.id.listOptionFragment).setLabel("Français");
-                    navController.navigate(R.id.action_homeFragment_to_listOptionFragment);
+                    navController.navigate(R.id.action_homeFragment_to_listOptionFragment);*/
                 }
             });
         }
     }
 
-    class ListPartViewHolder extends RecyclerView.ViewHolder{
-        TextView title,tileAcronym;
+    class AllBookViewHolder extends RecyclerView.ViewHolder{
+        TextView title,tileAcronym,number;
         MaterialCardView cardView;
         ImageView img;
 
-        public ListPartViewHolder(@NonNull View itemView) {
+        public AllBookViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
             img = itemView.findViewById(R.id.img);
             tileAcronym = itemView.findViewById(R.id.tile_abr);
+            number = itemView.findViewById(R.id.number_song);
             cardView = itemView.findViewById(R.id.cardview);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onClick(View view) {/*
                     NavController navController = Navigation.findNavController(view);
                     navController.getGraph().findNode(R.id.listSongsFragment).setLabel("Reveillons nous");
                     navController.navigate(R.id.action_homeFragment_to_listSongsFragment2);
+
+
+*/
+                    ListChapter listChapter = ListChapter.newInstance();
+                    listChapter.show(fm,"kk");
 
 
                 }

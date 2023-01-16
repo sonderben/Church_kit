@@ -32,7 +32,7 @@
 
                 android:includeFontPadding="false"
                 android:textStyle="bold"
-
+                android:backgroundTint="@color/main_bg"
                 android:background="@drawable/bg_edittext_title_abr"
                 android:textSize="36sp"
                 android:paddingStart="4dp"

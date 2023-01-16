@@ -51,7 +51,6 @@ public class SongHope extends Fragment {
         }
 
 
-        //homeAdapter = new HomeAdapter(sharedPreferences.getInt(LIST_GRID,0));
         homeAdapter = new HomeAdapter( sharedPreferences.getBoolean(IS_GROUP,true)?0:sharedPreferences.getInt(LIST_GRID,LIST) );
         mRecyclerView.setAdapter(homeAdapter);
 
@@ -110,62 +109,13 @@ public class SongHope extends Fragment {
                 });
 
 
-                /*
-                setIconListOrGrid(menu.findItem(R.id.recyclerview_style));
 
-               MenuItem a= menu.findItem(R.id.app_bar_switch);
-               MenuItem listOrGridItem = menu.findItem(R.id.recyclerview_style);
-               switchMenuItem = a.getActionView().findViewById(R.id.switch1);
-                 adap = new HomeAdapter( switchMenuItem,gridLayoutManager );
-                mRecyclerView.setAdapter(adap);
-                switchMenuItem.setChecked( sharedPreferences.getBoolean("SWITCH_MENU_ITEM",true) );
-
-
-                switchMenuItem.setOnCheckedChangeListener((compoundButton, b) -> {
-                    Switch bb = (Switch) compoundButton;
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean("SWITCH_MENU_ITEM",b);
-                    editor.apply();
-
-                    adap.notifyDataSetChanged();
-                    if(bb.isChecked()){
-                        gridLayoutManager.setSpanCount(1);
-                        listOrGridItem.setVisible(false);
-                        mRecyclerView.removeItemDecoration(gridSpacingItemDecoration);
-                        mRecyclerView.addItemDecoration(gridSpacingIDeco);
-                        //
-                    }else {
-                        listOrGridItem.setVisible(true);
-                        mRecyclerView.removeItemDecoration(gridSpacingIDeco);
-                        mRecyclerView.addItemDecoration(gridSpacingItemDecoration);
-                        gridLayoutManager.setSpanCount(sharedPreferences.getInt(gridList,GRID));
-
-                    }
-                    if(b){
-                        bb.setThumbTintList(ColorStateList.valueOf(Color.WHITE));
-                    }
-                    else
-                        bb.setThumbTintList(ColorStateList.valueOf(Color.GRAY));
-
-                });
-*/
 
             }
 
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-/*
-                if(menuItem.getItemId() == R.id.recyclerview_style){
 
-                    if(gridLayoutManager.getSpanCount() != 2)
-                    gridLayoutManager.setSpanCount(2);
-                    else
-                        gridLayoutManager.setSpanCount(1);
-
-                    setIconListOrGrid(menuItem);
-                    adap.notifyItemRangeChanged(0,adap.getItemCount());
-                }
-*/
                 if(menuItem.getItemId() == R.id.recyclerview_style){
                     if ( sharedPreferences.getInt(LIST_GRID,LIST) == LIST ) { // if the current view holder is LIST
                         gridLayoutManager.setSpanCount(GRID);
@@ -193,16 +143,7 @@ public class SongHope extends Fragment {
         if (sharedPreferences.getInt(LIST_GRID,LIST) == 1) menuItem.setIcon(R.drawable.column_24);
         else menuItem.setIcon(R.drawable.list_24);
     }
-/*
-    private void saveStateIconListOrGrid(){
-        SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        if(gridLayoutManager.getSpanCount() == 2) editor.putInt(gridList,GRID);
-        else editor.putInt(gridList,LIST);
-
-        editor.apply();
-
-    }*/
     private final int LIST = 1;
     private final int GRID = 2;
     //private final int GROUP = 0;
@@ -210,7 +151,6 @@ public class SongHope extends Fragment {
     private final String IS_GROUP = "IS_GROUP";
     MaterialAutoCompleteTextView autoCompleteTextView;
     RecyclerView mRecyclerView;
-    //Switch switchMenuItem;
     HomeAdapter homeAdapter;
     SharedPreferences sharedPreferences;
     GridSpacingIDeco groupItemDeco = new GridSpacingIDeco(154);
