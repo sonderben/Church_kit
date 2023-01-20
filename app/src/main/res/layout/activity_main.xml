@@ -50,11 +50,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/menu_bottom" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        app:headerLayout="@layout/drawer_header"
+        android:background="@color/main_bg"
         app:menu = "@menu/menu_drawer"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

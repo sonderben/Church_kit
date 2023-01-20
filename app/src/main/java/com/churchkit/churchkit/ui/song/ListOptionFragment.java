@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 
 import com.churchkit.churchkit.Model.Part;
 import com.churchkit.churchkit.R;
-import com.churchkit.churchkit.adapter.PartAdapter;
+import com.churchkit.churchkit.adapter.song.PartAdapter;
 import com.churchkit.churchkit.databinding.FragmentListOptionBinding;
 import com.churchkit.churchkit.ui.util.GridSpacingItemDecoration;
 

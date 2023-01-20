@@ -1,4 +1,4 @@
-package com.churchkit.churchkit.adapter;
+package com.churchkit.churchkit.adapter.song;
 
 import android.content.res.ColorStateList;
 import android.view.LayoutInflater;

@@ -2,6 +2,7 @@ package com.churchkit.churchkit.adapter.bible;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,14 +26,18 @@ public class ListChapter extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //return super.onCreateView(inflater, container, savedInstanceState);
-        View root = inflater.inflate(R.layout.fragment_list_chapter,container,false);
+        ConstraintLayout root = (ConstraintLayout) inflater.inflate(R.layout.fragment_list_chapter,container,false);
+        root.setLayoutParams(new ConstraintLayout.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT, 20));
+
         mRecyclerView = root.findViewById(R.id.recyclerview);
         adapter = new Adapter();
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
         mRecyclerView.setAdapter( adapter );
         closeButton = root.findViewById(R.id.close);
         closeButton.setOnClickListener(x->this.dismissNow());
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int heightPixels = displayMetrics.heightPixels;
         return root;
     }
 

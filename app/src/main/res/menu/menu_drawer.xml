@@ -1,15 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/homeFragment"
-            android:title="Home" />
+            android:title="Song">
+            <menu>
+                <item
+                    android:id="@+id/song_history"
+                    android:icon="@drawable/song_24"
+                    app:actionViewClass="android.widget.TextView"
+                    android:title="History" />
+                <item
+                    android:icon="@drawable/song_24"
+                    android:title="Bookmark" />
+            </menu>
+        </item>
+
         <item
-            android:id="@+id/historyFragment"
-            android:title="History" />
+            android:title="Bible">
+            <menu>
+                <item
+                    android:icon="@drawable/song_24"
+                    android:title="History" />
+                <item
+                    android:icon="@drawable/song_24"
+                    android:title="Bookmark" />
+            </menu>
+        </item>
+
+        <item android:title="">
+            <menu>
+                <item
+                    android:icon="@drawable/song_24"
+                    android:title="About" />
+                <item
+                    android:icon="@drawable/song_24"
+                    android:title="FAQ" />
+                <item
+                    android:icon="@drawable/donate_24"
+                    android:title="Donate" />
+            </menu>
+        </item>
         <item
-            android:id="@+id/bookmarkFragment"
-            android:title="Bookmark" />
+            android:icon="@drawable/song_24"
+            android:title="Settings" />
+        <item
+            android:icon="@drawable/song_24"
+            android:title="Version: 1.0.0" />
+
+
+
     </group>
 </menu>

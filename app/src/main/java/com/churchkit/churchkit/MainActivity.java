@@ -1,9 +1,12 @@
 package com.churchkit.churchkit;
 
 import android.os.Bundle;
+import android.view.Gravity;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = activityMainBinding.bottomNav;
         drawerLayout = activityMainBinding.drawerLayout;
         NavigationView navView = activityMainBinding.navView;
+        navView.setItemIconTintList(null);
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
          mNavController = navHostFragment.getNavController();
@@ -56,8 +60,16 @@ public class MainActivity extends AppCompatActivity {
         appBarConfiguration = builder.setOpenableLayout(drawerLayout).build();
 
 
-
-
+        TextView songHistory;
+        /*songHistory=(TextView) MenuItemCompat.getActionView(navView.getMenu().
+                findItem(R.id.song_history));
+        gallery.setGravity(Gravity.CENTER);
+        gallery.setText("+12");*/
+        songHistory=
+                (TextView) navView.getMenu().findItem(R.id.song_history).getActionView();
+        songHistory.setGravity(Gravity.CENTER);
+        songHistory.setText("+12");
+//
 
         NavigationUI.setupWithNavController(navView, mNavController);
         NavigationUI.setupWithNavController(toolbar, mNavController, appBarConfiguration);

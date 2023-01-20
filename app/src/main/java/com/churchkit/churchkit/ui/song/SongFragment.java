@@ -2,9 +2,15 @@ package com.churchkit.churchkit.ui.song;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -27,6 +33,7 @@ public class SongFragment extends Fragment {
 
         TextView song = songBinding.song;
         song.setText(getSomeString());
+        onCreateMenu();
 
         return  songBinding.getRoot();
     }
@@ -100,4 +107,21 @@ public class SongFragment extends Fragment {
                 "\n" +
                 "Tu fais de Lui ton Roi, a l'instant.\n".trim();
     }
+    private void onCreateMenu(){
+        getActivity().addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                MenuItem settingsItem = menu.add("Settings");
+                settingsItem.setIcon(R.drawable.donate_24);
+                settingsItem.setTitle("Donate");
+                settingsItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                return false;
+            }
+        },getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+    }
+
 }
