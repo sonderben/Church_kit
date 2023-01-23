@@ -7,20 +7,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.Model.Song;
 import com.churchkit.churchkit.R;
+import com.churchkit.churchkit.ui.song.SongDialogFragment;
 
 import java.util.List;
 
 public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.ListSongsViewHolder> {
 
     List<Song>songList;
+    FragmentManager fm;
 
-    public ListSongsAdapter(List<Song>songList){this.songList=songList;}
+    public ListSongsAdapter(List<Song>songList, FragmentManager fm){
+        this.songList=songList;
+        this.fm = fm;
+    }
 
     @NonNull
     @Override
@@ -56,10 +60,8 @@ public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.List
 
             itemView.setOnClickListener(view -> {
 
-                NavController navController = Navigation.findNavController(view);
-                navController.getGraph().findNode(R.id.songFragment).setLabel("Reveillons-nous");
-                navController.navigate(R.id.action_listSongsFragment_to_songFragment);
-
+        SongDialogFragment listChapter = SongDialogFragment.newInstance();
+        listChapter.show(fm,"kk");
             } );
         }
     }

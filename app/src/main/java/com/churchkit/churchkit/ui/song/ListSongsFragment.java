@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.Model.Song;
@@ -30,8 +31,8 @@ public class ListSongsFragment extends Fragment {
         FragmentListSongsBinding listSongsBinding = FragmentListSongsBinding.inflate(getLayoutInflater());
 
         mRecyclerView = listSongsBinding.recyclerview;
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        mRecyclerView.setAdapter(  new ListSongsAdapter( getSongsList() ) );
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
+        mRecyclerView.setAdapter(  new ListSongsAdapter( getSongsList(),getChildFragmentManager() ) );
 
         return  listSongsBinding.getRoot();
     }

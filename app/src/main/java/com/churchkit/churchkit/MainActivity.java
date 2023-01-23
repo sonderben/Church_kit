@@ -1,5 +1,6 @@
 package com.churchkit.churchkit;
 
+import android.app.ActivityManager;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.TextView;
@@ -41,7 +42,16 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(activityMainBinding.getRoot());
 
+        ActivityManager.MemoryInfo memoryInfo = getAvailableMemory();
+        System.out.println("memoryInfo: "+memoryInfo.availMem+"memoryInfo: "+memoryInfo.threshold);
 
+        //1 138 233 344 memoryInfo: 226 492 416
+
+/*
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_INTERNAL_STORAGE_SETTINGS);
+        startActivity(intent);
+*/
 
         toolbar=activityMainBinding.toolbar;
         bottomNavigationView = activityMainBinding.bottomNav;
@@ -103,10 +113,20 @@ public class MainActivity extends AppCompatActivity {
                 navController.getCurrentDestination().getLabel().equals(getResources().getString(R.string.more));
     }
 
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+    }
 
     MaterialToolbar toolbar;
     BottomNavigationView bottomNavigationView;
     DrawerLayout drawerLayout;
     NavController mNavController;
+    private ActivityManager.MemoryInfo getAvailableMemory() {
+        ActivityManager activityManager = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
+        ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+        activityManager.getMemoryInfo(memoryInfo);
+        return memoryInfo;
+    }
 
 }

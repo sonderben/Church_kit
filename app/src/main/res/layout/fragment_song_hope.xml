@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/main_bg"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.song.SongHope">
+    tools:context=".ui.song.SongHopeFragment">
 
     <com.google.android.material.textfield.MaterialAutoCompleteTextView
         android:id="@+id/search"
@@ -16,6 +16,7 @@
         android:background="@drawable/bg_edittext"
         android:hint="Chèche yon chan"
         android:paddingLeft="12dp"
+        android:completionThreshold="1"
         android:inputType="textCapWords"
         android:textColorHint="#D9D9D9"
         android:textColor="@color/white"
@@ -28,9 +29,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search"/>
 
 

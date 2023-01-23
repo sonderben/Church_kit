@@ -13,8 +13,10 @@
         <TextView
             android:id="@+id/song"
             android:textStyle="bold"
-            android:textSize="26sp"
+            android:textColor="@color/teal_700"
             android:textIsSelectable="true"
+            android:fontFamily="@font/robotolight"
+            android:text="lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam aliquid, asperiores aut autem debitis dolorem, dolores doloribus ex incidunt iusto maiores neque nesciunt ratione unde, voluptas"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textAlignment="center" />

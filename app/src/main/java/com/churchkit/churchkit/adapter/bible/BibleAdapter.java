@@ -1,6 +1,5 @@
 package com.churchkit.churchkit.adapter.bible;
 
-import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.R;
+import com.churchkit.churchkit.ui.bible.BibleFragment;
 import com.google.android.material.card.MaterialCardView;
 
 public class BibleAdapter extends RecyclerView.Adapter {
@@ -32,7 +32,7 @@ public class BibleAdapter extends RecyclerView.Adapter {
     }
 
     public BibleAdapter(int typeView,FragmentManager fm) {
-        this.fm = fm;
+        this.fm = fm;;
         this.typeView = typeView;
     }
 
@@ -90,9 +90,27 @@ public class BibleAdapter extends RecyclerView.Adapter {
                     NavController navController = Navigation.findNavController(view);
                     navController.getGraph().findNode(R.id.listOptionFragment).setLabel("Français");
                     navController.navigate(R.id.action_homeFragment_to_listOptionFragment);*/
+
+                    navigate(view);
+
                 }
             });
         }
+    }
+    private void navigate(View view){
+        if (typeView != 0){
+
+            NavController navController = Navigation.findNavController(view);
+            navController.getGraph().findNode(R.id.listChapterFragment).setLabel("Jenèz");
+            navController.navigate(R.id.action_bookmarkFragment_to_listChapterFragment);
+        }else {
+
+            NavController navController = Navigation.findNavController(view);
+            navController.getGraph().findNode(R.id.listChapterByTestamentFragment).setLabel("Old Testament");
+            navController.navigate(R.id.action_bookmarkFragment_to_listBookByTestamentFragment);
+
+        }
+
     }
 
     class AllBookViewHolder extends RecyclerView.ViewHolder{
@@ -110,17 +128,12 @@ public class BibleAdapter extends RecyclerView.Adapter {
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {/*
-                    NavController navController = Navigation.findNavController(view);
-                    navController.getGraph().findNode(R.id.listSongsFragment).setLabel("Reveillons nous");
-                    navController.navigate(R.id.action_homeFragment_to_listSongsFragment2);
-
-
+                public void onClick(View view) {
+                    /*NavController navController = Navigation.findNavController(view);
+                    navController.getGraph().findNode(R.id.listChapterFragment).setLabel("Jenèz");
+                    navController.navigate(R.id.action_bookmarkFragment_to_listChapterFragment);
 */
-                    ListChapter listChapter = ListChapter.newInstance();
-                    listChapter.show(fm,"kk");
-
-
+                    navigate(view);
                 }
             });
         }

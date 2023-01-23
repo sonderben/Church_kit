@@ -38,7 +38,7 @@
                     android:icon="@drawable/song_24"
                     android:title="FAQ" />
                 <item
-                    android:icon="@drawable/donate_24"
+                    android:icon="@drawable/donate_48"
                     android:title="Donate" />
             </menu>
         </item>

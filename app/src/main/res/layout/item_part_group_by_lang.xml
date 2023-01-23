@@ -27,7 +27,7 @@
                 android:scaleType="centerCrop"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:src="@mipmap/img_bg_creole" />
+                android:src="@mipmap/img_bg_french" />
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="30dp"

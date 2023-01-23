@@ -22,16 +22,16 @@ import android.widget.Switch;
 
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.adapter.bible.BibleAdapter;
-import com.churchkit.churchkit.databinding.FragmentBookmarkBinding;
+import com.churchkit.churchkit.databinding.FragmentBibleBinding;
 import com.churchkit.churchkit.ui.util.GridSpacingIDeco;
-import com.churchkit.churchkit.ui.util.GridSpacingItemDecoration;
 
-public class BookmarkFragment extends Fragment {
+public class BibleFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        FragmentBookmarkBinding bookmarkBinding = FragmentBookmarkBinding.inflate(getLayoutInflater());
+
+        FragmentBibleBinding bookmarkBinding = FragmentBibleBinding.inflate(getLayoutInflater());
         mRecyclerView = bookmarkBinding.recyclerview;
 
         sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
@@ -44,7 +44,7 @@ public class BookmarkFragment extends Fragment {
 
 
         onCreateMenu();
-        ;
+
 
         View root = bookmarkBinding.getRoot();
         return root;
