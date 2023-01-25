@@ -35,7 +35,9 @@ public class ListSongsFragment extends Fragment {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
         mRecyclerView.setAdapter(  new ListSongsAdapter( getSongsList(),getChildFragmentManager() ) );
 
-
+         /*Here you can get the value by getting the Argument and the value is being printed out in line 40*/
+        int value = getArguments().getInt("ID");
+        System.out.println(value);
         return  listSongsBinding.getRoot();
     }
 

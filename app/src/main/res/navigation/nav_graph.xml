@@ -58,6 +58,9 @@
         android:label="fragment_list_songs"
         tools:layout="@layout/fragment_list_songs" >
 
+        <argument
+            android:name="ID"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/listChapterFragment"

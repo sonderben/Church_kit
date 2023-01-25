@@ -1,5 +1,7 @@
 package com.churchkit.churchkit.adapter.song;
 
+import android.annotation.SuppressLint;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,7 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
@@ -56,10 +60,26 @@ public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPa
 
 
     @Override
-    public void onBindViewHolder(@NonNull ListPartViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ListPartViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.title.setText(songBooks.get(position).getName());
         holder.tileAcronym.setText(songBooks.get(position).getAbbreviation());
         holder.number.setText(songBooks.get(position).getNum()+" chants");
+
+       holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                /*passing value by using bundle, so I utilised the navigation and it takes bundle as parameter
+                I used the position as the ID, well you can change to whatever that you want to*/
+                Bundle bundle = new Bundle();
+                bundle.putInt("ID", songBooks.get(position).getSongBookId());
+
+                NavController navController = Navigation.findNavController(view);
+                navController.getGraph().findNode(R.id.listSongsFragment).setLabel("Reveillons nous");
+                navController.navigate(R.id.action_homeFragment_to_listSongsFragment2,bundle);
+
+            }
+        });
     }
 
 
@@ -89,14 +109,7 @@ public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPa
             tileAcronym = itemView.findViewById(R.id.tile_abr);
             cardView = itemView.findViewById(R.id.cardview);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    NavController navController = Navigation.findNavController(view);
-                    navController.getGraph().findNode(R.id.listSongsFragment).setLabel("Reveillons nous");
-                    navController.navigate(R.id.action_homeFragment_to_listSongsFragment2);
-                }
-            });
+
         }
     }
 
