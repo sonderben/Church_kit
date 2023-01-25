@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.Model.Song;
+import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.adapter.song.ListSongsAdapter;
 import com.churchkit.churchkit.databinding.FragmentListSongsBinding;
 
@@ -33,6 +34,7 @@ public class ListSongsFragment extends Fragment {
         mRecyclerView = listSongsBinding.recyclerview;
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
         mRecyclerView.setAdapter(  new ListSongsAdapter( getSongsList(),getChildFragmentManager() ) );
+
 
         return  listSongsBinding.getRoot();
     }

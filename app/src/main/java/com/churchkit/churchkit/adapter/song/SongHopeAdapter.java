@@ -13,13 +13,17 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.R;
+import com.churchkit.churchkit.database.entity.SongBook;
 import com.google.android.material.card.MaterialCardView;
 
-public class SongHopeAdapter extends RecyclerView.Adapter {
+import java.util.List;
+
+public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPartViewHolder> {
 
 
     int typeView;
     FragmentManager fm;
+    List<SongBook> songBooks;
 
 
     public void setTypeView(int newTypeViewHolder,int oldTypeViewHolder) {
@@ -31,18 +35,16 @@ public class SongHopeAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public SongHopeAdapter(int typeView, FragmentManager fm) {
+    public SongHopeAdapter(int typeView,List<SongBook> songBooks, FragmentManager fm) {
         this.fm = fm;
+        this.songBooks = songBooks;
         this.typeView = typeView;
     }
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-       /*if(viewType == 0){
-           View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_part_group_by_lang,parent,false);
-           return new GroupByLanguageViewHolder(view);
-       }else*/ if(viewType == 2) {
+    public ListPartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if(viewType == 2) {
            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_part2,parent,false);
            return new ListPartViewHolder(view);
        }
@@ -52,14 +54,19 @@ public class SongHopeAdapter extends RecyclerView.Adapter {
        }
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
+    @Override
+    public void onBindViewHolder(@NonNull ListPartViewHolder holder, int position) {
+        holder.title.setText(songBooks.get(position).getName());
+        holder.tileAcronym.setText(songBooks.get(position).getAbbreviation());
+        holder.number.setText(songBooks.get(position).getNum()+" chants");
     }
+
+
 
     @Override
     public int getItemCount() {
-        return 2;
+        return songBooks.size();
     }
 
     @Override
@@ -70,13 +77,14 @@ public class SongHopeAdapter extends RecyclerView.Adapter {
 
 
     class ListPartViewHolder extends RecyclerView.ViewHolder{
-        TextView title,tileAcronym;
+        public TextView title,tileAcronym,number;
         MaterialCardView cardView;
         ImageView img;
 
         public ListPartViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
+             number= itemView.findViewById(R.id.number_song);
             img = itemView.findViewById(R.id.img);
             tileAcronym = itemView.findViewById(R.id.tile_abr);
             cardView = itemView.findViewById(R.id.cardview);

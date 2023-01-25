@@ -17,11 +17,14 @@ import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.adapter.song.SongHopeAdapter;
+import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.entity.SongBook;
 import com.churchkit.churchkit.databinding.FragmentSongHopeBinding;
 import com.churchkit.churchkit.ui.util.GridSpacingIDeco;
 import com.churchkit.churchkit.ui.util.GridSpacingItemDecoration;
@@ -48,9 +51,12 @@ public class SongHopeFragment extends Fragment {
         gridLayoutManager = new GridLayoutManager(getContext(),1);
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
-        if ( sharedPreferences.getBoolean(IS_GROUP,true) ){
+
+        if(sharedPreferences.getInt(LIST_GRID,LIST)==GRID) {
             mRecyclerView.addItemDecoration(groupItemDeco);
-        }else {
+            gridLayoutManager.setSpanCount(GRID);
+        }
+        else {
             gridLayoutManager.setSpanCount(sharedPreferences.getInt(LIST_GRID,LIST));
             mRecyclerView.addItemDecoration(listGridItemDeco);
         }
@@ -67,9 +73,21 @@ public class SongHopeFragment extends Fragment {
         SearchSongAutoCompleteAdapter autoCompleteAdapter = new SearchSongAutoCompleteAdapter(getContext(),strings);
         autoCompleteTextView.setAdapter(autoCompleteAdapter);
 
-        homeAdapter = new SongHopeAdapter( sharedPreferences.getBoolean(IS_GROUP,true) ? 0 :
-                sharedPreferences.getInt(LIST_GRID,LIST) ,getActivity().getSupportFragmentManager() );
-        mRecyclerView.setAdapter(homeAdapter);
+
+
+        ChurchKitDb churchKitDb = ChurchKitDb.getInstance(getContext());
+        churchKitDb.songBookDao().getAllSongBook().observe(requireActivity(), new Observer<List<SongBook>>() {
+            @Override
+            public void onChanged(List<SongBook> songBooks) {
+                if(songBooks!=null){
+                    homeAdapter = new SongHopeAdapter(
+                            getTypeView(),songBooks,getActivity().getSupportFragmentManager()
+                    );
+
+                    mRecyclerView.setAdapter(homeAdapter);
+                }
+            }
+        });
 
 
 
@@ -78,72 +96,34 @@ public class SongHopeFragment extends Fragment {
         return root;
     }
 
+    private int getTypeView(){
+        return  sharedPreferences.getInt(LIST_GRID,LIST);
+    }
+
+
     private void onCreateMenu() {
         requireActivity().addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                //SharedPreferences.Editor editor = sharedPreferences.edit();
-
                 menu.clear();
+
                 menuInflater.inflate(R.menu.menu_song_hope, menu);
                 setIconListOrGrid(menu.findItem(R.id.recyclerview_style));
-               /* Switch switchMenuItem = */
                 menu.findItem(R.id.app_bar_switch).getActionView().findViewById(R.id.switch1).setVisibility(View.GONE);
-                MenuItem listOrGridItem = menu.findItem(R.id.recyclerview_style);
-
-                //switchMenuItem.setChecked( sharedPreferences.getBoolean(IS_GROUP,true) );
-                listOrGridItem.setVisible( !sharedPreferences.getBoolean(IS_GROUP,true) );
-
-
-                /*switchMenuItem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean isGroupedByLang) {
-                        //if is grouped by language
-                        if (isGroupedByLang){
-                            homeAdapter.setTypeView(0,sharedPreferences.getInt(LIST_GRID,LIST) );
-                            if (gridLayoutManager.getSpanCount() != 1) gridLayoutManager.setSpanCount(1);
-
-                            if (mRecyclerView.getItemDecorationAt(0) instanceof GridSpacingItemDecoration){
-                                mRecyclerView.removeItemDecoration(listGridItemDeco);
-                                mRecyclerView.addItemDecoration(groupItemDeco);
-                            }
-
-                            editor.putBoolean(IS_GROUP,true);
-                            //editor.putInt(LIST_GRID,0);
-                            editor.apply();
-                        }else {
-                            // dwe rele nouvo setType la
-                            int newTypeViewHolder =sharedPreferences.getInt(LIST_GRID,LIST);// 1 or 2
-                            if (gridLayoutManager.getSpanCount() != newTypeViewHolder)gridLayoutManager.setSpanCount(newTypeViewHolder);
-
-                            homeAdapter.setTypeView(newTypeViewHolder,0 );
-                            mRecyclerView.removeItemDecoration(groupItemDeco);
-                            mRecyclerView.addItemDecoration(listGridItemDeco);
-                            editor.putBoolean(IS_GROUP,false);
-                            editor.apply();
-                        }
-                        listOrGridItem.setVisible( !isGroupedByLang );
-                    }
-                });*/
-
-
-
-
             }
 
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-
+                SharedPreferences.Editor editor = sharedPreferences.edit();
                 if(menuItem.getItemId() == R.id.recyclerview_style){
-                    if ( sharedPreferences.getInt(LIST_GRID,LIST) == LIST ) { // if the current view holder is LIST
+                    if ( sharedPreferences.getInt(LIST_GRID,LIST) == LIST ) {
                         gridLayoutManager.setSpanCount(GRID);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
+
                         editor.putInt(LIST_GRID,GRID);
                         editor.apply();
                         homeAdapter.setTypeView(GRID,LIST);
-                    }else {//the current view holder is GRID
+                    }else {
                         gridLayoutManager.setSpanCount(LIST);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putInt(LIST_GRID,LIST);
                         homeAdapter.setTypeView(LIST,GRID);
                         editor.apply();
@@ -186,7 +166,6 @@ public class SongHopeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        //set width autoCompleteTextView to 80 % to the width of screen
         autoCompleteTextView.getLayoutParams().width = (int) ( Util.getScreenDisplayMetrics(
                 getContext()
         ).widthPixels * 0.80f );
@@ -194,9 +173,7 @@ public class SongHopeFragment extends Fragment {
 
     private final int LIST = 1;
     private final int GRID = 2;
-    //private final int GROUP = 0;
     private final String LIST_GRID = "LIST_GRID";
-    private final String IS_GROUP = "IS_GROUP";
     MaterialAutoCompleteTextView autoCompleteTextView;
     RecyclerView mRecyclerView;
     SongHopeAdapter homeAdapter;

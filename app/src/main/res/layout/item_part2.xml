@@ -44,6 +44,7 @@
                 app:layout_constraintStart_toStartOf="@id/img"
                 app:layout_constraintTop_toTopOf="@id/img"/>
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/number_song"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
