@@ -52,13 +52,13 @@ public class SongDialogFragment extends DialogFragment {
          tv  = root.findViewById(R.id.text);
         tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-        close = root.findViewById(R.id.close);
+       // close = root.findViewById(R.id.close);
         bookTitle = root.findViewById(R.id.book_name);
         songTitle = root.findViewById(R.id.chap_);
         bookTitle.setText(mReference);
         songTitle.setText(mSongTitle);
 
-        close.setOnClickListener(x->this.dismiss());
+//        close.setOnClickListener(x->this.dismiss());
         root.findViewById(R.id.fab_clos).setOnClickListener(x->this.dismiss());
 
         churchKitDd.verseDao().getAllVerseByIdSong(mSongId).observe(requireActivity(), new Observer<List<Verse>>() {
@@ -73,7 +73,7 @@ public class SongDialogFragment extends DialogFragment {
 
         return root;
     }
-    ImageView close;
+   // ImageView close;
     ViewGroup root;
     TextView tv,bookTitle,songTitle;
     static long mSongId;

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.ui.bible.BibleFragment;
+import com.churchkit.churchkit.ui.bible.ChapterDialogFragment;
 import com.google.android.material.card.MaterialCardView;
 
 public class BibleAdapter extends RecyclerView.Adapter {
@@ -129,11 +130,8 @@ public class BibleAdapter extends RecyclerView.Adapter {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    /*NavController navController = Navigation.findNavController(view);
-                    navController.getGraph().findNode(R.id.listChapterFragment).setLabel("Jenèz");
-                    navController.navigate(R.id.action_bookmarkFragment_to_listChapterFragment);
-*/
-                    navigate(view);
+                    ChapterDialogFragment cdf = ChapterDialogFragment.newInstance(1,"Jan 2","Chapter 3 to 8");
+                    cdf.show(fm,"ChapterDialogFragment");
                 }
             });
         }

@@ -6,6 +6,10 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,10 +20,16 @@ import androidx.fragment.app.DialogFragment;
 
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.ui.util.Util;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class ChapterDialogFragment extends DialogFragment {
-    public ChapterDialogFragment(){}
-    public static ChapterDialogFragment newInstance(){
+    public ChapterDialogFragment(){
+
+    }
+    public static ChapterDialogFragment newInstance(long id,String reference,String chapter){
+        mId = id;
+        mReference = reference;
+        mChapterhapter = chapter;
         return new ChapterDialogFragment();
     }
     @Nullable
@@ -28,10 +38,106 @@ public class ChapterDialogFragment extends DialogFragment {
         ConstraintLayout root = (ConstraintLayout) inflater.inflate(R.layout.fragment_list_chapter,container,false);
 
 
-        closeButton = root.findViewById(R.id.close);
-        closeButton.setOnClickListener(x->this.dismissNow());
-        tv = root.findViewById(R.id.text);
-        tv.setText(getSomeString());
+        //closeButton = root.findViewById(R.id.close);
+        //closeButton.setOnClickListener(x->this.dismissNow());
+        versets = root.findViewById(R.id.text);
+        bookReference = root.findViewById(R.id.book_name);
+        chapTitle = root.findViewById(R.id.chap_);
+        versets.setText(getSomeString());
+        bookReference.setText(mReference);
+        chapTitle.setText(mChapterhapter);
+        fab = root.findViewById(R.id.fab_clos);
+        fab.setOnClickListener(x->this.dismiss());
+        endingFavoriteImageView = root.findViewById(R.id.favorite);//favorite_anim
+        startingImageView = root.findViewById(R.id.favorite_anim);//favorite_anim
+
+        /*float endX = favorite.getX();
+        float endY = favorite.getY();*/
+
+        /*int[] endImageViewCoordinates = new int[2];
+        favorite.getLocationOnScreen(endImageViewCoordinates);
+
+        float endX = endImageViewCoordinates[0];
+        float endY = endImageViewCoordinates[1];*/
+
+        final int DOUBLE_CLICK_TIME_DELTA = 300; //milliseconds
+
+        versets.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                /*int[] endImageViewCoordinates = new int[2];
+                favorite.getLocationOnScreen(endImageViewCoordinates);
+
+                float endX = endImageViewCoordinates[0];
+                float endY = endImageViewCoordinates[1];
+
+                ObjectAnimator scaleXAnimator = ObjectAnimator.ofFloat(favoriteAnim, "scaleX", 0f, 10.5f);
+                ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(favoriteAnim, "scaleY", 0f, 10.5f);
+
+                ObjectAnimator translationXAnimator = ObjectAnimator.ofFloat(favoriteAnim, "translationX",  0,200);
+                ObjectAnimator translationYAnimator = ObjectAnimator.ofFloat(favoriteAnim, "translationY",  0,2f);
+
+                AnimatorSet animatorSet = new AnimatorSet();
+                animatorSet.playTogether(scaleXAnimator, scaleYAnimator, translationXAnimator, translationYAnimator);
+                animatorSet.setDuration(1000);
+                animatorSet.start();*/
+
+
+
+               /* ImageView startingImageView = findViewById(R.id.starting_image);
+                startingImageView.setImageResource(R.drawable.starting_image);*/
+
+
+
+
+                long clickTime = System.currentTimeMillis();
+                if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA){
+
+
+                    ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 2.0f,
+                            1.0f, 2.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                    scaleAnimation.setDuration(1000);
+
+                    TranslateAnimation translateAnimation = new TranslateAnimation(0,
+                            380, 0, -950);
+                    translateAnimation.setDuration(1000);
+
+                    AnimationSet animationSet = new AnimationSet(false);
+                    animationSet.addAnimation(scaleAnimation);
+                    animationSet.addAnimation(translateAnimation);
+
+                    startingImageView.setAnimation(animationSet);
+
+                    endingFavoriteImageView.setVisibility(View.INVISIBLE);
+
+                    animationSet.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                            startingImageView.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            startingImageView.setVisibility(View.INVISIBLE);
+                            endingFavoriteImageView.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+                        }
+                    });
+
+                    startingImageView.startAnimation(animationSet);
+                }
+                lastClickTime = clickTime;
+
+
+
+
+            }
+        });
+
 
         return root;
     }
@@ -57,8 +163,11 @@ public class ChapterDialogFragment extends DialogFragment {
                 "29Y dijo Dios: He aquí que os he dado toda planta que da semilla, que está sobre toda la tierra, y todo árbol en que hay fruto y que da semilla; os serán para comer. 30Y a toda bestia de la tierra, y a todas las aves de los cielos, y a todo lo que se arrastra sobre la tierra, en que hay vida, toda planta verde les será para comer. Y fue así. 31Y vio Dios todo lo que había hecho, y he aquí que era bueno en gran manera. Y fue la tarde y la mañana el día sexto.".trim().toUpperCase();
     return Html.fromHtml(a);
     }
-
-    ImageView closeButton;
-    TextView tv;
+    long lastClickTime = 0;
+    ImageView closeButton, endingFavoriteImageView, startingImageView;
+    TextView versets,bookReference,chapTitle;
+    static long mId;
+    static String mReference, mChapterhapter;
+    FloatingActionButton fab;
 
 }

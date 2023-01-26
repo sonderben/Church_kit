@@ -13,11 +13,11 @@ import com.churchkit.churchkit.database.entity.Song;
 import java.util.List;
 @Dao
 public interface SongDao {
-    @Transaction
+    /*@Transaction
     @Query("SELECT * FROM song")
-    LiveData< List<SongWithVerse> > getAllSongWithVerse();
+    LiveData< List<SongWithVerse> > getAllSongWithVerse();*/
 
-    @Query("SELECT * FROM song where song_book_id = :songBookId")
+    @Query("SELECT * FROM song where song_book_id = :songBookId ORDER BY num")
     LiveData< List<Song> > getAllSongWithVerseById(long songBookId);
 
     @Transaction

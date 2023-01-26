@@ -82,7 +82,7 @@ FragmentManager fm;
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ChapterDialogFragment dialogFragment = ChapterDialogFragment.newInstance();
+                        ChapterDialogFragment dialogFragment = ChapterDialogFragment.newInstance(1,"Jan 2","Chapter 3 to 8");
                         dialogFragment.show(fm, "ChapterDialogFragment");
                     }
                 });

@@ -14,19 +14,6 @@
         android:background="#FFA5A5A5"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:visibility="gone"
-            android:src="@android:drawable/ic_menu_close_clear_cancel"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="#7E3535" />
-
         <ImageView
             android:id="@+id/favorite"
             android:layout_width="wrap_content"
@@ -36,9 +23,8 @@
             android:padding="10dp"
             android:layout_marginEnd="10dp"
             android:src="@drawable/favorite_24"
-            app:layout_constraintEnd_toStartOf="@id/close"
+            app:layout_constraintEnd_toEndOf="parent"
             app:tint="#7E3535" />
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -63,11 +49,11 @@
                 android:textSize="40sp"
                 android:textStyle="bold"
                 android:includeFontPadding="false"
-                app:layout_constraintBottom_toBottomOf="@id/close"
+                app:layout_constraintBottom_toBottomOf="@id/favorite"
                 app:layout_constraintEnd_toStartOf="@+id/favorite"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/close" />
+                app:layout_constraintTop_toTopOf="@id/favorite" />
 
             <TextView
                 android:id="@+id/chap_"
@@ -82,7 +68,17 @@
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
+    <ImageView
+        android:id="@+id/favorite_anim"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="#7E3535"
+        android:src="@drawable/favorite_24"/>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"

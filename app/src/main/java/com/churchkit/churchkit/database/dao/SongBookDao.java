@@ -12,7 +12,7 @@ import java.util.List;
 
 @Dao
 public interface SongBookDao {
-    @Query("SELECT * FROM song_book")
+    @Query("SELECT * FROM song_book ORDER BY num")
     LiveData<List<SongBook>> getAllSongBook();
 
     @Transaction
