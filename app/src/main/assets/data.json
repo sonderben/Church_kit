@@ -5,20 +5,99 @@
       "name": "Chant d'espérance",
       "abbreviation": "CE",
       "color": 1,
-      "songAmount": 1,
+      "songAmount": 4,
       "image": 1,
       "num": 21,
       "songs": [
         {
           "songId": 1,
-          "title": "genial title song",
+          "title": "Gloire à Dieu notre createur.",
           "num": 1,
           "page": 1,
           "verses": [
             {
               "verseId": 1,
-              "verse": "genial verse ",
+              "verse": "Gloire à Dieu notre Créateur !\nGloire à Christ le Rédempteur !\nGloire à l’Esprit Consolateur !\nLouange et gloire au Dieu Sauveur ! ",
               "num": 1
+            }
+          ]
+        },
+        {
+          "songId": 2,
+          "title": "Grand Dieu, nous te bénissons.",
+          "num": 2,
+          "page": 9,
+          "verses": [
+            {
+              "verseId": 1,
+              "verse": "Grand Dieu, nous te bénissons,\nNous célébrons tes louanges!\nÉternel, nous t'exaltons,\nDe concert avec les anges;\nEt prosternés devant toi,\nNous t’adorons, ô grand Roi! (bis, 2 lignes)",
+              "num": 1
+            },
+            {
+              "verseId": 2,
+              "verse": "Les saints et les bienheureux,\nLes trônes et les puissances,\nToutes les vertus des cieux,\nDisent tes magnificences\nProclamant dans leurs concerts\nLe Grand Dieu de l'Univers. (bis, 2 lignes)",
+              "num": 2
+            },
+            {
+              "verseId": 2,
+              "verse": "Sauve ton peuple, Seigneur,\nEt bénis ton héritage;\nQue ta gloire et ta splendeur\nSoient à jamais son partage,\nConduis-le par ton amour\nJusqu’au céleste séjour! (bis, 2 lignes)",
+              "num": 3
+            },
+            {
+              "verseId": 2,
+              "verse": "Puisque ton règne de paix.\nS'étendre par tout le monde!\nDès maintenant, à jamais;\nQue sur la terre et sur l'onde,\nTout genoux soient abattus\nAu nom su Seigneur Jésus! (bis, 2 lignes)",
+              "num": 4
+            },
+            {
+              "verseId": 2,
+              "verse": "Gloire soit au Saint-Esprit!\nGloire soit à Dieu le Père!\nGloire soit à Jésus-Christ,\nNotre Sauveur, notre Frère!\nSon immense charité\nDure à perpétuité. (bis, 2 lignes)",
+              "num": 5
+            }
+          ]
+        },
+        {
+          "songId": 3,
+          "title": "La sainte trinité - Adorons le père",
+          "num": 3,
+          "page": 9,
+          "verses": [
+            {
+              "verseId": 1,
+              "verse": "Adorons le Père\nAu plus haut des cieux,\nLa sainte lumière\nQui brille en tous lieux.\nProclamons sa grâce,\nLe pardon divin,\nL’amour efficace,\nLe bonheur sans fin.",
+              "num": 1
+            },
+            {
+              "verseId": 1,
+              "verse": "Célébrons la gloire\nDu puissant Sauveur;\nChantons la victoire\nDu grand Rédempteur!\nIl vint sur la terre\nPour nous secourir;\nPlus tendre qu’un frère,\nIl voulut mourir.",
+              "num": 2
+            },
+            {
+              "verseId": 1,
+              "verse": "Viens, céleste flamme,\nMessager divin,\nViens, montre à notre âme,\nJésus, le chemin!\nDescends à cette heure\nDans nos cœurs joyeux;\nQu’ils soient ta demeure,\nEsprit glorieux!",
+              "num": 3
+            }
+          ]
+        },
+        {
+          "songId": 4,
+          "title": "On n'adore pas encore.",
+          "num": 4,
+          "page": 10,
+          "verses": [
+            {
+              "verseId": 1,
+              "verse": "On n’adore – Pas encore\nQuand on chante à l’Eternel.\nPour lui plaire – C’est peu faire\nQue de monter à Béthel.\nDieu regarde – Si l’on garde\nLe cœur autant que l’autel.",
+              "num": 1
+            },
+            {
+              "verseId": 1,
+              "verse": "Qui s’excuse – Et n’accuse\nQue le prochain devant toi,\nPar son culte, – Fait insulte\nSeigneur, à ta sainte loi.\nAh! Qu’il sorte –Et remporte\nSes offrandes avec soi.",
+              "num": 2
+            },
+            {
+              "verseId": 1,
+              "verse": "Divin Maître, – Fais-nous être\nUn peuple d’adorateurs!\nTa louange, – Chère à l’ange,\nEst la gloire des pécheurs.\nQuand des larmes – Sont nos armes,\nTon amour nous rend vainqueurs.",
+              "num": 3
             }
           ]
         }
@@ -41,12 +120,12 @@
           "verses": [
             {
               "verseId": 1,
-              "verse": "genial verse2 ",
+              "verse": "genial verse22 ",
               "num": 1
             },
             {
               "verseId": 2,
-              "verse": "genial",
+              "verse": "genial2c",
               "num": 1
             }
           ]
@@ -70,7 +149,7 @@
           "verses": [
             {
               "verseId": 1,
-              "verse": "genial e verse2 ",
+              "verse": "genial 2e verse2 ",
               "num": 1
             }
           ]

@@ -4,6 +4,7 @@ package com.churchkit.churchkit.ui.song;
 import android.os.Bundle;
 import android.text.Layout;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -11,8 +12,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.customview.widget.ViewDragHelper;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -21,6 +24,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.Model.Song;
 import com.churchkit.churchkit.R;
+import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.entity.Verse;
 import com.churchkit.churchkit.ui.util.Util;
 
 import java.util.ArrayList;
@@ -28,27 +33,40 @@ import java.util.List;
 
 
 public class SongDialogFragment extends DialogFragment {
-    public static SongDialogFragment newInstance(){
+    public static SongDialogFragment newInstance(Long idSong,String reference,String title){
+        mSongId = idSong;
+        mSongTitle = title;
+        mReference = reference;
         return new SongDialogFragment();
     }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-         View root =  inflater.inflate(R.layout.fragment_list_chapter,container,false);
+          root = (ViewGroup) inflater.inflate(R.layout.fragment_list_chapter,container,false);
 
+
+
+         churchKitDd = ChurchKitDb.getInstance(requireContext());
 
 
          tv  = root.findViewById(R.id.text);
         tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        tv.setText(getSomeString());
+
         close = root.findViewById(R.id.close);
         bookTitle = root.findViewById(R.id.book_name);
         songTitle = root.findViewById(R.id.chap_);
-        bookTitle.setText("012 Reveillons nous");
-        songTitle.setText("Il est un nom.");
+        bookTitle.setText(mReference);
+        songTitle.setText(mSongTitle);
 
         close.setOnClickListener(x->this.dismiss());
+        root.findViewById(R.id.fab_clos).setOnClickListener(x->this.dismiss());
 
+        churchKitDd.verseDao().getAllVerseByIdSong(mSongId).observe(requireActivity(), new Observer<List<Verse>>() {
+            @Override
+            public void onChanged(List<Verse> verses) {
+                tv.setText(listVerseToString(verses));
+            }
+        });
 
 
 
@@ -56,7 +74,11 @@ public class SongDialogFragment extends DialogFragment {
         return root;
     }
     ImageView close;
+    ViewGroup root;
     TextView tv,bookTitle,songTitle;
+    static long mSongId;
+    static String mSongTitle;
+    static String mReference;
     private String getSomeString(){
         return "1.\n" +
 
@@ -102,6 +124,23 @@ public class SongDialogFragment extends DialogFragment {
                 "En venant à ton Sauveur\n" +
                 "Tu fais de Lui ton Roi, a l'instant.\n".trim().toUpperCase();
     }
+    ChurchKitDb churchKitDd;
+
+    private String listVerseToString(List<Verse> verses){
+        StringBuilder verseString = new StringBuilder();
+        if (verses != null){
+            for (int i=0;i< verses.size();i++){
+                verseString.append(verses.get(i).getNum());
+                verseString.append("\n");
+                verseString.append(verses.get(i).getVerse());
+                verseString.append("\n");
+            }
+        }else {
+            verseString.append("Error");
+        }
+        return verseString.toString();
+    }
+
 
 
     @Override

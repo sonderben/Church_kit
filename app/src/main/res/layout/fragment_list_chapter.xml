@@ -2,61 +2,131 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/main_bg"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.bible.ListChapterFragment"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <ImageView
-        android:id="@+id/close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="6dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:background="#FFA5A5A5"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@android:drawable/ic_menu_close_clear_cancel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:tint="#7E3535" />
-    <TextView
-        android:id="@+id/book_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="30sp"
-        android:maxLines="1"
-        android:paddingStart="3dp"
-        android:ellipsize="end"
-        app:layout_constraintTop_toTopOf="@id/close"
-        app:layout_constraintBottom_toBottomOf="@id/close"
-        app:layout_constraintStart_toStartOf="parent"
-        android:text="Jenèz"/>
-    <TextView
-        android:id="@+id/chap_"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="3dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/book_name"
-        android:text="Chapit"/>
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:visibility="gone"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#7E3535" />
+
+        <ImageView
+            android:id="@+id/favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:padding="10dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/favorite_24"
+            app:layout_constraintEnd_toStartOf="@id/close"
+            app:tint="#7E3535" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="5dp"
+           android:paddingBottom="5dp"
+            android:layout_margin="5dp"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintEnd_toStartOf="@id/favorite"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+            <TextView
+                android:id="@+id/book_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:textColor="@color/white"
+                android:fontFamily="@font/tangerine_regular"
+                android:maxLines="1"
+                android:paddingStart="3dp"
+                android:text="Jenèz"
+                android:textSize="40sp"
+                android:textStyle="bold"
+                android:includeFontPadding="false"
+                app:layout_constraintBottom_toBottomOf="@id/close"
+                app:layout_constraintEnd_toStartOf="@+id/favorite"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/close" />
+
+            <TextView
+                android:id="@+id/chap_"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="3dp"
+                android:textColor="@color/white"
+                android:includeFontPadding="false"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/book_name"
+                android:text="Chapit"/>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="8dp"
-        app:layout_constraintTop_toBottomOf="@id/chap_"
+        app:layout_constraintTop_toBottomOf="@id/header"
         app:layout_constraintBottom_toBottomOf="parent">
-        <TextView
-            android:id="@+id/text"
-            android:layout_marginTop="10dp"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="12dp"
-            android:lineHeight="33dp"
-            android:text="bla bla bla blaLe
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/text"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="12dp"
+                android:lineHeight="33dp"
+                android:text="bla bla bla blaLe
             livre dans
             lequel, tout péché est écrit"
-            app:layout_constraintTop_toBottomOf="@id/chap_"/>
+                app:layout_constraintTop_toBottomOf="@id/chap_"/>
+            <TextView
+                android:id="@+id/page"
+                android:layout_width="match_parent"
+                android:textStyle="bold"
+                android:paddingTop="10dp"
+                android:paddingBottom="200dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:text="Page: 123"/>
+        </LinearLayout>
     </ScrollView>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fab_clos"
+        android:contentDescription="close dialog"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="@color/teal_700"
+        android:backgroundTint="#FFA5A5A5"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

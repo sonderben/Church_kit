@@ -1,5 +1,7 @@
 package com.churchkit.churchkit.adapter.song;
 
+import static com.churchkit.churchkit.Util.formatNumberToString;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.churchkit.churchkit.Model.Song;
+//import com.churchkit.churchkit.Model.Song;
 import com.churchkit.churchkit.R;
+import com.churchkit.churchkit.database.entity.Song;
 import com.churchkit.churchkit.ui.song.SongDialogFragment;
 
 import java.util.List;
@@ -20,8 +23,10 @@ public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.List
 
     List<Song>songList;
     FragmentManager fm;
+    String songBookName;
 
-    public ListSongsAdapter(List<Song>songList, FragmentManager fm){
+    public ListSongsAdapter(List<Song>songList, FragmentManager fm,String songBookName){
+        this.songBookName = songBookName;
         this.songList=songList;
         this.fm = fm;
     }
@@ -36,11 +41,15 @@ public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.List
     @Override
     public void onBindViewHolder(@NonNull ListSongsViewHolder holder, int position) {
 
-        holder.title.setText(songList.get(position).getTitle());
-        holder.number.setText( formatNumberToString( songList.get(position).getNumber() ) );
-        if( !songList.get(position).isBookmark() ){
+        final Song tempSong = songList.get(position);
+        holder.title.setText(tempSong.getTitle());
+        holder.number.setText( formatNumberToString( tempSong.getNum() ) );
             holder.imgBookMark.setVisibility(View.INVISIBLE);
-        }
+
+        holder.itemView.setOnClickListener(view -> {
+            SongDialogFragment listChapter = SongDialogFragment.newInstance(tempSong.getSongID(),formatNumberToString(tempSong.getNum()) +songBookName, tempSong.getTitle());
+            listChapter.show(fm,"kk");
+        } );
     }
 
     @Override
@@ -58,20 +67,8 @@ public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.List
             title = itemView.findViewById(R.id.title);
             imgBookMark = itemView.findViewById(R.id.img_bookmark);
 
-            itemView.setOnClickListener(view -> {
 
-        SongDialogFragment listChapter = SongDialogFragment.newInstance();
-        listChapter.show(fm,"kk");
-            } );
         }
     }
-    private String formatNumberToString(int number){
-        if(number >99)
-            return number+"";
-        if (number>9)
-            return "0"+number;
 
-        return "00"+number;
-
-    }
 }

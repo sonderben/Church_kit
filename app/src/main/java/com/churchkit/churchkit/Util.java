@@ -81,5 +81,13 @@ public class Util {
        }
     }
 
+    public static String formatNumberToString(int number){
+        if(number >99)
+            return number+" ";
+        if (number>9)
+            return "0"+number+" ";
 
+        return "00"+number+" ";
+
+    }
 }

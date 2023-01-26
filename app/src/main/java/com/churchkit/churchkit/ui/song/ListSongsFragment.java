@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.churchkit.churchkit.Model.Song;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.adapter.song.ListSongsAdapter;
+import com.churchkit.churchkit.database.ChurchKitDb;
 import com.churchkit.churchkit.databinding.FragmentListSongsBinding;
 
 import java.util.ArrayList;
@@ -31,13 +33,22 @@ public class ListSongsFragment extends Fragment {
 
         FragmentListSongsBinding listSongsBinding = FragmentListSongsBinding.inflate(getLayoutInflater());
 
+        churchKitDb = ChurchKitDb.getInstance(requireContext());
+
         mRecyclerView = listSongsBinding.recyclerview;
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
-        mRecyclerView.setAdapter(  new ListSongsAdapter( getSongsList(),getChildFragmentManager() ) );
+        //mRecyclerView.setAdapter(  new ListSongsAdapter( getSongsList(),getChildFragmentManager() ) );
 
          /*Here you can get the value by getting the Argument and the value is being printed out in line 40*/
-        int value = getArguments().getInt("ID");
-        System.out.println(value);
+        /*long value = getArguments().getLong("SONGBOOK_ID");
+        System.out.println(value);*/
+
+        churchKitDb.songDao().getAllSongWithVerseById(getArguments().getInt("ID")).observe(requireActivity(), new Observer<List<com.churchkit.churchkit.database.entity.Song>>() {
+            @Override
+            public void onChanged(List<com.churchkit.churchkit.database.entity.Song> songs) {
+                mRecyclerView.setAdapter(new ListSongsAdapter(songs,getChildFragmentManager(),getArguments().getString("songBookName")));
+            }
+        });
         return  listSongsBinding.getRoot();
     }
 
@@ -51,6 +62,7 @@ public class ListSongsFragment extends Fragment {
         return songList;
     }
     RecyclerView mRecyclerView;
+    ChurchKitDb churchKitDb;
 
 
 }

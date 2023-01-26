@@ -63,19 +63,19 @@ public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPa
     public void onBindViewHolder(@NonNull ListPartViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.title.setText(songBooks.get(position).getName());
         holder.tileAcronym.setText(songBooks.get(position).getAbbreviation());
-        holder.number.setText(songBooks.get(position).getNum()+" chants");
+        holder.number.setText(songBooks.get(position).getSongAmount()+" chants");
 
        holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                SongBook songBook = songBooks.get(position);
                 /*passing value by using bundle, so I utilised the navigation and it takes bundle as parameter
                 I used the position as the ID, well you can change to whatever that you want to*/
                 Bundle bundle = new Bundle();
-                bundle.putInt("ID", songBooks.get(position).getSongBookId());
-
+                bundle.putInt("ID", songBook.getSongBookId());
+                bundle.putString("songBookName", songBook.getName());
                 NavController navController = Navigation.findNavController(view);
-                navController.getGraph().findNode(R.id.listSongsFragment).setLabel("Reveillons nous");
+                navController.getGraph().findNode(R.id.listSongsFragment).setLabel(songBook.getName()+" ");
                 navController.navigate(R.id.action_homeFragment_to_listSongsFragment2,bundle);
 
             }

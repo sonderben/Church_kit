@@ -37,10 +37,10 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if(drawerLayout.isOpen())
             drawerLayout.close();
-        else if (isBottomFragment(mNavController)){
+       /* else if (isBottomFragment(mNavController)){
             super.onBackPressed();
             super.onBackPressed();
-        }
+        }*/
         else
             super.onBackPressed();
     }
@@ -59,18 +59,8 @@ public class MainActivity extends AppCompatActivity {
         //1 138 233 344 memoryInfo: 226 492 416
 churchKitDb = ChurchKitDb.getInstance(this);
 
-        churchKitDb.verseDao().getAllVerse().observe(this, new Observer<List<Verse>>() {
-            @Override
-            public void onChanged(List<Verse> verses) {
-                System.out.println("churchKitDb verse: "+verses);
-            }
-        });
-        churchKitDb.songDao().getAllSongWithVerse().observe(this, new Observer<List<SongWithVerse>>() {
-            @Override
-            public void onChanged(List<SongWithVerse> songWithVerses) {
-                System.out.println("churchKitDb verse: "+songWithVerses);
-            }
-        });
+
+
         churchKitDb.songBookDao().getAllSongBook().observe(this, new Observer<List<SongBook>>() {
             @Override
             public void onChanged(List<SongBook> songBook) {
@@ -83,19 +73,11 @@ churchKitDb = ChurchKitDb.getInstance(this);
                         e.printStackTrace();
                     }
                 }
-                System.out.println("churchKitDb verse: "+songBook);
+
             }
         });
 
-        /*try {
-            System.out.println("bawbaw: "+Util.g(this));
-        } catch (IOException e) {
-            System.out.println("bawbaw: error");
-            e.printStackTrace();
-        } catch (JSONException e) {
-            System.out.println("bawbaw: error");
-            e.printStackTrace();
-        }*/
+
 
 
 /*

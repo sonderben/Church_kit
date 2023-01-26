@@ -17,6 +17,9 @@ public interface SongDao {
     @Query("SELECT * FROM song")
     LiveData< List<SongWithVerse> > getAllSongWithVerse();
 
+    @Query("SELECT * FROM song where song_book_id = :songBookId")
+    LiveData< List<Song> > getAllSongWithVerseById(long songBookId);
+
     @Transaction
     @Insert
     long insert(Song song);

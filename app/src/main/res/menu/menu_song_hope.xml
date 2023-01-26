@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/recyclerview_style"
-        android:icon="@drawable/list_24"
+        android:icon="@drawable/list_view_24"
         android:iconTint="@color/white"
         app:showAsAction="ifRoom"
         android:title="Column" />

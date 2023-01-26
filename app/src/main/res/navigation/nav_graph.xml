@@ -61,6 +61,10 @@
         <argument
             android:name="ID"
             app:argType="integer" />
+        <argument
+            android:name="songBookName"
+            app:argType="string"
+            android:defaultValue="unknow" />
     </fragment>
     <fragment
         android:id="@+id/listChapterFragment"

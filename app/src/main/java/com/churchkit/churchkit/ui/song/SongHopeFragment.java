@@ -49,16 +49,15 @@ public class SongHopeFragment extends Fragment {
         autoCompleteTextView = songBinding.search;
         mRecyclerView = songBinding.recyclerview;
         gridLayoutManager = new GridLayoutManager(getContext(),1);
+        mRecyclerView.addItemDecoration(listGridItemDeco);
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
 
         if(sharedPreferences.getInt(LIST_GRID,LIST)==GRID) {
-            mRecyclerView.addItemDecoration(groupItemDeco);
             gridLayoutManager.setSpanCount(GRID);
         }
         else {
             gridLayoutManager.setSpanCount(sharedPreferences.getInt(LIST_GRID,LIST));
-            mRecyclerView.addItemDecoration(listGridItemDeco);
         }
 
         List<String> strings = new ArrayList<>();
@@ -138,8 +137,8 @@ public class SongHopeFragment extends Fragment {
 
     private void setIconListOrGrid(MenuItem menuItem){
 
-        if (sharedPreferences.getInt(LIST_GRID,LIST) == 1) menuItem.setIcon(R.drawable.column_24);
-        else menuItem.setIcon(R.drawable.list_24);
+        if (sharedPreferences.getInt(LIST_GRID,LIST) == 1) menuItem.setIcon(R.drawable.grid_view_24);
+        else menuItem.setIcon(R.drawable.list_view_24);
     }
     private static class SearchSongAutoCompleteAdapter extends ArrayAdapter<String > {
         public SearchSongAutoCompleteAdapter(@NonNull Context context,  @NonNull List<String> objects) {
@@ -178,10 +177,10 @@ public class SongHopeFragment extends Fragment {
     RecyclerView mRecyclerView;
     SongHopeAdapter homeAdapter;
     SharedPreferences sharedPreferences;
-    GridSpacingIDeco groupItemDeco = new GridSpacingIDeco(154);
     GridLayoutManager gridLayoutManager;
 
     GridSpacingItemDecoration listGridItemDeco = new GridSpacingItemDecoration(2,32,false);
+
 
 
 
