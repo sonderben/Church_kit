@@ -68,6 +68,22 @@
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <TextView
+        android:id="@+id/chorus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:background="@drawable/bg_edittext"
+        android:padding="5dp"
+        android:layout_marginRight="3dp"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:translationZ="23dp"
+        android:layout_marginBottom="40dp"
+        app:layout_constraintBottom_toTopOf="@id/fab_clos"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="scroll to chorus"/>
+
     <ImageView
         android:id="@+id/favorite_anim"
         android:layout_width="wrap_content"
@@ -80,6 +96,7 @@
         app:tint="#7E3535"
         android:src="@drawable/favorite_24"/>
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="8dp"

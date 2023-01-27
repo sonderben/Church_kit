@@ -1,34 +1,28 @@
 package com.churchkit.churchkit.ui.song;
 
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Layout;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.view.ViewTreeObserver;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.customview.widget.ViewDragHelper;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 
-import com.churchkit.churchkit.Model.Song;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.database.ChurchKitDb;
 import com.churchkit.churchkit.database.entity.Verse;
 import com.churchkit.churchkit.ui.util.Util;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -47,6 +41,15 @@ public class SongDialogFragment extends DialogFragment {
 
 
          churchKitDd = ChurchKitDb.getInstance(requireContext());
+        chorus = root.findViewById(R.id.chorus);
+        scrollView = root.findViewById(R.id.scrollView);
+
+        chorus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scrollToChorus();
+            }
+        });
 
 
          tv  = root.findViewById(R.id.text);
@@ -64,18 +67,36 @@ public class SongDialogFragment extends DialogFragment {
         churchKitDd.verseDao().getAllVerseByIdSong(mSongId).observe(requireActivity(), new Observer<List<Verse>>() {
             @Override
             public void onChanged(List<Verse> verses) {
-                tv.setText(listVerseToString(verses));
+                tv.setText( listVerseToString(verses) );
+
+            }
+        });
+
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                setChorusButtonVisibility();
             }
         });
 
 
 
 
+
         return root;
     }
+
+    private  void setChorusButtonVisibility(){
+        if (isPhraseVisible("-Chorus-")){
+            chorus.setVisibility(View.GONE);
+        }
+        else
+            chorus.setVisibility(View.VISIBLE);
+    }
+
    // ImageView close;
     ViewGroup root;
-    TextView tv,bookTitle,songTitle;
+    TextView tv,bookTitle,songTitle,chorus;
     static long mSongId;
     static String mSongTitle;
     static String mReference;
@@ -125,20 +146,79 @@ public class SongDialogFragment extends DialogFragment {
                 "Tu fais de Lui ton Roi, a l'instant.\n".trim().toUpperCase();
     }
     ChurchKitDb churchKitDd;
+    ScrollView scrollView;
+
 
     private String listVerseToString(List<Verse> verses){
         StringBuilder verseString = new StringBuilder();
+        Verse verse=null;
+
         if (verses != null){
+
+            if (verses.size()!=0 && verses.get(0).getNum()<0)
+                Collections.swap(verses,0,1);
+
             for (int i=0;i< verses.size();i++){
-                verseString.append(verses.get(i).getNum());
+
+                verse = verses.get(i);
+                verseString.append( verse.getNum()<0?"-Chorus-":verse.getNum() );
                 verseString.append("\n");
-                verseString.append(verses.get(i).getVerse());
+                verseString.append(verse.getVerse());
                 verseString.append("\n");
             }
+
+
         }else {
             verseString.append("Error");
         }
+
         return verseString.toString();
+    }
+
+    private void scrollToChorus(){
+        int index = tv.getText().toString().indexOf("-Chorus-");
+        Layout layout = tv.getLayout();
+        int line = layout.getLineForOffset(index);
+        int y = layout.getLineTop(line);
+        scrollView.smoothScrollTo(0,y);
+
+    }
+    public void scrollToSpecificPhrase(final ScrollView scrollView, final TextView textView, final String phrase) {
+        textView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int index = textView.getText().toString().indexOf(phrase);
+                if (index != -1) {
+                    Layout layout = textView.getLayout();
+                    int line = layout.getLineForOffset(index);
+                    int y = layout.getLineTop(line);
+                    int y2 = layout.getLineBottom(line);
+                    Rect rect = new Rect(0, y, textView.getWidth(), y2);
+                    Rect visibleRect = new Rect();
+                    textView.getLocalVisibleRect(visibleRect);
+                    if (!Rect.intersects(rect, visibleRect)) {
+                        scrollView.scrollTo(0, y);
+                    }
+                    textView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            }
+        });
+    }
+
+
+    public boolean isPhraseVisible(@NonNull final String phrase) {
+        int index = tv.getText().toString().indexOf(phrase);
+        if (index == -1) {
+            return false;
+        }
+        Layout layout = tv.getLayout();
+        int line = layout.getLineForOffset(index);
+        int y = layout.getLineTop(line);
+        int y2 = layout.getLineBottom(line);
+        Rect rect = new Rect(0, y, tv.getWidth(), y2);
+        Rect visibleRect = new Rect();
+        tv.getLocalVisibleRect(visibleRect);
+        return Rect.intersects(rect, visibleRect);
     }
 
 
@@ -146,6 +226,7 @@ public class SongDialogFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
+        setChorusButtonVisibility();
         ////set width and height of ListPartDialogFragment to 100 % to the width of screen
         ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
         params.width =(int) (Util.getScreenDisplayMetrics(getContext()).widthPixels * 1f);

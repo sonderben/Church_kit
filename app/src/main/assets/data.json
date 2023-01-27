@@ -5,7 +5,7 @@
       "name": "Chant d'espérance",
       "abbreviation": "CE",
       "color": 1,
-      "songAmount": 4,
+      "songAmount": 5,
       "image": 1,
       "num": 21,
       "songs": [
@@ -98,6 +98,39 @@
               "verseId": 1,
               "verse": "Divin Maître, – Fais-nous être\nUn peuple d’adorateurs!\nTa louange, – Chère à l’ange,\nEst la gloire des pécheurs.\nQuand des larmes – Sont nos armes,\nTon amour nous rend vainqueurs.",
               "num": 3
+            }
+          ]
+        },
+        {
+          "songId": 8,
+          "title": "Dans les Cieux et sur la terre.",
+          "num": 8,
+          "page": 13,
+          "verses": [
+            {
+              "verseId": 1,
+              "verse": "Dans les cieux et sur la terre,\nIl n’est aucun nom plus doux,\nAucun que mon cœur préfère\nAu nom de Christ mort pour nous.",
+              "num": 1
+            },
+            {
+              "verseId": 1,
+              "verse": "Quel beau nom (bis)\nPorte l’Oint de l’Eternel!\nQuel beau nom (bis)\nQue celui d’Emmanuel!",
+              "num": -2
+            },
+            {
+              "verseId": 1,
+              "verse": "Quelque grand que soit un homme,\nQu’il soit prince ou qu’il soit roi,\nDe quelque nom qu’on le nomme,\nJésus est plus grand pour moi",
+              "num": 2
+            },
+            {
+              "verseId": 1,
+              "verse": "Les seraphins, les archanges\nPortent des noms glorieux;\nMais le plus beau nom des anges,\nPourrait-il me rendre heureux?",
+              "num": 3
+            },
+            {
+              "verseId": 1,
+              "verse": "Dans les maux, Jésus soulage,\nIl guérit l'esprit froissé\nIl ranime le courage\nDu coeur le plus opressé.",
+              "num": 4
             }
           ]
         }
