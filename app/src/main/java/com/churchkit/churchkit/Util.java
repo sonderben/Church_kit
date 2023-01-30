@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.AssetManager;
 
 import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.entity.bible.BibleBook;
+import com.churchkit.churchkit.database.entity.bible.BibleChapter;
 import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.database.entity.song.SongBook;
 import com.churchkit.churchkit.database.entity.song.Verse;
@@ -38,6 +40,7 @@ public class Util {
     public static void prepopulateDatabaseFromJsonFile (Context context) throws JSONException, IOException {
         ChurchKitDb database = ChurchKitDb.getInstance(context);
         JSONObject jsonObject = getJsonObjectFromAsset(context);
+        addStuff(context);
 
        JSONArray book_songArray= jsonObject.getJSONArray("book_song");
         SongBook songBook;
@@ -79,6 +82,15 @@ public class Util {
                }
            }
        }
+    }
+
+    public static void addStuff(Context context){
+        ChurchKitDb db= ChurchKitDb.getInstance(context);
+        long bibleBookId=db.bibleBookDao().insertBibleBook(new BibleBook("EX","EXOD", (short) 1,(short)2));
+        System.out.println("Phanor vole: "+bibleBookId);
+        db.bibleChapterDao().insertChapter(new BibleChapter("Notre pere", (short) 1,"fr",bibleBookId));
+        db.bibleChapterDao().insertChapter(new BibleChapter("gbhhhjrhrhrhhb", (short) 2,"fr",bibleBookId));
+        db.bibleChapterDao().insertChapter(new BibleChapter("grgjjhfghjfjfghjnf", (short) 3,"fr",bibleBookId));
     }
 
     public static String formatNumberToString(int number){

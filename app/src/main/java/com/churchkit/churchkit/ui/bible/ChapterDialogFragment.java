@@ -19,10 +19,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.Observer;
 
 import com.churchkit.churchkit.R;
+import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.entity.bible.BibleChapter;
+import com.churchkit.churchkit.database.entity.song.Verse;
 import com.churchkit.churchkit.ui.util.Util;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.Collections;
+import java.util.List;
 
 public class ChapterDialogFragment extends DialogFragment {
     public ChapterDialogFragment(){
@@ -54,7 +61,13 @@ public class ChapterDialogFragment extends DialogFragment {
         fab.setOnClickListener(x->this.dismiss());
         endingFavoriteImageView = root.findViewById(R.id.favorite);//favorite_anim
         startingImageView = root.findViewById(R.id.favorite_anim);//favorite_anim
-
+        db.bibleChapterDao().getAllChapterByBookId(mId).observe(requireActivity(), new Observer<List<BibleChapter>>() {
+            @Override
+            public void onChanged(List<BibleChapter> bibleChapters) {
+                //versets.setText(listVerseToString(bibleChapters));
+                versets.setText(getSomeString());
+            }
+        });
         /*float endX = favorite.getX();
         float endY = favorite.getY();*/
 
@@ -155,6 +168,23 @@ public class ChapterDialogFragment extends DialogFragment {
         getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
     }
 
+    private String listVerseToString(List<BibleChapter> bibleChapters){
+        StringBuilder verseString = new StringBuilder();
+        BibleChapter bibleChap=null;
+
+        if (bibleChapters != null){
+            for (int i=0;i< bibleChapters.size();i++){
+
+                verseString.append(bibleChapters.get(i).getChapter());
+                verseString.append("\n");
+
+            }
+        }else {
+            verseString.append("Error");
+        }
+        return verseString.toString();
+    }
+
     private Spanned getSomeString(){
 
         String a = "<sup> <b>1</b> </sup>En el principio creó Dios los cielos y la tierra. <sup> <b>2</b> </sup>Y la tierra estaba desordenada y vacía, y las tinieblas estaban sobre la faz del abismo, y el Espíritu de Dios se movía sobre la faz de las aguas.\n" +
@@ -181,5 +211,7 @@ public class ChapterDialogFragment extends DialogFragment {
         Toast.makeText(getContext(),"endingFavoriteImageView=> x: "+location[0]+" y: "+location[1],Toast.LENGTH_LONG).show();
         return new Point(location[0], location[1]);
     }
+
+    ChurchKitDb db= ChurchKitDb.getInstance(getContext());
 
 }

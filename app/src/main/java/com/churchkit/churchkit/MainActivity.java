@@ -16,6 +16,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.entity.bible.BibleBook;
 import com.churchkit.churchkit.database.entity.song.SongBook;
 import com.churchkit.churchkit.databinding.ActivityMainBinding;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -74,7 +75,12 @@ churchKitDb = ChurchKitDb.getInstance(this);
             }
         });
 
-
+churchKitDb.bibleBookDao().getAllBibleBook().observe(this, new Observer<List<BibleBook>>() {
+    @Override
+    public void onChanged(List<BibleBook> bibleBooks) {
+        System.out.println("Boom 2"+ bibleBooks);
+    }
+});
 
 
 /*

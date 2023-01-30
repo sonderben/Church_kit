@@ -6,12 +6,13 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.churchkit.churchkit.database.dao.SongBookDao;
-import com.churchkit.churchkit.database.dao.SongDao;
-import com.churchkit.churchkit.database.dao.VerseDao;
+import com.churchkit.churchkit.database.dao.bible.BibleBookDao;
+import com.churchkit.churchkit.database.dao.bible.BibleChapterDao;
+import com.churchkit.churchkit.database.dao.song.SongBookDao;
+import com.churchkit.churchkit.database.dao.song.SongDao;
+import com.churchkit.churchkit.database.dao.song.VerseDao;
 import com.churchkit.churchkit.database.entity.bible.BibleBook;
 import com.churchkit.churchkit.database.entity.bible.BibleChapter;
 import com.churchkit.churchkit.database.entity.song.Song;
@@ -24,6 +25,9 @@ public abstract class ChurchKitDb extends RoomDatabase {
     public abstract SongBookDao songBookDao();
     public abstract SongDao songDao();
     public abstract VerseDao verseDao();
+    public abstract BibleBookDao bibleBookDao();
+    public abstract BibleChapterDao bibleChapterDao();
+
 
     public static volatile ChurchKitDb instance;
     private static Context mContext;

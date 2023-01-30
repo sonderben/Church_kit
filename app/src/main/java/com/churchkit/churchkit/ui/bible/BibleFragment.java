@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,8 +23,12 @@ import android.widget.Switch;
 
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.adapter.bible.BibleAdapter;
+import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.entity.bible.BibleBook;
 import com.churchkit.churchkit.databinding.FragmentBibleBinding;
 import com.churchkit.churchkit.ui.util.GridSpacingIDeco;
+
+import java.util.List;
 
 public class BibleFragment extends Fragment {
 
@@ -35,11 +40,22 @@ public class BibleFragment extends Fragment {
         mRecyclerView = bookmarkBinding.recyclerview;
 
         sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-        mAdapter = new BibleAdapter(sharedPreferences.getBoolean(IS_GROUP_BY_TESTAMENT,true)? 0:1,getActivity().getSupportFragmentManager());
+        db=ChurchKitDb.getInstance(getContext());
+
+        db.bibleBookDao().getAllBibleBook().observe(requireActivity(), new Observer<List<BibleBook>>() {
+            @Override
+            public void onChanged(List<BibleBook> bibleBooks) {
+                mAdapter = new BibleAdapter(sharedPreferences.getBoolean(IS_GROUP_BY_TESTAMENT,true)? 0:1,getActivity().getSupportFragmentManager(),bibleBooks);
+                mRecyclerView.setAdapter(mAdapter);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+
+
 
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),1));
         mRecyclerView.addItemDecoration(new GridSpacingIDeco(32));
-        mRecyclerView.setAdapter(mAdapter);
+
 
 
 
@@ -94,4 +110,5 @@ public class BibleFragment extends Fragment {
     BibleAdapter mAdapter;
     private final String IS_GROUP_BY_TESTAMENT="IS_GROUP_BY_TESTAMENT";
     SharedPreferences sharedPreferences;
+    ChurchKitDb db;
 }

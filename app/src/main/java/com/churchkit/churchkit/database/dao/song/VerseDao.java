@@ -1,4 +1,4 @@
-package com.churchkit.churchkit.database.dao;
+package com.churchkit.churchkit.database.dao.song;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
