@@ -1,13 +1,13 @@
 package com.churchkit.churchkit;
 
 import android.app.ActivityManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
@@ -15,11 +15,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.churchkit.churchkit.Model.song.SongWithVerse;
 import com.churchkit.churchkit.database.ChurchKitDb;
-import com.churchkit.churchkit.database.entity.Song;
-import com.churchkit.churchkit.database.entity.SongBook;
-import com.churchkit.churchkit.database.entity.Verse;
+import com.churchkit.churchkit.database.entity.song.SongBook;
 import com.churchkit.churchkit.databinding.ActivityMainBinding;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -124,7 +121,6 @@ churchKitDb = ChurchKitDb.getInstance(this);
                 toolbar.setNavigationIcon(R.drawable.arrow_back_24);
         });
 
-
         setSupportActionBar(toolbar);
 
 
@@ -157,38 +153,14 @@ churchKitDb = ChurchKitDb.getInstance(this);
     NavController mNavController;
     ChurchKitDb churchKitDb;
 
+
+
     private ActivityManager.MemoryInfo getAvailableMemory() {
         ActivityManager activityManager = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
         ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
         activityManager.getMemoryInfo(memoryInfo);
         return memoryInfo;
     }
-    public  void insertData(){
-       /* SongBook songBook = new SongBook();
-        Song song = new Song();
-        Verse verse = new Verse();
-        for (int a =0; a<2;a++){
-            songBook.setColor((short) 1);
-            songBook.setName("name: "+a);
-            songBook.setImage((short) a);
-            songBook.setNum((short) a);
-            songBook.setSongAmount(1);
-            long songBookId = churchKitDb.songBookDao().insert(songBook);
 
-            for (int i=0;i<2;i++){
-                song.setSongID(songBookId);
-                song.setTitle("title: "+a);
-                song.setNum(a);
-                song.setPage(a);
-                long songId = churchKitDb.songDao().insert(song);
-                for (int j=0;j<2;j++){
-                    verse.setSongId(songId);
-                    verse.setVerse("verse: "+j);
-                    verse.setNum((short) j);
-                    churchKitDb.verseDao().insert(verse);
-                }
-            }
-        }*/
-    }
 
 }

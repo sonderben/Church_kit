@@ -1,4 +1,4 @@
-package com.churchkit.churchkit.database.entity;
+package com.churchkit.churchkit.database.entity.song;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
@@ -7,7 +7,7 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "song",indices = {@Index(value = {"title","num"},unique = true)},
+@Entity(tableName = "song",indices = {@Index(value = {"title"},unique = true)},
         foreignKeys = @ForeignKey(entity = SongBook.class,
                 parentColumns = "song_book_id",
                 childColumns = "song_book_id"))
@@ -17,15 +17,15 @@ public class Song {
     private long songID;
     @NonNull
     private String title;
-    private int num;
+    private int position;
     private int page;
     @ColumnInfo(name = "song_book_id")
     private Long songBookId;
 
-    public Song(/*long songID,*/ @NonNull String title, int num, int page, Long songBookId) {
+    public Song(/*long songID,*/ @NonNull String title, int position, int page, Long songBookId) {
         //this.songID = songID;
         this.title = title;
-        this.num = num;
+        this.position = position;
         this.page = page;
         this.songBookId = songBookId;
     }
@@ -35,7 +35,7 @@ public class Song {
         return "Song{" +
                 "songID=" + songID +
                 ", title='" + title + '\'' +
-                ", num=" + num +
+                ", num=" + position +
                 ", page=" + page +
                 ", songBookId=" + songBookId +
                 '}';
@@ -57,12 +57,12 @@ public class Song {
         this.title = title;
     }
 
-    public int getNum() {
-        return num;
+    public int getPosition() {
+        return position;
     }
 
-    public void setNum(int num) {
-        this.num = num;
+    public void setPosition(int num) {
+        this.position = num;
     }
 
     public int getPage() {

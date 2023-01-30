@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.res.AssetManager;
 
 import com.churchkit.churchkit.database.ChurchKitDb;
-import com.churchkit.churchkit.database.entity.Song;
-import com.churchkit.churchkit.database.entity.SongBook;
-import com.churchkit.churchkit.database.entity.Verse;
+import com.churchkit.churchkit.database.entity.song.Song;
+import com.churchkit.churchkit.database.entity.song.SongBook;
+import com.churchkit.churchkit.database.entity.song.Verse;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,7 +51,7 @@ public class Util {
           int color = bookSong.getInt("color");
           int songAmount = bookSong.getInt("songAmount");
           int image = bookSong.getInt("image");
-          int num = bookSong.getInt("num");
+          int num = bookSong.getInt("position");
            JSONArray songsArray = bookSong.getJSONArray("songs");
 
            songBook = new SongBook(name,abbreviation, (short) color,songAmount, (short) image, (short) num);
@@ -61,7 +61,7 @@ public class Util {
                JSONObject songObj = songsArray.getJSONObject(j);
               //int songId = songObj.getInt("songId");
                String title = songObj.getString("title");
-               int numSong = songObj.getInt("num");
+               int numSong = songObj.getInt("position");
                int page = songObj.getInt("page");
 
                song = new Song(title,numSong,page,songBookId);
@@ -72,7 +72,7 @@ public class Util {
                    JSONObject verseObj = versesArray.getJSONObject(k);
                    long verseId = verseObj.getLong("verseId");
                    String verse = verseObj.getString("verse");
-                   int numVerse = verseObj.getInt("num");
+                   int numVerse = verseObj.getInt("position");
 
                    verseEntity = new Verse(/* verseId,*/verse, (short) numVerse,songId);
                    database.verseDao().insert(verseEntity);

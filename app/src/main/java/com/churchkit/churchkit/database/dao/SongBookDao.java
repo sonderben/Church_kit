@@ -6,7 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
-import com.churchkit.churchkit.database.entity.SongBook;
+import com.churchkit.churchkit.database.entity.song.SongBook;
 
 import java.util.List;
 

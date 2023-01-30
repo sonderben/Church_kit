@@ -3,8 +3,8 @@ package com.churchkit.churchkit.Model.song;
 import androidx.room.Embedded;
 import androidx.room.Relation;
 
-import com.churchkit.churchkit.database.entity.Song;
-import com.churchkit.churchkit.database.entity.Verse;
+import com.churchkit.churchkit.database.entity.song.Song;
+import com.churchkit.churchkit.database.entity.song.Verse;
 
 import java.util.List;
 

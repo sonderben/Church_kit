@@ -3,10 +3,10 @@ package com.churchkit.churchkit.database;
 import android.content.Context;
 import android.os.Build;
 
+import androidx.room.ProvidedTypeConverter;
 import androidx.room.TypeConverter;
 
 import com.churchkit.churchkit.R;
-
 public class ChurchKitConverter {
 
     Context context;

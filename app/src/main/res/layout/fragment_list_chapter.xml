@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/main_bg"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.bible.ListChapterFragment"
+    tools:context=".ui.bible.ChapterDialogFragment"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
@@ -133,12 +133,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/fab_clos"
+        app:fabSize="auto"
+
         android:contentDescription="close dialog"
         app:layout_constraintLeft_toLeftOf="parent"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
         app:layout_constraintRight_toRightOf="parent"
         android:background="@color/teal_700"
         android:backgroundTint="#FFA5A5A5"
+        app:backgroundTint="@android:color/transparent"
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

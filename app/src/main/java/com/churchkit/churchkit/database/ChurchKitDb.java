@@ -1,26 +1,25 @@
 package com.churchkit.churchkit.database;
 
-import android.content.ContentValues;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
-import androidx.room.OnConflictStrategy;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.churchkit.churchkit.database.dao.SongBookDao;
 import com.churchkit.churchkit.database.dao.SongDao;
 import com.churchkit.churchkit.database.dao.VerseDao;
-import com.churchkit.churchkit.database.entity.Song;
-import com.churchkit.churchkit.database.entity.SongBook;
-import com.churchkit.churchkit.database.entity.Verse;
+import com.churchkit.churchkit.database.entity.bible.BibleBook;
+import com.churchkit.churchkit.database.entity.bible.BibleChapter;
+import com.churchkit.churchkit.database.entity.song.Song;
+import com.churchkit.churchkit.database.entity.song.SongBook;
+import com.churchkit.churchkit.database.entity.song.Verse;
 
 //@TypeConverters({ChurchKitConverter.class})
-@Database(entities = {SongBook.class, Song.class, Verse.class},version = 1,exportSchema = false)
+@Database(entities = {SongBook.class, Song.class, Verse.class, BibleBook.class, BibleChapter.class},version = 1,exportSchema = false)
 public abstract class ChurchKitDb extends RoomDatabase {
     public abstract SongBookDao songBookDao();
     public abstract SongDao songDao();

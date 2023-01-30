@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 //import com.churchkit.churchkit.Model.Song;
 import com.churchkit.churchkit.R;
-import com.churchkit.churchkit.database.entity.Song;
+import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.ui.song.SongDialogFragment;
 
 import java.util.List;
@@ -43,11 +43,11 @@ public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.List
 
         final Song tempSong = songList.get(position);
         holder.title.setText(tempSong.getTitle());
-        holder.number.setText( formatNumberToString( tempSong.getNum() ) );
+        holder.number.setText( formatNumberToString( tempSong.getPosition() ) );
             holder.imgBookMark.setVisibility(View.INVISIBLE);
 
         holder.itemView.setOnClickListener(view -> {
-            SongDialogFragment listChapter = SongDialogFragment.newInstance(tempSong.getSongID(),formatNumberToString(tempSong.getNum()) +songBookName, tempSong.getTitle());
+            SongDialogFragment listChapter = SongDialogFragment.newInstance(tempSong.getSongID(),formatNumberToString(tempSong.getPosition()) +songBookName, tempSong.getTitle());
             listChapter.show(fm,"kk");
         } );
     }

@@ -6,8 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
-import com.churchkit.churchkit.Model.song.SongWithVerse;
-import com.churchkit.churchkit.database.entity.Song;
+import com.churchkit.churchkit.database.entity.song.Song;
 
 
 import java.util.List;
@@ -17,7 +16,7 @@ public interface SongDao {
     @Query("SELECT * FROM song")
     LiveData< List<SongWithVerse> > getAllSongWithVerse();*/
 
-    @Query("SELECT * FROM song where song_book_id = :songBookId ORDER BY num")
+    @Query("SELECT * FROM song where song_book_id = :songBookId ORDER BY position")
     LiveData< List<Song> > getAllSongWithVerseById(long songBookId);
 
     @Transaction

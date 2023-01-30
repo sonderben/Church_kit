@@ -19,7 +19,7 @@ import androidx.lifecycle.Observer;
 
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.database.ChurchKitDb;
-import com.churchkit.churchkit.database.entity.Verse;
+import com.churchkit.churchkit.database.entity.song.Verse;
 import com.churchkit.churchkit.ui.util.Util;
 
 import java.util.Collections;
@@ -155,13 +155,13 @@ public class SongDialogFragment extends DialogFragment {
 
         if (verses != null){
 
-            if (verses.size()!=0 && verses.get(0).getNum()<0)
+            if (verses.size()!=0 && verses.get(0).getPosition()<0)
                 Collections.swap(verses,0,1);
 
             for (int i=0;i< verses.size();i++){
 
                 verse = verses.get(i);
-                verseString.append( verse.getNum()<0?"-Chorus-":verse.getNum() );
+                verseString.append( verse.getPosition()<0?"-Chorus-":verse.getPosition() );
                 verseString.append("\n");
                 verseString.append(verse.getVerse());
                 verseString.append("\n");

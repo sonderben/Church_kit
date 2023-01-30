@@ -7,12 +7,10 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.Model.Song;
-import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.adapter.song.ListSongsAdapter;
 import com.churchkit.churchkit.database.ChurchKitDb;
 import com.churchkit.churchkit.databinding.FragmentListSongsBinding;
@@ -43,9 +41,9 @@ public class ListSongsFragment extends Fragment {
         /*long value = getArguments().getLong("SONGBOOK_ID");
         System.out.println(value);*/
 
-        churchKitDb.songDao().getAllSongWithVerseById(getArguments().getInt("ID")).observe(requireActivity(), new Observer<List<com.churchkit.churchkit.database.entity.Song>>() {
+        churchKitDb.songDao().getAllSongWithVerseById(getArguments().getInt("ID")).observe(requireActivity(), new Observer<List<com.churchkit.churchkit.database.entity.song.Song>>() {
             @Override
-            public void onChanged(List<com.churchkit.churchkit.database.entity.Song> songs) {
+            public void onChanged(List<com.churchkit.churchkit.database.entity.song.Song> songs) {
                 mRecyclerView.setAdapter(new ListSongsAdapter(songs,getChildFragmentManager(),getArguments().getString("songBookName")));
             }
         });

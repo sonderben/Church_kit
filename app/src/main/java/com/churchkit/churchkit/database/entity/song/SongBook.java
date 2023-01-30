@@ -1,4 +1,4 @@
-package com.churchkit.churchkit.database.entity;
+package com.churchkit.churchkit.database.entity.song;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;

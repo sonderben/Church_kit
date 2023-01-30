@@ -1,4 +1,4 @@
-package com.churchkit.churchkit.database.entity;
+package com.churchkit.churchkit.database.entity.song;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -16,15 +16,15 @@ public class Verse {
     @ColumnInfo(name = "verse_id")
     private long verseId;
     private String verse;
-    private short num;
+    private short position;
     @ColumnInfo(name = "song_id")
     private long SongId;
 
     public Verse(){}
-    public Verse(/*long verseId,*/ String verse, short num, long songId) {
+    public Verse(/*long verseId,*/ String verse, short position, long songId) {
         //this.verseId = verseId;
         this.verse = verse;
-        this.num = num;
+        this.position = position;
         SongId = songId;
     }
 
@@ -33,7 +33,7 @@ public class Verse {
         return "Verse{" +
                 "verseId=" + verseId +
                 ", verse='" + verse + '\'' +
-                ", num=" + num +
+                ", num=" + position +
                 ", SongId=" + SongId +
                 '}';
     }
@@ -54,12 +54,12 @@ public class Verse {
         this.verse = verse;
     }
 
-    public short getNum() {
-        return num;
+    public short getPosition() {
+        return position;
     }
 
-    public void setNum(short num) {
-        this.num = num;
+    public void setPosition(short num) {
+        this.position = num;
     }
 
     public long getSongId() {

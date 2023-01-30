@@ -1,5 +1,6 @@
 package com.churchkit.churchkit.ui.bible;
 
+import android.graphics.Point;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
@@ -12,6 +13,7 @@ import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,8 +45,10 @@ public class ChapterDialogFragment extends DialogFragment {
         versets = root.findViewById(R.id.text);
         bookReference = root.findViewById(R.id.book_name);
         chapTitle = root.findViewById(R.id.chap_);
+        root.findViewById(R.id.chorus).setVisibility(View.GONE);
         versets.setText(getSomeString());
         bookReference.setText(mReference);
+        headerLayout = root.findViewById(R.id.header);
         chapTitle.setText(mChapterhapter);
         fab = root.findViewById(R.id.fab_clos);
         fab.setOnClickListener(x->this.dismiss());
@@ -169,5 +173,13 @@ public class ChapterDialogFragment extends DialogFragment {
     static long mId;
     static String mReference, mChapterhapter;
     FloatingActionButton fab;
+    ConstraintLayout headerLayout;
+
+    public  Point getLocationOnScreen(View view) {
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        Toast.makeText(getContext(),"endingFavoriteImageView=> x: "+location[0]+" y: "+location[1],Toast.LENGTH_LONG).show();
+        return new Point(location[0], location[1]);
+    }
 
 }

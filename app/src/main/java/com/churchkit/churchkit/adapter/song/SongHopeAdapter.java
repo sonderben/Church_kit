@@ -9,15 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.R;
-import com.churchkit.churchkit.database.entity.SongBook;
+import com.churchkit.churchkit.database.entity.song.SongBook;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
