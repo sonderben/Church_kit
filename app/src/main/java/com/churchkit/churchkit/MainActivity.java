@@ -19,14 +19,18 @@ import com.churchkit.churchkit.database.ChurchKitDb;
 import com.churchkit.churchkit.database.entity.bible.BibleBook;
 import com.churchkit.churchkit.database.entity.song.SongBook;
 import com.churchkit.churchkit.databinding.ActivityMainBinding;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -56,7 +60,19 @@ public class MainActivity extends AppCompatActivity {
 
         //1 138 233 344 memoryInfo: 226 492 416
 churchKitDb = ChurchKitDb.getInstance(this);
-
+        Map<String, Object> city = new HashMap<>();
+        city.put("name", "Los Angeles");
+        city.put("state", "CA");
+        city.put("country", "USA");
+        city.put("country", "John");
+db= FirebaseFirestore.getInstance();
+db.collection("songAndBible").document("chant")
+                .set(city).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                System.out.println("yayyy");
+            }
+        });
 
 
         churchKitDb.songBookDao().getAllSongBook().observe(this, new Observer<List<SongBook>>() {
@@ -158,6 +174,7 @@ churchKitDb.bibleBookDao().getAllBibleBook().observe(this, new Observer<List<Bib
     DrawerLayout drawerLayout;
     NavController mNavController;
     ChurchKitDb churchKitDb;
+    private FirebaseFirestore db;
 
 
 
