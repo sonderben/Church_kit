@@ -5,17 +5,20 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.churchkit.churchkit.R;
+import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.entity.bible.BibleChapter;
+
+import java.util.List;
 
 
 public class ListChapterFragment extends Fragment {
@@ -36,19 +39,42 @@ public class ListChapterFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_list_chapter2, container, false);
         mRecyclerView = root.findViewById(R.id.recyclerview);
-        adapter = new Adapter(getChildFragmentManager());
+        adapter = new Adapter(getChildFragmentManager(), getArguments().getString("BOOK_NAME_ABBREVIATION"));
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
-        mRecyclerView.setAdapter( adapter );
+
+
+        bibleBookId = getArguments().getString("ID");
+       // String bookNameAbbreviation = getArguments().getString("BOOK_NAME_ABBREVIATION");
+
+        db.bibleChapterDao().getAllChapterByBookId(bibleBookId).observe(requireActivity(), new Observer<List<BibleChapter>>() {
+            @Override
+            public void onChanged(List<BibleChapter> bibleChapters) {
+
+                adapter.setBibleChapters(bibleChapters);
+                mRecyclerView.setAdapter( adapter );
+
+            }
+        });
 
         return root;
     }
 
     RecyclerView mRecyclerView;
     Adapter adapter;
+    ChurchKitDb db= ChurchKitDb.getInstance(getContext());
+    static String bibleBookId;
 
     static class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder>{
-FragmentManager fm;
-        public Adapter(FragmentManager fm){
+        FragmentManager fm;
+        List<BibleChapter> bibleChapters;
+        String bookNameAbbreviation;
+
+        public void setBibleChapters(List<BibleChapter> bibleChapters) {
+            this.bibleChapters = bibleChapters;
+        }
+
+        public Adapter(FragmentManager fm,String bookNameAbbreviation){
+            this.bookNameAbbreviation = bookNameAbbreviation;
             this.fm = fm;
         }
 
@@ -62,7 +88,17 @@ FragmentManager fm;
 
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-            holder.chapter.setText(position+1+"");
+            holder.chapter.setText(bibleChapters.get(position).getPosition()+"");
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String reference = bookNameAbbreviation+" chapter "+bibleChapters.get(holder.getAdapterPosition()).getPosition();
+                    ChapterDialogFragment dialogFragment = ChapterDialogFragment.newInstance(
+                            bibleChapters.get(holder.getAdapterPosition()).getBibleChapterId(),
+                            reference);
+                    dialogFragment.show(fm, "ChapterDialogFragment");
+                }
+            });
         }
 
 
@@ -70,7 +106,7 @@ FragmentManager fm;
 
         @Override
         public int getItemCount() {
-            return 50;
+            return bibleChapters.size();
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder{
@@ -79,13 +115,7 @@ FragmentManager fm;
             public MyViewHolder(@NonNull View itemView) {
                 super(itemView);
                 chapter = itemView.findViewById(R.id.chapter);
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ChapterDialogFragment dialogFragment = ChapterDialogFragment.newInstance(1,"Jan 2","Chapter 3 to 8");
-                        dialogFragment.show(fm, "ChapterDialogFragment");
-                    }
-                });
+
             }
         }
     }

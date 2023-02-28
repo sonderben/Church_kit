@@ -1,7 +1,6 @@
 package com.churchkit.churchkit;
 
 import android.app.ActivityManager;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.TextView;
@@ -17,20 +16,30 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.churchkit.churchkit.database.ChurchKitDb;
 import com.churchkit.churchkit.database.entity.bible.BibleBook;
+import com.churchkit.churchkit.database.entity.bible.BibleChapter;
+import com.churchkit.churchkit.database.entity.bible.BibleVerse;
+import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.database.entity.song.SongBook;
+import com.churchkit.churchkit.database.entity.song.Verse;
 import com.churchkit.churchkit.databinding.ActivityMainBinding;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.io.IOException;
-import java.util.HashMap;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,10 +48,6 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if(drawerLayout.isOpen())
             drawerLayout.close();
-       /* else if (isBottomFragment(mNavController)){
-            super.onBackPressed();
-            super.onBackPressed();
-        }*/
         else
             super.onBackPressed();
     }
@@ -55,48 +60,225 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(activityMainBinding.getRoot());
 
-        ActivityManager.MemoryInfo memoryInfo = getAvailableMemory();
-        System.out.println("memoryInfo: "+memoryInfo.availMem+"memoryInfo: "+memoryInfo.threshold);
 
-        //1 138 233 344 memoryInfo: 226 492 416
-churchKitDb = ChurchKitDb.getInstance(this);
-        Map<String, Object> city = new HashMap<>();
-        city.put("name", "Los Angeles");
-        city.put("state", "CA");
-        city.put("country", "USA");
-        city.put("country", "John");
-db= FirebaseFirestore.getInstance();
-db.collection("songAndBible").document("chant")
-                .set(city).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+        churchKitDb = ChurchKitDb.getInstance(this);
+
+        init(activityMainBinding);
+
+
+
+    }
+    MaterialToolbar toolbar;
+    BottomNavigationView bottomNavigationView;
+    DrawerLayout drawerLayout;
+    NavController mNavController;
+    ChurchKitDb churchKitDb;
+    private FirebaseFirestore db;
+    public static String generateRandomString(int length) {
+        String allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int randomIndex = random.nextInt(allowedChars.length());
+            char randomChar = allowedChars.charAt(randomIndex);
+            sb.append(randomChar);
+        }
+        return sb.toString();
+    }
+
+
+    private void prepopulateBibleFromJSonFile(){
+        FirebaseStorage fs=FirebaseStorage.getInstance();
+        StorageReference storageRef = fs.getReference().child("bible/HATBIV-v1.json");
+        storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
-            public void onSuccess(Void unused) {
-                System.out.println("yayyy");
+            public void onSuccess(byte[] bytes) {
+                try {
+                    String jsonStr = new String(bytes, "UTF-8");
+                    JSONObject jsonObject = new JSONObject(jsonStr);
+                    JSONObject data = jsonObject.getJSONObject("data");
+                    Iterator<String> keys = data.keys();
+                    while (keys.hasNext()){
+                        JSONObject songBookJson =data.getJSONObject(keys.next());
+
+                        int testament = songBookJson.getString("testament").equalsIgnoreCase("OT")?-1:1;
+
+                        BibleBook bibleBook = new BibleBook(
+                                songBookJson.getString("name")+songBookJson.getInt("position"),
+                                songBookJson.getString("abbr"),
+                                songBookJson.getString("name"),
+                                songBookJson.getInt("position"),
+                                testament,
+                                songBookJson.getInt("amountChapter"));
+                        Util.prepopulateBible(MainActivity.this,bibleBook);
+
+                        JSONObject col = songBookJson.getJSONObject("__collections__");
+                        boolean hasNext = col.keys().hasNext();
+                        if (hasNext){
+                            JSONObject listChapterJson = col.getJSONObject(col.keys().next());
+                            Iterator<String> keys1 =listChapterJson.keys();
+                            while (keys1.hasNext()) {
+                                JSONObject chapterJson = listChapterJson.getJSONObject(keys1.next());
+
+                                BibleChapter bibleChapter = new BibleChapter(
+                                        chapterJson.getString("bookName") + chapterJson.getInt("position")
+                                        ,chapterJson.getInt("position")
+                                        ,songBookJson.getString("name")+songBookJson.getInt("position"));
+
+                                Util.prepopulateBibleChapter(MainActivity.this,bibleChapter);
+
+                                JSONArray bibleVerseArray =chapterJson.getJSONArray("bibleVerses");
+
+                                List<BibleVerse> bibleVerseList = new ArrayList<>(30);
+                                for (int i = 0; i < bibleVerseArray.length(); i++) {
+                                    JSONObject verseJson = bibleVerseArray.getJSONObject(i);
+                                    bibleVerseList.add(
+                                            new BibleVerse(
+                                                    verseJson.getString("reference")+verseJson.getInt("position")
+                                                    ,verseJson.getInt("position")
+                                                    ,verseJson.getString("reference")
+                                                    ,verseJson.getString("verseText")
+                                                    ,chapterJson.getString("bookName") + chapterJson.getInt("position"))
+                                    );
+                                }
+                                System.out.println("bibleVerseList: "+Util.prepopulateBibleVerse(MainActivity.this,bibleVerseList));
+                                //Util.prepopulateBibleVerse(MainActivity.this,bibleVerseList);
+                            }
+                        }
+                    }
+
+
+
+                } catch (JSONException | UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                exception.printStackTrace();
             }
         });
+    }
+    private void prepopulateSongFromJSonFile(){
+        FirebaseStorage fs=FirebaseStorage.getInstance();
+        StorageReference storageRef = fs.getReference().child("song/songbook-v1.json");
+        storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                try {
+                    String jsonStr = new String(bytes, "UTF-8");
+                    JSONObject jsonObject = new JSONObject(jsonStr);
+                    JSONObject data = jsonObject.getJSONObject("data");
+                    Iterator<String> keys = data.keys();
+                    while (keys.hasNext()){
+                        JSONObject songBookJson =data.getJSONObject(keys.next());
+                        System.out.println("konbye fwa");
 
+
+
+                        String songBookId =songBookJson.getString("name")+songBookJson.getInt("position");
+                        SongBook  songBook = new SongBook(
+                                songBookId,
+                                songBookJson.getString("name"),
+                                songBookJson.getString("abbreviation"),
+                                songBookJson.getInt("songAmount"),
+                                songBookJson.getInt("position")
+                        );
+
+                        Util.prepopulateSonBook(MainActivity.this,songBook);
+
+                        JSONObject col = songBookJson.getJSONObject("__collections__");
+                        boolean hasNext = col.keys().hasNext();
+
+                        if (hasNext){
+                            JSONObject listChapterJson = col.getJSONObject(col.keys().next());
+                            Iterator<String> keys1 =listChapterJson.keys();
+
+                            while (keys1.hasNext()) {
+                                JSONObject chapterJson = listChapterJson.getJSONObject(keys1.next());
+
+                                String songId = chapterJson.getString("id");
+                                //System.out.println("cooooooooool: "+songId);
+                                if (songId != null){
+                                    Song song = new Song(
+                                            songId
+                                            ,chapterJson.getString("title")
+                                            ,chapterJson.getInt("position")
+                                            ,chapterJson.getInt("page")
+                                            , songBookId);
+
+
+                                    Util.prepopulateSong(MainActivity.this,song);
+
+                                    JSONArray bibleVerseArray =chapterJson.getJSONArray("verseList");
+
+                                    List<Verse> bibleVerseList = new ArrayList<>(30);
+                                    for (int i = 0; i < bibleVerseArray.length(); i++) {
+                                        JSONObject verseJson = bibleVerseArray.getJSONObject(i);
+
+                                        bibleVerseList.add(
+                                                new Verse(verseJson.getInt("position")+songId
+                                                        ,verseJson.getString("verse")
+                                                        ,verseJson.getInt("position")
+                                                        ,songId)
+                                        );
+
+                                    }
+                                    System.out.println("bibleVerseList: "+Util.prepopulateSongVerse(MainActivity.this,bibleVerseList));
+                                }
+                            }
+                        }
+                    }
+
+
+
+                } catch (JSONException | UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+    private void init(ActivityMainBinding activityMainBinding){
+
+
+
+       // getJsonFromFirebaseStorage();
+
+
+        db = FirebaseFirestore.getInstance();
+        churchKitDb.bibleBookDao().getAllBibleBook().observe(this, new Observer<List<BibleBook>>() {
+            @Override
+            public void onChanged(List<BibleBook> bibleBooks) {
+                if(bibleBooks.size() == 0){
+                    prepopulateBibleFromJSonFile();
+                }
+            }
+        });
 
         churchKitDb.songBookDao().getAllSongBook().observe(this, new Observer<List<SongBook>>() {
             @Override
-            public void onChanged(List<SongBook> songBook) {
-                if (songBook == null || songBook.size() == 0){
-                    try {
-                        Util.prepopulateDatabaseFromJsonFile(getApplicationContext());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            public void onChanged(List<SongBook> songBooks) {
+                if(songBooks.size() == 0) {
+                    prepopulateSongFromJSonFile();
                 }
-
             }
         });
 
-churchKitDb.bibleBookDao().getAllBibleBook().observe(this, new Observer<List<BibleBook>>() {
-    @Override
-    public void onChanged(List<BibleBook> bibleBooks) {
-        System.out.println("Boom 2"+ bibleBooks);
-    }
-});
 
 
 /*
@@ -112,7 +294,7 @@ churchKitDb.bibleBookDao().getAllBibleBook().observe(this, new Observer<List<Bib
         navView.setItemIconTintList(null);
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-         mNavController = navHostFragment.getNavController();
+        mNavController = navHostFragment.getNavController();
 
         AppBarConfiguration.Builder builder = new AppBarConfiguration.Builder(mNavController.getGraph());
         AppBarConfiguration appBarConfiguration ;
@@ -123,15 +305,12 @@ churchKitDb.bibleBookDao().getAllBibleBook().observe(this, new Observer<List<Bib
 
 
         TextView songHistory;
-        /*songHistory=(TextView) MenuItemCompat.getActionView(navView.getMenu().
-                findItem(R.id.song_history));
-        gallery.setGravity(Gravity.CENTER);
-        gallery.setText("+12");*/
+
         songHistory=
                 (TextView) navView.getMenu().findItem(R.id.song_history).getActionView();
         songHistory.setGravity(Gravity.CENTER);
         songHistory.setText("+12");
-//
+
 
         NavigationUI.setupWithNavController(navView, mNavController);
         NavigationUI.setupWithNavController(toolbar, mNavController, appBarConfiguration);
@@ -154,8 +333,6 @@ churchKitDb.bibleBookDao().getAllBibleBook().observe(this, new Observer<List<Bib
                 onBackPressed();
         });
 
-
-
     }
 
     private boolean isBottomFragment(@NonNull NavController navController) {
@@ -168,15 +345,6 @@ churchKitDb.bibleBookDao().getAllBibleBook().observe(this, new Observer<List<Bib
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
     }
-
-    MaterialToolbar toolbar;
-    BottomNavigationView bottomNavigationView;
-    DrawerLayout drawerLayout;
-    NavController mNavController;
-    ChurchKitDb churchKitDb;
-    private FirebaseFirestore db;
-
-
 
     private ActivityManager.MemoryInfo getAvailableMemory() {
         ActivityManager activityManager = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);

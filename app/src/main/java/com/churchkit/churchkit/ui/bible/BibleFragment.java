@@ -48,6 +48,8 @@ public class BibleFragment extends Fragment {
                 mAdapter = new BibleAdapter(sharedPreferences.getBoolean(IS_GROUP_BY_TESTAMENT,true)? 0:1,getActivity().getSupportFragmentManager(),bibleBooks);
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
+
+
             }
         });
 

@@ -12,11 +12,9 @@ import java.util.List;
 
 @Dao
 public interface VerseDao {
-    /*@Query("SELECT * FROM verse")
-    LiveData<List<Verse>> getAllVerse();*/
 
     @Query("SELECT * FROM verse WHERE song_id = :idSong ORDER BY position")
-    LiveData<List<Verse>> getAllVerseByIdSong(Long idSong);
+    LiveData<List<Verse>> getAllVerseByIdSong(String idSong);
 
     @Transaction
     @Insert

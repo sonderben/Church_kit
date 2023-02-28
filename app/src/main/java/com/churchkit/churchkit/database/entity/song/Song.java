@@ -12,18 +12,21 @@ import androidx.room.PrimaryKey;
                 parentColumns = "song_book_id",
                 childColumns = "song_book_id"))
 public class Song {
+
+
+    @NonNull
+    @PrimaryKey
     @ColumnInfo(name = "song_id")
-    @PrimaryKey(autoGenerate = true)
-    private long songID;
+    private String songID;
     @NonNull
     private String title;
     private int position;
     private int page;
     @ColumnInfo(name = "song_book_id")
-    private Long songBookId;
+    private String songBookId;
 
-    public Song(/*long songID,*/ @NonNull String title, int position, int page, Long songBookId) {
-        //this.songID = songID;
+    public Song(String songID, @NonNull String title, int position, int page, String songBookId) {
+        this.songID = songID;
         this.title = title;
         this.position = position;
         this.page = page;
@@ -41,11 +44,11 @@ public class Song {
                 '}';
     }
 
-    public long getSongID() {
+    public String getSongID() {
         return songID;
     }
 
-    public void setSongID(long songID) {
+    public void setSongID(String songID) {
         this.songID = songID;
     }
 
@@ -73,11 +76,11 @@ public class Song {
         this.page = page;
     }
 
-    public Long getSongBookId() {
+    public String getSongBookId() {
         return songBookId;
     }
 
-    public void setSongBookId(Long songBookId) {
+    public void setSongBookId(String songBookId) {
         this.songBookId = songBookId;
     }
 }

@@ -6,22 +6,24 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
+
 
 @Entity(tableName = "song_book",indices = {@Index(value = {"name"},unique = true)})
 public class SongBook {
     @ColumnInfo(name = "song_book_id")
-    @PrimaryKey(autoGenerate = true)
-    private int songBookId;
+    @PrimaryKey()
+    @NonNull
+    private String songBookId;
     private String name;
     @NonNull
     private String abbreviation;
 
-    private short color;
-    @ColumnInfo(name = "song_amount")
+
     private int songAmount;
 
-    private short image;
-    private short num;
+    @SerializedName("position")
+    private int position;
 
     @Override
     public String toString() {
@@ -29,10 +31,8 @@ public class SongBook {
                 "songBookId=" + songBookId +
                 ", name='" + name + '\'' +
                 ", abbreviation='" + abbreviation + '\'' +
-                ", color=" + color +
                 ", songAmount=" + songAmount +
-                ", image=" + image +
-                ", num=" + num +
+                ", position=" + position +
                 '}';
     }
 
@@ -44,21 +44,18 @@ public class SongBook {
         this.abbreviation = abbreviation;
     }
 
-    public SongBook(/*int songBookId,*/ String name,String abbreviation, short color, int songAmount, short image, short num) {
-        //this.songBookId = songBookId;
+    public SongBook(String songBookId, String name,String abbreviation, int songAmount, int position) {
+        this.songBookId = songBookId;
         this.name = name;
         this.abbreviation = abbreviation;
-        this.color = color;
         this.songAmount = songAmount;
-        this.image = image;
-        this.num = num;
     }
 
-    public int getSongBookId() {
+    public String getSongBookId() {
         return songBookId;
     }
 
-    public void setSongBookId(int songBookId) {
+    public void setSongBookId(String songBookId) {
         this.songBookId = songBookId;
     }
 
@@ -70,13 +67,7 @@ public class SongBook {
         this.name = name;
     }
 
-    public short getColor() {
-        return color;
-    }
 
-    public void setColor(short color) {
-        this.color = color;
-    }
 
     public int getSongAmount() {
         return songAmount;
@@ -86,19 +77,13 @@ public class SongBook {
         this.songAmount = songAmount;
     }
 
-    public short getImage() {
-        return image;
+
+
+    public int getPosition() {
+        return position;
     }
 
-    public void setImage(short image) {
-        this.image = image;
-    }
-
-    public short getNum() {
-        return num;
-    }
-
-    public void setNum(short num) {
-        this.num = num;
+    public void setPosition(int num) {
+        this.position = num;
     }
 }

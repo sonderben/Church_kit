@@ -1,6 +1,7 @@
 package com.churchkit.churchkit.adapter.bible;
 
 import android.annotation.SuppressLint;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.database.entity.bible.BibleBook;
 import com.churchkit.churchkit.ui.bible.BibleFragment;
 import com.churchkit.churchkit.ui.bible.ChapterDialogFragment;
+import com.churchkit.churchkit.ui.bible.ListChapterFragment;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
@@ -25,12 +27,9 @@ public class BibleAdapter extends RecyclerView.Adapter {
 
 
     int typeView;
+    boolean fromBookByTestamentFragment = false;
     FragmentManager fm;
     List<BibleBook> bibleBooks;
-
-    /*private final int GROUP_BY_TESTAMENT = 0;
-    private final int ALL_BOOK = 1;*/
-
 
     public void setTypeView(int typeView) {
         this.typeView = typeView;
@@ -40,6 +39,12 @@ public class BibleAdapter extends RecyclerView.Adapter {
     public BibleAdapter(int typeView,FragmentManager fm,List<BibleBook> bibleBooks) {
         this.fm = fm;;
         this.typeView = typeView;
+        this.bibleBooks=bibleBooks;
+    }
+    public BibleAdapter(FragmentManager fm,List<BibleBook> bibleBooks) {
+        this.fm = fm;
+        this.typeView = 1;
+        fromBookByTestamentFragment= true;
         this.bibleBooks=bibleBooks;
     }
 
@@ -60,26 +65,54 @@ public class BibleAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         if (typeView ==0){
-            if(position == 0)
-            ( (GroupByTestamentViewHolder) holder ).textView.setText("Old Testament");
-            else
-                ( (GroupByTestamentViewHolder) holder ).textView.setText("New Testament");
-        }else {
+            Bundle bundle = new Bundle();
             if(position == 0) {
-                ((AllBookViewHolder) holder).title.setText(bibleBooks.get(position).getTitle());
-                ((AllBookViewHolder) holder).tileAcronym.setText(bibleBooks.get(position).getAbbreviation());
-                ((AllBookViewHolder) holder).number.setText("50 chapter");
-            }else {
-                ((AllBookViewHolder) holder).title.setText(bibleBooks.get(position).getTitle());
-                ((AllBookViewHolder) holder).tileAcronym.setText(bibleBooks.get(position).getAbbreviation());
-                ((AllBookViewHolder) holder).number.setText("40 chapter");
+                ((GroupByTestamentViewHolder) holder).textView.setText("Old Testament");
+                bundle.putInt("TESTAMENT",-2);
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        NavController navController = Navigation.findNavController(v);
+                        navController.getGraph().findNode(R.id.listChapterByTestamentFragment).setLabel("Old Testament");
+                        navController.navigate(R.id.action_bookmarkFragment_to_listBookByTestamentFragment,bundle);
+                    }
+                });
+
             }
-            ((AllBookViewHolder) holder).itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ChapterDialogFragment cdf = ChapterDialogFragment.newInstance(bibleBooks.get(position).getBibleBookId(),"Jan 2","Chapter 3 to 8");
-                    cdf.show(fm,"ChapterDialogFragment");
+            if (position == 1) {
+                bundle.putInt("TESTAMENT",2);
+                ((GroupByTestamentViewHolder) holder).textView.setText("New Testament");
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        NavController navController = Navigation.findNavController(v);
+                        navController.getGraph().findNode(R.id.listChapterByTestamentFragment).setLabel("New Testament");
+                        navController.navigate(R.id.action_bookmarkFragment_to_listBookByTestamentFragment,bundle);
+                    }
+                });
+            }
+        }else {
+                ((AllBookViewHolder) holder).title.setText(bibleBooks.get(position).getTitle());
+                ((AllBookViewHolder) holder).tileAcronym.setText(bibleBooks.get(position).getAbbreviation());
+                ((AllBookViewHolder) holder).number.setText( bibleBooks.get(position).getAmountChapter()+" Chapters" );
+
+            ((AllBookViewHolder) holder).itemView.setOnClickListener(view -> {
+                BibleBook bibleBook = bibleBooks.get(position);
+                Bundle bundle = new Bundle();
+                bundle.putString("ID", bibleBook.getBibleBookId());
+                bundle.putString("BOOK_NAME_ABBREVIATION", bibleBook.getAbbreviation());
+                NavController navController = Navigation.findNavController(view);
+                navController.getGraph().findNode(R.id.listChapterFragment).setLabel(bibleBook.getTitle()+" ");
+
+                if (fromBookByTestamentFragment){
+                    navController.navigate(R.id.action_listChapterByTestamentFragment_to_listChapterFragment);
+                }else {
+                    navController.navigate(R.id.action_bookmarkFragment_to_listChapterFragment,bundle);
                 }
+
+
+
+
             });
         }
     }
@@ -99,34 +132,9 @@ public class BibleAdapter extends RecyclerView.Adapter {
         public GroupByTestamentViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.name);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {/*
-                    NavController navController = Navigation.findNavController(view);
-                    navController.getGraph().findNode(R.id.listOptionFragment).setLabel("Français");
-                    navController.navigate(R.id.action_homeFragment_to_listOptionFragment);*/
-
-                    navigate(view);
-
-                }
-            });
         }
     }
-    private void navigate(View view){
-        if (typeView != 0){
 
-            NavController navController = Navigation.findNavController(view);
-            navController.getGraph().findNode(R.id.listChapterFragment).setLabel("Jenèz");
-            navController.navigate(R.id.action_bookmarkFragment_to_listChapterFragment);
-        }else {
-
-            NavController navController = Navigation.findNavController(view);
-            navController.getGraph().findNode(R.id.listChapterByTestamentFragment).setLabel("Old Testament");
-            navController.navigate(R.id.action_bookmarkFragment_to_listBookByTestamentFragment);
-
-        }
-
-    }
 
     class AllBookViewHolder extends RecyclerView.ViewHolder{
         TextView title,tileAcronym,number;

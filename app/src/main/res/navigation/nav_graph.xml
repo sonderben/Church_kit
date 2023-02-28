@@ -60,7 +60,7 @@
 
         <argument
             android:name="ID"
-            app:argType="integer" />
+            app:argType="string" />
         <argument
             android:name="songBookName"
             app:argType="string"
@@ -70,10 +70,24 @@
         android:id="@+id/listChapterFragment"
         android:name="com.churchkit.churchkit.ui.bible.ListChapterFragment"
         android:label="fragment_list_chapter"
-        tools:layout="@layout/fragment_list_chapter" />
+        tools:layout="@layout/fragment_list_chapter" >
+        <argument
+            android:name="ID"
+            app:argType="string" />
+        <argument
+            android:name="BOOK_NAME_ABBREVIATION"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/listChapterByTestamentFragment"
         android:name="com.churchkit.churchkit.ui.bible.ListBookByTestamentFragment"
-        android:label="ListChapterByTestamentFragment" />
+        android:label="ListChapterByTestamentFragment" >
+        <argument
+            android:name="TESTAMENT"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_listChapterByTestamentFragment_to_listChapterFragment"
+            app:destination="@id/listChapterFragment" />
+    </fragment>
 
 </navigation>

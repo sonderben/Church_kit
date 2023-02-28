@@ -30,32 +30,35 @@ public class ListBookByTestamentFragment extends Fragment {
         // Required empty public constructor
     }
 
-
-
-
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_bible, container, false);
 
+        final int testament = getArguments().getInt("TESTAMENT");
+
         autoCompleteTextView = root.findViewById(R.id.search);
         autoCompleteTextView.setVisibility(View.GONE);
         mRecyclerView = root.findViewById(R.id.recyclerview);
         db=ChurchKitDb.getInstance(requireContext());
-        db.bibleBookDao().getAllBibleBook().observe(getViewLifecycleOwner(), new Observer<List<BibleBook>>() {
-            @Override
-            public void onChanged(List<BibleBook> bibleBooks) {
-                adapter = new BibleAdapter(1,getChildFragmentManager(),bibleBooks);
-                System.out.println("Boom: "+bibleBooks);
-            }
-        });
+
+        if (testament<0){
+            db.bibleBookDao().getAllOldTestamentBibleBook().observe(requireActivity(), bibleBooks -> {
+                adapter = new BibleAdapter(getChildFragmentManager(),bibleBooks);
+                mRecyclerView.setAdapter(adapter);
+            });
+        }else {
+            db.bibleBookDao().getAllNewTestamentBibleBook().observe(requireActivity(), bibleBooks -> {
+                adapter = new BibleAdapter(getChildFragmentManager(),bibleBooks);
+                mRecyclerView.setAdapter(adapter);
+            });
+        }
+
 
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),1));
         mRecyclerView.addItemDecoration(new GridSpacingIDeco(32));
-        mRecyclerView.setAdapter(adapter);
+
 
         return root;
     }

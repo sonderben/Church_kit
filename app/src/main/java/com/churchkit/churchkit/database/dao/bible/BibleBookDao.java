@@ -11,7 +11,14 @@ import java.util.List;
 @Dao
 public interface BibleBookDao {
     @Query("SELECT * FROM BIBLE_BOOK ORDER BY position")
-    public LiveData<List<BibleBook>> getAllBibleBook();
+     LiveData<List<BibleBook>> getAllBibleBook();
+
+    @Query("SELECT * FROM BIBLE_BOOK WHERE testament  > 0 ORDER BY position")
+    LiveData<List<BibleBook>> getAllNewTestamentBibleBook();
+
+    @Query("SELECT * FROM BIBLE_BOOK WHERE testament  < 0 ORDER BY position")
+    LiveData<List<BibleBook>> getAllOldTestamentBibleBook();
+
     @Insert
-    public long insertBibleBook(BibleBook bibleBook);
+     long insertBibleBook(BibleBook bibleBook);
 }

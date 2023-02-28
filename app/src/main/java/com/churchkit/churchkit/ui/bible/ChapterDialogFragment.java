@@ -24,6 +24,8 @@ import androidx.lifecycle.Observer;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.database.ChurchKitDb;
 import com.churchkit.churchkit.database.entity.bible.BibleChapter;
+import com.churchkit.churchkit.database.entity.bible.BibleVerse;
+import com.churchkit.churchkit.database.entity.song.SongBook;
 import com.churchkit.churchkit.database.entity.song.Verse;
 import com.churchkit.churchkit.ui.util.Util;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -35,10 +37,9 @@ public class ChapterDialogFragment extends DialogFragment {
     public ChapterDialogFragment(){
 
     }
-    public static ChapterDialogFragment newInstance(long id,String reference,String chapter){
+    public static ChapterDialogFragment newInstance(String id,String reference){
         mId = id;
         mReference = reference;
-        mChapterhapter = chapter;
         return new ChapterDialogFragment();
     }
     @Nullable
@@ -61,11 +62,13 @@ public class ChapterDialogFragment extends DialogFragment {
         fab.setOnClickListener(x->this.dismiss());
         endingFavoriteImageView = root.findViewById(R.id.favorite);//favorite_anim
         startingImageView = root.findViewById(R.id.favorite_anim);//favorite_anim
-        db.bibleChapterDao().getAllChapterByBookId(mId).observe(requireActivity(), new Observer<List<BibleChapter>>() {
+
+
+        db.bibleVerseDao().getAllVerse(mId).observe(requireActivity(), new Observer<List<BibleVerse>>() {
             @Override
-            public void onChanged(List<BibleChapter> bibleChapters) {
-                //versets.setText(listVerseToString(bibleChapters));
-                versets.setText(getSomeString());
+            public void onChanged(List<BibleVerse> bibleVerseList) {
+                versets.setText( listVerseToString(bibleVerseList) );
+                setVerseTitle( bibleVerseList);
             }
         });
         /*float endX = favorite.getX();
@@ -168,15 +171,24 @@ public class ChapterDialogFragment extends DialogFragment {
         getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
     }
 
-    private String listVerseToString(List<BibleChapter> bibleChapters){
+    private void setVerseTitle(List<BibleVerse> bibleVerseList){
+
+            chapTitle.setText("Verse: 1 to "+bibleVerseList.size());
+
+
+    }
+
+    private String listVerseToString(List<BibleVerse> bibleVerseList){
         StringBuilder verseString = new StringBuilder();
         BibleChapter bibleChap=null;
 
-        if (bibleChapters != null){
-            for (int i=0;i< bibleChapters.size();i++){
+        if (bibleVerseList != null){
+            for (int i=0;i< bibleVerseList.size();i++){
 
-                verseString.append(bibleChapters.get(i).getChapter());
-                verseString.append("\n");
+                verseString.append(positionToSupIndex(bibleVerseList.get(i).getPosition()));
+                verseString.append(bibleVerseList.get(i).getVerseText()+" ");
+
+                //verseString.append("\n");
 
             }
         }else {
@@ -200,8 +212,9 @@ public class ChapterDialogFragment extends DialogFragment {
     long lastClickTime = 0;
     ImageView closeButton, endingFavoriteImageView, startingImageView;
     TextView versets,bookReference,chapTitle;
-    static long mId;
+    static String mId;
     static String mReference, mChapterhapter;
+    static int mVerseAmount;
     FloatingActionButton fab;
     ConstraintLayout headerLayout;
 
@@ -213,5 +226,43 @@ public class ChapterDialogFragment extends DialogFragment {
     }
 
     ChurchKitDb db= ChurchKitDb.getInstance(getContext());
+    private String toUnicode( int position){
+        final String zero = "\u2070";
+        final String one = "\u00B9";
+        final String two = "\u00B2";
+        final String twee = "\u00B3";
+        final String four = "\u2074";
+        final String five = "\u2075";
+        final String six = "\u2076";
+        final String seven = "\u2077";
+        final String eight = "\u2078";
+        final String nine = "\u2079";
+        switch (position){
+            case 0: return zero;
+            case 1: return one;
+            case 2: return two;
+            case 3: return twee;
+            case 4: return four;
+            case 5: return five;
+            case 6: return six;
+            case 7: return seven;
+            case 8: return eight;
+            case 9: return nine;
+            default:
+                return "";
+        }
+    }
+    private String positionToSupIndex (int position){
+        int pos = position;
+        StringBuilder stri = new StringBuilder();
+        do{
+            stri.insert(    0,toUnicode(pos%10));
+
+            pos = pos/10;
+
+        }while(pos>0);
+
+        return stri.toString();
+    }
 
 }

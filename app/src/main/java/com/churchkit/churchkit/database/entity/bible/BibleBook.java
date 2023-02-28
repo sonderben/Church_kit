@@ -1,5 +1,6 @@
 package com.churchkit.churchkit.database.entity.bible;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -7,26 +8,38 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "bible_book")
 public class BibleBook {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey()
+    @NonNull
     @ColumnInfo(name = "bible_book_id")
-    private long bibleBookId;
+    private String bibleBookId;
     private String abbreviation;
     private String title;
-    private short position; // for order
-    private short testament;
+    private int position; // for order
+    private int testament;
+    private int amountChapter;
 
-    public BibleBook(String abbreviation, String title, short position, short testament) {
+    public int getAmountChapter() {
+        return amountChapter;
+    }
+
+    public void setAmountChapter(int amountChapter) {
+        this.amountChapter = amountChapter;
+    }
+
+    public BibleBook(String bibleBookId, String abbreviation, String title, int position, int testament, int amountChapter) {
+        this.bibleBookId=bibleBookId;
         this.abbreviation = abbreviation;
         this.title = title;
         this.position = position;
         this.testament = testament;
+        this.amountChapter = amountChapter;
     }
 
-    public long getBibleBookId() {
+    public String getBibleBookId() {
         return bibleBookId;
     }
 
-    public void setBibleBookId(long bibleBookId) {
+    public void setBibleBookId(String bibleBookId) {
         this.bibleBookId = bibleBookId;
     }
 
@@ -46,19 +59,19 @@ public class BibleBook {
         this.title = title;
     }
 
-    public short getPosition() {
+    public int getPosition() {
         return position;
     }
 
-    public void setPosition(short position) {
+    public void setPosition(int position) {
         this.position = position;
     }
 
-    public short getTestament() {
+    public int getTestament() {
         return testament;
     }
 
-    public void setTestament(short testament) {
+    public void setTestament(int testament) {
         this.testament = testament;
     }
 

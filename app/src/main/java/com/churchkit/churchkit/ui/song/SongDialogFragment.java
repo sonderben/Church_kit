@@ -27,7 +27,7 @@ import java.util.List;
 
 
 public class SongDialogFragment extends DialogFragment {
-    public static SongDialogFragment newInstance(Long idSong,String reference,String title){
+    public static SongDialogFragment newInstance(String idSong,String reference,String title){
         mSongId = idSong;
         mSongTitle = title;
         mReference = reference;
@@ -97,7 +97,7 @@ public class SongDialogFragment extends DialogFragment {
    // ImageView close;
     ViewGroup root;
     TextView tv,bookTitle,songTitle,chorus;
-    static long mSongId;
+    static String mSongId;
     static String mSongTitle;
     static String mReference;
     private String getSomeString(){
