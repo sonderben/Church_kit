@@ -37,7 +37,7 @@ public class BibleAdapter extends RecyclerView.Adapter {
     }
 
     public BibleAdapter(int typeView,FragmentManager fm,List<BibleBook> bibleBooks) {
-        this.fm = fm;;
+        this.fm = fm;
         this.typeView = typeView;
         this.bibleBooks=bibleBooks;
     }
@@ -119,7 +119,8 @@ public class BibleAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return bibleBooks.size();
+        //0=2
+        return typeView == 0?2: bibleBooks.size();
     }
 
     @Override

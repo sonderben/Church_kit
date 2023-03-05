@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/g_image"
+        app:showAsAction="always"
+        android:title="Image" />
+    <item
+        android:id="@+id/book_mark"
+        app:showAsAction="always"
+        android:title="Bookmark" />
+    <item
+        android:id="@+id/r"
+        app:showAsAction="always"
+        android:title="Copy" />
+    <item
+        android:id="@+id/rf"
+        app:showAsAction="always"
+        android:title="Share" />
+</menu>

@@ -28,12 +28,11 @@
                 android:layout_height="0dp"
                 android:text="RN"
                 android:padding="3dp"
-
-                android:includeFontPadding="false"
+                android:gravity="center_vertical"
                 android:textStyle="bold"
                 android:backgroundTint="@color/main_bg"
                 android:background="@drawable/bg_edittext_title_abr"
-                android:textSize="36sp"
+                android:textSize="30sp"
                 android:paddingStart="4dp"
                 app:layout_constraintBottom_toBottomOf="@id/number_song"
                 android:textColor="@color/white"
@@ -46,8 +45,8 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="5dp"
                 android:text="18 chants"
-
-                app:layout_constraintStart_toStartOf="@id/title"
+                android:paddingHorizontal="5dp"
+                app:layout_constraintLeft_toLeftOf="@id/title"
                 app:layout_constraintTop_toBottomOf="@id/title" />
 
             <TextView
