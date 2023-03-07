@@ -3,6 +3,7 @@ package com.churchkit.churchkit;
 import android.app.ActivityManager;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -41,7 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
 
     @Override
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         churchKitDb = ChurchKitDb.getInstance(this);
 
         init(activityMainBinding);
+        navView.setNavigationItemSelectedListener(this::onNavigationItemSelected);
 
 
 
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     NavController mNavController;
     ChurchKitDb churchKitDb;
     private FirebaseFirestore db;
+    NavigationView navView;
     public static String generateRandomString(int length) {
         String allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         Random random = new Random();
@@ -268,6 +271,7 @@ public class MainActivity extends AppCompatActivity {
                 if(bibleBooks.size() == 0){
                     prepopulateBibleFromJSonFile();
                 }
+                System.out.println(bibleBooks);
             }
         });
 
@@ -291,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar=activityMainBinding.toolbar;
         bottomNavigationView = activityMainBinding.bottomNav;
         drawerLayout = activityMainBinding.drawerLayout;
-        NavigationView navView = activityMainBinding.navView;
+         navView = activityMainBinding.navView;
         navView.setItemIconTintList(null);
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
@@ -308,9 +312,10 @@ public class MainActivity extends AppCompatActivity {
         TextView songHistory;
 
         songHistory=
-                (TextView) navView.getMenu().findItem(R.id.song_history).getActionView();
+                (TextView) navView.getMenu().findItem(R.id.songHistory).getActionView();
         songHistory.setGravity(Gravity.CENTER);
         songHistory.setText("+12");
+
 
 
         NavigationUI.setupWithNavController(navView, mNavController);
@@ -334,12 +339,11 @@ public class MainActivity extends AppCompatActivity {
                 onBackPressed();
         });
 
+
     }
 
     private boolean isBottomFragment(@NonNull NavController navController) {
-      return   navController.getCurrentDestination().getLabel().equals(getResources().getString(R.string.song_hope)) ||
-                navController.getCurrentDestination().getLabel().equals(getResources().getString(R.string.bible)) ||
-                navController.getCurrentDestination().getLabel().equals(getResources().getString(R.string.more));
+      return   navController.getCurrentDestination().getLabel().equals(getResources().getString(R.string.app_name));
     }
 
     @Override
@@ -355,4 +359,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Bundle bundle = new Bundle();
+
+        switch (item.getItemId()){
+            case R.id.songHistory:
+                bundle.putString("FROM",Util.FROM_SONG_HISTORY);
+                mNavController.getGraph().findNode(R.id.listSongsFragment).setLabel("Song Histories");
+                mNavController.navigate(R.id.listSongsFragment,bundle);
+                drawerLayout.close();
+                return true;
+            case R.id.songFavorite:
+                bundle.putString("FROM",Util.FROM_SONG_FAVORITE);
+                drawerLayout.close();
+                mNavController.getGraph().findNode(R.id.listSongsFragment).setLabel("Song Favorites");
+                mNavController.navigate(R.id.listSongsFragment,bundle);
+            case R.id.bibleFavorite:
+                bundle.putString("FROM",Util.FROM_BIBLE_FAVORITE);
+                mNavController.getGraph().findNode(R.id.listChapterFragment).setLabel("Chapter Favorites");
+                mNavController.navigate(R.id.listChapterFragment,bundle);
+                drawerLayout.close();
+                return true;
+            case R.id.bibleHistory:
+                bundle.putString("FROM",Util.FROM_BIBLE_HISTORY);
+                mNavController.getGraph().findNode(R.id.listChapterFragment).setLabel(" Chapter Histories");
+                mNavController.navigate(R.id.listChapterFragment,bundle);
+                drawerLayout.close();
+                return true;
+        }
+        return false;
+
+    }
 }

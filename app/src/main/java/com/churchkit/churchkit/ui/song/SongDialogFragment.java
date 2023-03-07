@@ -1,7 +1,11 @@
 package com.churchkit.churchkit.ui.song;
 
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Layout;
 import android.view.ActionMode;
@@ -11,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -22,13 +27,19 @@ import androidx.lifecycle.Observer;
 
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.entity.song.Song;
+import com.churchkit.churchkit.database.entity.song.SongFavorite;
+import com.churchkit.churchkit.database.entity.song.SongHistory;
 import com.churchkit.churchkit.database.entity.song.Verse;
 import com.churchkit.churchkit.ui.EditorBottomSheet;
 import com.churchkit.churchkit.ui.util.Util;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 public class SongDialogFragment extends DialogFragment {
@@ -36,6 +47,7 @@ public class SongDialogFragment extends DialogFragment {
         mSongId = idSong;
         mSongTitle = title;
         mReference = reference;
+        System.out.println("SongDialogFragment: "+mReference);
         return new SongDialogFragment();
     }
     @Nullable
@@ -47,6 +59,46 @@ public class SongDialogFragment extends DialogFragment {
 
 
           init();
+        setHistory();
+
+          favorite.setOnClickListener(v -> {
+              SongFavorite songFavorite= churchKitDd.songFavoriteDao().isExisted(mSongId);
+              favorite.setEnabled(false);
+
+              if (songFavorite != null)
+                  churchKitDd.songFavoriteDao().delete(songFavorite);
+              else{
+                  System.out.println("mreference: "+mReference);
+                  churchKitDd.songFavoriteDao().insert(
+                          new SongFavorite(mSongId,Calendar.getInstance().getTimeInMillis(), mReference)
+                  );
+              }
+
+          });
+
+          churchKitDd.songFavoriteDao().existed(mSongId).observe(getViewLifecycleOwner(), songFavorite -> {
+
+              favorite.setEnabled(true);
+              Drawable drawable = favorite.getDrawable();
+              if (songFavorite != null){
+
+                  if (drawable != null) {
+                      drawable.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+                      favorite.setImageDrawable(drawable);
+                  }
+              }
+              else{
+                  int color = getResources().getColor(R.color.white);
+                  if (drawable != null) {
+                      drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+                      favorite.setImageDrawable(drawable);
+                  }
+              }
+
+          });
+
+
+
 
         chorus.setOnClickListener(v -> scrollToChorus());
 
@@ -66,7 +118,6 @@ public class SongDialogFragment extends DialogFragment {
             @Override
             public void onChanged(List<Verse> verses) {
                 tv.setText( listVerseToString(verses) );
-
             }
         });
 
@@ -83,6 +134,9 @@ public class SongDialogFragment extends DialogFragment {
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 
+        menu.clear();
+        mode.getMenuInflater().inflate(R.menu.selection_action_menu, menu);
+        System.out.println("onCreateActionMode xiomi");
 
         return true;
     }
@@ -93,6 +147,7 @@ public class SongDialogFragment extends DialogFragment {
 
         menu.clear();
         mode.getMenuInflater().inflate(R.menu.selection_action_menu, menu);
+        System.out.println("onPrepareActionMode xiomi");
 
 
         return true;
@@ -117,6 +172,8 @@ public class SongDialogFragment extends DialogFragment {
 
     int IMAGE =1;
     int BOOK_MARK =2;
+
+
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
@@ -143,11 +200,8 @@ public class SongDialogFragment extends DialogFragment {
     bookTitle = root.findViewById(R.id.book_name);
     songTitle = root.findViewById(R.id.chap_);
      fab = root.findViewById(R.id.fab_clos);
+     favorite = root.findViewById(R.id.favorite);
 }
-
-
-
-
 
 
     private  void setChorusButtonVisibility(){
@@ -168,7 +222,14 @@ public class SongDialogFragment extends DialogFragment {
     FloatingActionButton fab;
     ChurchKitDb churchKitDd;
     ScrollView scrollView;
+    private ImageView favorite;
+    private void setHistory(){
 
+        churchKitDd.songHistoryDao().insert(
+                new SongHistory(mSongId,Calendar.getInstance().getTimeInMillis(), mReference)
+            );
+
+    }
 
     private String listVerseToString(List<Verse> verses){
         StringBuilder verseString = new StringBuilder();
@@ -255,4 +316,10 @@ public class SongDialogFragment extends DialogFragment {
         getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
     }
 
+    @Override
+    public void onDestroy() {
+        System.out.println("on destroy");
+        mReference = null;
+        super.onDestroy();
+    }
 }

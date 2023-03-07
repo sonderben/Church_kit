@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.churchkit.churchkit.R;
 
 
 public class MoreFragment extends Fragment {
@@ -16,6 +17,6 @@ public class MoreFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        return  new View(getContext());
+        return  inflater.inflate(R.layout.more_history,container,false);
     }
 }

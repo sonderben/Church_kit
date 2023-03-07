@@ -15,6 +15,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.R;
+import com.churchkit.churchkit.Util;
 import com.churchkit.churchkit.database.entity.song.SongBook;
 import com.google.android.material.card.MaterialCardView;
 
@@ -66,14 +67,14 @@ public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPa
        holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SongBook songBook = songBooks.get(holder.getAdapterPosition());
-                /*passing value by using bundle, so I utilised the navigation and it takes bundle as parameter
-                I used the position as the ID, well you can change to whatever that you want to*/
+                SongBook songBook = songBooks.get(holder.getAbsoluteAdapterPosition());
+
 
 
                 Bundle bundle = new Bundle();
                 bundle.putString("ID", songBook.getSongBookId());
                 bundle.putString("songBookName", songBook.getName());
+                bundle.putString("FROM", Util.FROM_SONG_HOPE);
                 NavController navController = Navigation.findNavController(view);
                 navController.getGraph().findNode(R.id.listSongsFragment).setLabel(songBook.getName()+" ");
                 navController.navigate(R.id.action_homeFragment_to_listSongsFragment2,bundle);

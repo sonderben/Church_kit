@@ -1,6 +1,10 @@
 package com.churchkit.churchkit.ui.bible;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
@@ -24,12 +28,16 @@ import androidx.lifecycle.Observer;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.database.ChurchKitDb;
 import com.churchkit.churchkit.database.entity.bible.BibleChapter;
+import com.churchkit.churchkit.database.entity.bible.BibleChapterFavorite;
+import com.churchkit.churchkit.database.entity.bible.BibleChapterHistory;
 import com.churchkit.churchkit.database.entity.bible.BibleVerse;
 import com.churchkit.churchkit.database.entity.song.SongBook;
+import com.churchkit.churchkit.database.entity.song.SongFavorite;
 import com.churchkit.churchkit.database.entity.song.Verse;
 import com.churchkit.churchkit.ui.util.Util;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -63,6 +71,7 @@ public class ChapterDialogFragment extends DialogFragment {
         endingFavoriteImageView = root.findViewById(R.id.favorite);//favorite_anim
         startingImageView = root.findViewById(R.id.favorite_anim);//favorite_anim
 
+        setChapterHistory();
 
         db.bibleVerseDao().getAllVerse(mId).observe(requireActivity(), new Observer<List<BibleVerse>>() {
             @Override
@@ -71,6 +80,49 @@ public class ChapterDialogFragment extends DialogFragment {
                 setVerseTitle( bibleVerseList);
             }
         });
+
+        endingFavoriteImageView.setOnClickListener(v -> {
+            BibleChapterFavorite songFavorite= db.bibleChapterFavoriteDao().isExisted(mId);
+            endingFavoriteImageView.setEnabled(false);
+
+            if (songFavorite != null)
+                db.bibleChapterFavoriteDao().delete(songFavorite);
+            else{
+
+                db.bibleChapterFavoriteDao().insert(
+                        new BibleChapterFavorite(mId, Calendar.getInstance().getTimeInMillis(), mReference)
+                );
+            }
+
+        });
+
+
+        db.bibleChapterFavoriteDao().existed(mId).observe(getViewLifecycleOwner(), songFavorite -> {
+
+            endingFavoriteImageView.setEnabled(true);
+            Drawable drawable = endingFavoriteImageView.getDrawable();
+            if (songFavorite != null){
+
+                if (drawable != null) {
+                    drawable.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+                    endingFavoriteImageView.setImageDrawable(drawable);
+                }
+            }
+            else{
+                int color = getResources().getColor(R.color.white);
+                if (drawable != null) {
+                    drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+                    endingFavoriteImageView.setImageDrawable(drawable);
+                }
+            }
+
+        });
+
+
+
+
+
+
         /*float endX = favorite.getX();
         float endY = favorite.getY();*/
 
@@ -161,6 +213,14 @@ public class ChapterDialogFragment extends DialogFragment {
 
         return root;
     }
+
+    private void setChapterHistory() {
+        db.bibleChapterHistoryDao().insert(
+                new BibleChapterHistory(mId, Calendar.getInstance().getTimeInMillis(), mReference)
+        );
+
+    }
+
     @Override
     public void onResume() {
         super.onResume();

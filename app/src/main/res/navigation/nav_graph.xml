@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/bookmarkFragment"
         android:name="com.churchkit.churchkit.ui.bible.BibleFragment"
-        android:label="@string/bible"
+        android:label="@string/app_name"
         tools:layout="@layout/fragment_bible" >
         <action
             android:id="@+id/action_bookmarkFragment_to_homeFragment"
@@ -26,7 +26,7 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.churchkit.churchkit.ui.song.SongHopeFragment"
-        android:label="@string/song_hope"
+        android:label="@string/app_name"
         tools:layout="@layout/fragment_song_hope" >
         <action
             android:id="@+id/action_homeFragment_to_bookmarkFragment"
@@ -42,7 +42,7 @@
     <fragment
         android:id="@+id/historyFragment"
         android:name="com.churchkit.churchkit.ui.more.MoreFragment"
-        android:label="@string/more"
+        android:label="@string/app_name"
         tools:layout="@layout/more_history" >
         <action
             android:id="@+id/action_historyFragment_to_homeFragment"
@@ -65,6 +65,10 @@
             android:name="songBookName"
             app:argType="string"
             android:defaultValue="unknow" />
+        <argument
+            android:name="FROM"
+            app:argType="string"
+            android:defaultValue="FROM_SONG_HOPE" />
     </fragment>
     <fragment
         android:id="@+id/listChapterFragment"
@@ -77,6 +81,10 @@
         <argument
             android:name="BOOK_NAME_ABBREVIATION"
             app:argType="string" />
+        <argument
+            android:name="FROM"
+            app:argType="string"
+            android:defaultValue="BIBLE" />
     </fragment>
     <fragment
         android:id="@+id/listChapterByTestamentFragment"
@@ -89,5 +97,25 @@
             android:id="@+id/action_listChapterByTestamentFragment_to_listChapterFragment"
             app:destination="@id/listChapterFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/bibleHistoryFragment"
+        android:name="com.churchkit.churchkit.ui.bible.BibleHistoryFragment"
+        android:label="fragment_bible_history"
+        tools:layout="@layout/fragment_bible_history" />
+    <fragment
+        android:id="@+id/songHistoryFragment"
+        android:name="com.churchkit.churchkit.ui.song.SongHistoryFragment"
+        android:label="fragment_song_history"
+        tools:layout="@layout/fragment_song_history" />
+    <fragment
+        android:id="@+id/bibleFavoriteFragment"
+        android:name="com.churchkit.churchkit.ui.bible.BibleFavoriteFragment"
+        android:label="fragment_bible_favorite"
+        tools:layout="@layout/fragment_bible_favorite" />
+    <fragment
+        android:id="@+id/songFavoriteFragment"
+        android:name="com.churchkit.churchkit.ui.song.SongFavoriteFragment"
+        android:label="fragment_song_favorite"
+        tools:layout="@layout/fragment_song_favorite" />
 
 </navigation>

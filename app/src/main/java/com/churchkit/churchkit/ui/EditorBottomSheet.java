@@ -21,6 +21,7 @@ import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -45,6 +46,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -64,10 +66,59 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
        View root = inflater.inflate(R.layout.fragment_editor_bottom_sheet,container,false);
 
        linearLayout = root.findViewById(R.id.linear_layout_color_picker);
-        recyclerView = root.findViewById(R.id.recyclerview_ebs);
+        //recyclerView = root.findViewById(R.id.recyclerview_ebs);
         imageView = root.findViewById(R.id.my_image_view);
         layoutPhoto = root.findViewById(R.id.layout_photo);
         action = root.findViewById(R.id.action);
+        randomColor = root.findViewById(R.id.random_color);
+        randomImage = root.findViewById(R.id.random_img);
+
+        List<Integer> imgId = Arrays.asList(
+               R.drawable.img1 ,
+         R.drawable.img2,
+         R.drawable.img3,
+         R.drawable.img4,
+         R.drawable.img5,
+         R.drawable.img6,
+         R.drawable.img7,
+         R.drawable.img8
+        );
+        List<Integer> colorId = Arrays.asList(
+                Color.TRANSPARENT ,
+                Color.RED,
+                Color.GREEN,
+                Color.BLACK,
+                Color.BLUE,
+                Color.WHITE,
+                Color.GRAY,
+                Color.MAGENTA
+        );
+
+        randomColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(),"li click",Toast.LENGTH_LONG).show();
+                bitmapToSave=drawerCitacion.getCitation(colorId.get( colorIndex ));
+                colorIndex+=1;
+                imageView.setImageBitmap(bitmapToSave);
+                if (colorId.size()-1 ==colorIndex)
+                    colorIndex=0;
+
+            }
+        });
+        randomImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Drawable drawable = getContext().getDrawable( imgId.get( imageIndex ) );
+                imageIndex+=1;
+                Bitmap bitmap = ( (BitmapDrawable) drawable ).getBitmap(); //
+                Bitmap bit = bitmap.copy(Bitmap.Config.ARGB_8888,true);
+                bitmapToSave=drawerCitacion.getCitation(bit);
+                imageView.setImageBitmap(bitmapToSave);
+                if (imgId.size()-1 ==imageIndex)
+                    imageIndex=0;
+            }
+        });
 
        if (M_TYPE == BOOK_MARK) {
            layoutPhoto.setVisibility(View.GONE);
@@ -84,16 +135,17 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
            }));
        }
        else {
-           DrawerCitacion drawerCitacion = null;
+
            AdapterRecyclerView adapterRecyclerView = new AdapterRecyclerView();
-           recyclerView.setLayoutManager( new GridLayoutManager(getContext(),3));
-           recyclerView.setAdapter(adapterRecyclerView);
+           //recyclerView.setLayoutManager( new GridLayoutManager(getContext(),3));
+           //recyclerView.setAdapter(adapterRecyclerView);
 
                drawerCitacion = new DrawerCitacion(EditorBottomSheet.this.getContext(), getSelectedText());
                adapterRecyclerView.setDrawerCitation(drawerCitacion,imageView,bitmapToSave);
 
 
            bitmapToSave = drawerCitacion.getCitation(null);
+           colorIndex+=1;
            //bitmapToSave = BitmapFactory.decodeByteArray(drawnImageData, 0, drawnImageData.length);
 
            imageView.setImageBitmap(bitmapToSave);
@@ -340,9 +392,9 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
 
     @Override
     public void onResume() {
-        recyclerView.getLayoutParams().height = (int) ( Util.getScreenDisplayMetrics(
+        /*recyclerView.getLayoutParams().height = (int) ( Util.getScreenDisplayMetrics(
                 getContext()
-        ).heightPixels * 0.40f );
+        ).heightPixels * 0.40f );*/
         super.onResume();
     }
 
@@ -351,9 +403,13 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
     private static TextView mTextSelected;
     private static int M_TYPE;
     private LinearLayout action,layoutPhoto;
+    private ImageButton randomColor,randomImage;
+    DrawerCitacion drawerCitacion = null;
+    private int imageIndex = 0,colorIndex=0;
+
     int IMAGE =1;
     int BOOK_MARK =2;
-    RecyclerView recyclerView;
+    //RecyclerView recyclerView;
     ImageView imageView;
     Bitmap bitmapToSave;
 }

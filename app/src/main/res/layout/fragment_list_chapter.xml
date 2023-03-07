@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_bg"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.bible.ChapterDialogFragment"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -11,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:background="#FFA5A5A5"
+        android:background="#F2283593"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_height="wrap_content">
         <ImageView
@@ -20,8 +19,8 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:padding="10dp"
-            android:layout_marginEnd="10dp"
+            android:padding="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
             android:src="@drawable/favorite_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:tint="#7E3535" />
@@ -29,9 +28,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="5dp"
-           android:paddingBottom="5dp"
-            android:layout_margin="5dp"
+            android:layout_marginTop="@dimen/_5sdp"
+           android:paddingBottom="@dimen/_5sdp"
+            android:layout_margin="@dimen/_5sdp"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintEnd_toStartOf="@id/favorite"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +43,7 @@
                 android:textColor="@color/white"
                 android:fontFamily="@font/tangerine_regular"
                 android:maxLines="1"
-                android:paddingStart="3dp"
+                android:paddingStart="@dimen/_3sdp"
                 android:text="Jenèz"
                 android:textSize="40sp"
                 android:textStyle="bold"
@@ -59,7 +58,7 @@
                 android:id="@+id/chap_"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="3dp"
+                android:paddingStart="@dimen/_3sdp"
                 android:textColor="@color/white"
                 android:includeFontPadding="false"
                 app:layout_constraintStart_toStartOf="parent"
@@ -72,14 +71,13 @@
         android:id="@+id/chorus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
         android:background="@drawable/bg_edittext"
-        android:padding="5dp"
-        android:layout_marginRight="3dp"
-        android:textSize="16sp"
-        android:textColor="@color/white"
-        android:translationZ="23dp"
-        android:layout_marginBottom="40dp"
+        android:padding="@dimen/_5sdp"
+        android:layout_marginRight="@dimen/_3sdp"
+        android:textSize="@dimen/_12ssp"
+        android:visibility="gone"
+        android:translationZ="@dimen/_23sdp"
+        android:layout_marginBottom="@dimen/_40sdp"
         app:layout_constraintBottom_toTopOf="@id/fab_clos"
         app:layout_constraintRight_toRightOf="parent"
         android:text="scroll to chorus"/>
@@ -99,7 +97,7 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/_8sdp"
         app:layout_constraintTop_toBottomOf="@id/header"
         app:layout_constraintBottom_toBottomOf="parent">
         <LinearLayout
@@ -108,12 +106,12 @@
             android:orientation="vertical">
             <TextView
                 android:id="@+id/text"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="12dp"
+                android:paddingBottom="@dimen/_12sdp"
                 android:textIsSelectable="true"
-                android:lineHeight="33dp"
+                android:lineHeight="@dimen/_23sdp"
                 android:text="bla bla bla blaLe
             livre dans
             lequel, tout péché est écrit"
@@ -122,8 +120,8 @@
                 android:id="@+id/page"
                 android:layout_width="match_parent"
                 android:textStyle="bold"
-                android:paddingTop="10dp"
-                android:paddingBottom="200dp"
+                android:paddingTop="@dimen/_10sdp"
+                android:paddingBottom="@dimen/_200sdp"
                 android:layout_height="wrap_content"
                 android:textAlignment="textEnd"
                 android:text="Page: 123"/>
@@ -135,7 +133,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/fab_clos"
         app:fabSize="auto"
-
         android:contentDescription="close dialog"
         app:layout_constraintLeft_toLeftOf="parent"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
@@ -143,7 +140,7 @@
         android:background="@color/teal_700"
         android:backgroundTint="#FFA5A5A5"
         app:backgroundTint="@android:color/transparent"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="@dimen/_10sdp"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <include

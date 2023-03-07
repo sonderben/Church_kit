@@ -15,20 +15,35 @@ import androidx.recyclerview.widget.RecyclerView;
 //import com.churchkit.churchkit.Model.Song;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.database.entity.song.Song;
+import com.churchkit.churchkit.database.entity.song.SongFavoriteWrapper;
+import com.churchkit.churchkit.database.entity.song.SongHistoryWrapper;
 import com.churchkit.churchkit.ui.song.SongDialogFragment;
 
+import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.ListSongsViewHolder> {
 
     List<Song>songList;
+    List<SongFavoriteWrapper>songFavoriteWrapperList;
+    List<SongHistoryWrapper> songHistoryWrapperList;
     FragmentManager fm;
     String songBookName;
 
-    public ListSongsAdapter(List<Song>songList, FragmentManager fm,String songBookName){
+    public ListSongsAdapter( FragmentManager fm,String songBookName){
         this.songBookName = songBookName;
-        this.songList=songList;
         this.fm = fm;
+    }
+
+    public  void setSongList(List<Song>songList){
+       this.songList = songList;
+    }
+    public void setSongFavoriteWrapperList(List<SongFavoriteWrapper>sfw){
+        songFavoriteWrapperList = sfw;
+    }
+    public void setSongHistoryWrapperList(List<SongHistoryWrapper>shw){
+        songHistoryWrapperList = shw;
     }
 
     @NonNull
@@ -41,33 +56,74 @@ public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.List
     @Override
     public void onBindViewHolder(@NonNull ListSongsViewHolder holder, int position) {
 
-        final Song tempSong = songList.get(position);
-        holder.title.setText(tempSong.getTitle());
-        holder.number.setText( formatNumberToString( tempSong.getPosition() ) );
-            holder.imgBookMark.setVisibility(View.INVISIBLE);
+        if (songList != null){
+            final Song tempSong = songList.get(position);
+            holder.title.setText(tempSong.getTitle());
+            holder.number.setText( formatNumberToString( tempSong.getPosition() ) );
+            holder.date.setVisibility(View.GONE);
 
-        holder.itemView.setOnClickListener(view -> {
-            SongDialogFragment listChapter = SongDialogFragment.newInstance(tempSong.getSongID(),formatNumberToString(tempSong.getPosition()) +songBookName, tempSong.getTitle());
-            listChapter.show(fm,"kk");
-        } );
+            holder.itemView.setOnClickListener(view -> {
+                SongDialogFragment listChapter = SongDialogFragment.newInstance(tempSong.getSongID(),formatNumberToString(tempSong.getPosition()) +songBookName, tempSong.getTitle());
+                listChapter.show(fm,"kek");
+            } );
+        }else if (songFavoriteWrapperList != null){
+            final Song tempSong = songFavoriteWrapperList.get(position).getSong();//songList.get(position);
+            holder.title.setText(tempSong.getTitle());
+            holder.number.setText( formatNumberToString( tempSong.getPosition() ) );
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis( songFavoriteWrapperList.get(position).getDate() );
+            DateFormat dateFormat=DateFormat.getDateInstance(DateFormat.MEDIUM);
+
+            holder.date.setText( dateFormat.format(calendar.getTime()) );
+
+            holder.itemView.setOnClickListener(view -> {
+                songBookName = songFavoriteWrapperList.get(holder.getAbsoluteAdapterPosition()).getSongBookName();
+                SongDialogFragment listChapter = SongDialogFragment.newInstance(tempSong.getSongID(),/*formatNumberToString(tempSong.getPosition()) +*/songBookName, tempSong.getTitle());
+                listChapter.show(fm,"kk");
+            } );
+        }else if (songHistoryWrapperList!=null){
+            final Song tempSong = songHistoryWrapperList.get(position).getSong();//songList.get(position);
+            holder.title.setText(tempSong.getTitle());
+            holder.number.setText( formatNumberToString( tempSong.getPosition() ) );
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis( songHistoryWrapperList.get(position).getDate() );
+            DateFormat dateFormat=DateFormat.getDateInstance(DateFormat.MEDIUM);
+
+            holder.date.setText( dateFormat.format(calendar.getTime()) );
+
+            holder.itemView.setOnClickListener(view -> {
+                songBookName = songHistoryWrapperList.get(holder.getAbsoluteAdapterPosition()).getSongBookName();
+                SongDialogFragment listChapter = SongDialogFragment.newInstance(tempSong.getSongID(),/*formatNumberToString(tempSong.getPosition()) +*/songBookName, tempSong.getTitle());
+                listChapter.show(fm,"kk");
+            } );
+        }
+
     }
 
     @Override
     public int getItemCount() {
-        return songList.size();
+        if (songList != null){
+            return songList.size();
+        }
+        if (songHistoryWrapperList != null){
+            return songHistoryWrapperList.size();
+        }
+        if (songFavoriteWrapperList != null){
+            return songFavoriteWrapperList.size();
+        }
+        return 0;
     }
 
     class ListSongsViewHolder extends RecyclerView.ViewHolder{
 
-        TextView number,title;
-        ImageView imgBookMark;
+        TextView number,title,date;
         public ListSongsViewHolder(@NonNull View itemView) {
             super(itemView);
             number = itemView.findViewById(R.id.number);
             title = itemView.findViewById(R.id.title);
-            imgBookMark = itemView.findViewById(R.id.img_bookmark);
-
-
+            date = itemView.findViewById(R.id.date);
         }
     }
 

@@ -23,6 +23,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class Util {
+    public final static String FROM_SONG_FAVORITE= "FROM_SONG_FAVORITE";
+    public final static String FROM_SONG_HISTORY = "FROM_SONG_HISTORY";
+    public final static String FROM_SONG_HOPE = "FROM_SONG_HOPE";
+
+    public final static String FROM_BIBLE_FAVORITE= "FROM_BIBLE_FAVORITE";
+    public final static String FROM_BIBLE_HISTORY = "FROM_BIBLE_HISTORY";
+    public final static String FROM_BIBLE = "FROM_BIBLE";
+
     private static JSONObject getJsonObjectFromAsset(Context context) throws IOException, JSONException {
         AssetManager assetManager = context.getAssets();
         InputStream inputStream = assetManager.open("data.json");

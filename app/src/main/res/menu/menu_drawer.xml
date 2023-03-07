@@ -7,25 +7,28 @@
             android:title="Song">
             <menu>
                 <item
-                    android:id="@+id/song_history"
+                    android:id="@+id/songHistory"
                     android:icon="@drawable/song_24"
                     app:actionViewClass="android.widget.TextView"
-                    android:title="History" />
+                    android:title="Histories" />
                 <item
+                    android:id="@+id/songFavorite"
                     android:icon="@drawable/song_24"
-                    android:title="Bookmark" />
+                    android:title="Favorites" />
             </menu>
         </item>
 
         <item
-            android:title="Bible">
+            android:title="Chapter">
             <menu>
                 <item
+                    android:id="@+id/bibleHistory"
                     android:icon="@drawable/song_24"
-                    android:title="History" />
+                    android:title="Histories" />
                 <item
+                    android:id="@+id/bibleFavorite"
                     android:icon="@drawable/song_24"
-                    android:title="Bookmark" />
+                    android:title="Favorites" />
             </menu>
         </item>
 
