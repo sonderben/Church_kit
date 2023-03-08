@@ -41,12 +41,16 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/stepper"/>
         <TextView
+            android:id="@+id/description_letter_size"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:maxHeight="@dimen/_40sdp"
+            android:maxLines="2"
+            android:ellipsize="end"
             app:layout_constraintLeft_toRightOf="@id/label_txt_size"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider_txt_size"
-            android:text="Increase the size of the letters of the song and the chapters of the bible."/>
+            android:text="Increase or decrease the font size of the bible texts and songs."/>
     </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lay_font"
@@ -81,12 +85,13 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/spinner_font"/>
         <TextView
+            android:id="@+id/description_letter_font"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toRightOf="@id/label_txt_font"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider_txt_font"
-            android:text="Increase the size of the letters of the song and the chapters of the bible."/>
+            android:text="Choose font style for Bible texts and songs."/>
     </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lay_chorus"
@@ -126,7 +131,47 @@
             app:layout_constraintLeft_toRightOf="@id/label_txt_chorus"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider_txt_chorus"
-            android:text="Increase the size of the letters of the song and the chapters of the bible."/>
+            android:text="Make the Chorus button appear when there is a chorus in a song."/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/lay_song_abbr"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/lay_chorus"
+        android:layout_marginTop="@dimen/_24sdp"
+        android:background="@color/bg_item_config"
+        android:padding="@dimen/_5sdp"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/label_song_abbr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/switch_song_abbr"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/switch_song_abbr"
+            android:text="Song abbr. color"/>
+
+        <Switch
+            android:id="@+id/switch_song_abbr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider_txt_song_abbr"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingVertical="@dimen/_25sdp"
+            app:layout_constraintLeft_toRightOf="@id/label_song_abbr"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/switch_song_abbr"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/label_song_abbr"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_txt_song_abbr"
+            android:text="Assign a different color to each part of the songbook."/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

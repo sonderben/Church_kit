@@ -52,8 +52,8 @@ public class SongHopeFragment extends Fragment {
         gridLayoutManager = new GridLayoutManager(getContext(),1);
         mRecyclerView.addItemDecoration(listGridItemDeco);
         mRecyclerView.setLayoutManager(gridLayoutManager);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
-        mRecyclerView.addItemDecoration(dividerItemDecoration);
+        /*DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
+        mRecyclerView.addItemDecoration(dividerItemDecoration);*/
 
 
 
@@ -80,16 +80,13 @@ public class SongHopeFragment extends Fragment {
 
 
         ChurchKitDb churchKitDb = ChurchKitDb.getInstance(getContext());
-        churchKitDb.songBookDao().getAllSongBook().observe(requireActivity(), new Observer<List<SongBook>>() {
-            @Override
-            public void onChanged(List<SongBook> songBooks) {
-                if(songBooks!=null){
-                    homeAdapter = new SongHopeAdapter(
-                            getTypeView(),songBooks,getActivity().getSupportFragmentManager()
-                    );
+        churchKitDb.songBookDao().getAllSongBook().observe(requireActivity(), songBooks -> {
+            if(songBooks!=null){
+                homeAdapter = new SongHopeAdapter(
+                        getTypeView(),songBooks,getActivity().getSupportFragmentManager()
+                );
 
-                    mRecyclerView.setAdapter(homeAdapter);
-                }
+                mRecyclerView.setAdapter(homeAdapter);
             }
         });
 

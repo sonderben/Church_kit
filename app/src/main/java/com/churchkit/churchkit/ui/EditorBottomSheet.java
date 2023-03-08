@@ -1,12 +1,13 @@
 package com.churchkit.churchkit.ui;
 
+import static com.churchkit.churchkit.Util.BOOK_MARK;
+
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -21,7 +22,6 @@ import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,21 +30,19 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.churchkit.churchkit.MyDrawer;
 import com.churchkit.churchkit.R;
+import com.churchkit.churchkit.Util;
 import com.churchkit.churchkit.ui.util.ColorPicker;
 import com.churchkit.churchkit.ui.util.DrawerCitacion;
-import com.churchkit.churchkit.ui.util.Util;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -66,12 +64,15 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
        View root = inflater.inflate(R.layout.fragment_editor_bottom_sheet,container,false);
 
        linearLayout = root.findViewById(R.id.linear_layout_color_picker);
-        //recyclerView = root.findViewById(R.id.recyclerview_ebs);
         imageView = root.findViewById(R.id.my_image_view);
         layoutPhoto = root.findViewById(R.id.layout_photo);
         action = root.findViewById(R.id.action);
         randomColor = root.findViewById(R.id.random_color);
         randomImage = root.findViewById(R.id.random_img);
+
+        TextView textColor = root.findViewById(R.id.text_color);
+        TextView openGallery = root.findViewById(R.id.open_gallery);
+
 
         List<Integer> imgId = Arrays.asList(
                R.drawable.img1 ,
@@ -83,22 +84,69 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
          R.drawable.img7,
          R.drawable.img8
         );
+
+
         List<Integer> colorId = Arrays.asList(
-                Color.TRANSPARENT ,
+                /*Color.TRANSPARENT ,
                 Color.RED,
                 Color.GREEN,
                 Color.BLACK,
                 Color.BLUE,
-                Color.WHITE,
                 Color.GRAY,
-                Color.MAGENTA
+                Color.MAGENTA*/
+                com.churchkit.churchkit.ui.util.Util.getColorByPosition(7),
+                com.churchkit.churchkit.ui.util.Util.getColorByPosition(2),
+                com.churchkit.churchkit.ui.util.Util.getColorByPosition(3),
+                //com.churchkit.churchkit.ui.util.Util.getColorByPosition(4),
+                Color.WHITE,
+                com.churchkit.churchkit.ui.util.Util.getColorByPosition(5),
+                com.churchkit.churchkit.ui.util.Util.getColorByPosition(6),
+                com.churchkit.churchkit.ui.util.Util.getColorByPosition(1),
+                com.churchkit.churchkit.ui.util.Util.getColorByPosition(8),
+                com.churchkit.churchkit.ui.util.Util.getColorByPosition(9)
+        );
+        List<Integer> colorFgId = Arrays.asList(
+
+                Color.WHITE,
+                Color.GREEN,
+                Color.BLACK,
+                Color.BLUE,
+                Color.GRAY,
+                Color.MAGENTA,
+                Color.RED
+
         );
 
+        openGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent,2);
+            }
+        });
+
+        textColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (colorFgId.size()-1>newColorIndex) {
+                    bitmapToSave = drawerCitacion.getCitationWithNewFgColor(colorFgId.get(newColorIndex));
+                    newColorIndex += 1;
+                    imageView.setImageBitmap(bitmapToSave);
+                }
+                else {
+                    newColorIndex = 0;
+                }
+
+
+                //Toast.makeText(getContext(),"clicked: "+newColorIndex,Toast.LENGTH_SHORT).show();
+            }
+        });
         randomColor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(),"li click",Toast.LENGTH_LONG).show();
-                bitmapToSave=drawerCitacion.getCitation(colorId.get( colorIndex ));
+                bitmapToSave=drawerCitacion.getCitationWithBgColor(colorId.get( colorIndex ));
                 colorIndex+=1;
                 imageView.setImageBitmap(bitmapToSave);
                 if (colorId.size()-1 ==colorIndex)
@@ -113,7 +161,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
                 imageIndex+=1;
                 Bitmap bitmap = ( (BitmapDrawable) drawable ).getBitmap(); //
                 Bitmap bit = bitmap.copy(Bitmap.Config.ARGB_8888,true);
-                bitmapToSave=drawerCitacion.getCitation(bit);
+                bitmapToSave=drawerCitacion.getCitationWithBgColor(bit);
                 imageView.setImageBitmap(bitmapToSave);
                 if (imgId.size()-1 ==imageIndex)
                     imageIndex=0;
@@ -130,21 +178,20 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
 
                int color = Color.parseColor(stringColor.replace("#", "#6b"));
                spannable.setSpan(new BackgroundColorSpan(color), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-               mMode.finish();
+               if (mMode != null)
+                mMode.finish();
                EditorBottomSheet.this.dismiss();
            }));
        }
        else {
 
            AdapterRecyclerView adapterRecyclerView = new AdapterRecyclerView();
-           //recyclerView.setLayoutManager( new GridLayoutManager(getContext(),3));
-           //recyclerView.setAdapter(adapterRecyclerView);
 
-               drawerCitacion = new DrawerCitacion(EditorBottomSheet.this.getContext(), getSelectedText());
+               drawerCitacion = new DrawerCitacion(EditorBottomSheet.this.getContext(), Util.getSelectedText(mTextSelected));
                adapterRecyclerView.setDrawerCitation(drawerCitacion,imageView,bitmapToSave);
 
 
-           bitmapToSave = drawerCitacion.getCitation(null);
+           bitmapToSave = drawerCitacion.getCitationWithNewFgColor(Color.RED);
            colorIndex+=1;
            //bitmapToSave = BitmapFactory.decodeByteArray(drawnImageData, 0, drawnImageData.length);
 
@@ -156,17 +203,19 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
 
        TextView downloadImage = root.findViewById(R.id.download_image);
        TextView statusWhatsapp = root.findViewById(R.id.status_whatsapp);
+        TextView instagram = root.findViewById(R.id.instagram);
 
        statusWhatsapp.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               //if (isWhatsAppStatusSupported(getContext())){
-                   setWhatsAppStatus(bitmapToSave);
-                   Toast.makeText(getContext(),"button clicked",Toast.LENGTH_LONG).show();
-               /*}else {
-                   Toast.makeText(getContext(),"don't have whatsapp",Toast.LENGTH_LONG).show();
-               }*/
 
+               sendBitmapToOtherApp(getContext(),"com.whatsapp",bitmapToSave);
+           }
+       });
+       instagram.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               sendBitmapToOtherApp(getContext(),"com.instagram.android",bitmapToSave);
            }
        });
 
@@ -181,48 +230,26 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        mMode.finish();
+        if (mMode != null)
+            mMode.finish();
         // Your code here
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-       // super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK){
-
-                //getImageFromGallery(data.getData());
-
-
-                DrawerCitacion drawerCitacion = new DrawerCitacion(EditorBottomSheet.this.getContext(), getSelectedText());
-
             try {
-                bitmapToSave = drawerCitacion.getCitation(getContext(),data.getData());
+                bitmapToSave = drawerCitacion.getCitationWithBgColor(getContext(),data.getData());
                 imageView.setImageBitmap(bitmapToSave);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            //bitmapToSave = BitmapFactory.decodeByteArray(drawnImageData, 0, drawnImageData.length);
-
-
-
-
         }
 
 
     }
 
-    private String getSelectedText() {
-        String selectedText = null;
 
-        int start = mTextSelected.getSelectionStart();
-        int end = mTextSelected.getSelectionEnd();
-
-        if (start != -1 && end != -1) {
-            selectedText = mTextSelected.getText().toString().substring(start, end);
-        }
-
-        return selectedText;
-    }
     private void saveImageToGallery(Bitmap bitmap)  {
 
         File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/MyDirectory/");
@@ -321,7 +348,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
                          Drawable drawable = getContext().getDrawable( img.get( holder.getAbsoluteAdapterPosition() ) );
                          Bitmap bitmap = ( (BitmapDrawable) drawable ).getBitmap(); //
                          Bitmap bit = bitmap.copy(Bitmap.Config.ARGB_8888,true);
-                         bitmapToSave=drawerCitation.getCitation(bit);
+                         bitmapToSave=drawerCitation.getCitationWithBgColor(bit);
                          imageView.setImageBitmap(bitmapToSave);
 
                      }
@@ -341,46 +368,38 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
 
 
     }
-    public void  sendToWhatsapp(){
-        // Se convierte el bitmap en un array de bytes
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmapToSave.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] imageBytes = baos.toByteArray();
-
-// Se crea el intent para compartir el contenido como un estado de WhatsApp
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND);
-        intent.setPackage("com.whatsapp");
-        intent.putExtra(Intent.EXTRA_STREAM, imageBytes);
-        intent.setType("image/png");
-        intent.putExtra("jid", "status@broadcast");
 
 
-        getContext().startActivity(Intent.createChooser(intent, "Compartir como estado de WhatsApp"));
-
-    }
-    private boolean isWhatsAppStatusSupported(Context context) {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND);
-        intent.setType("image/*");
-        intent.setPackage("com.whatsapp");
-        PackageManager pm = context.getPackageManager();
-        return pm.resolveActivity(intent, 0) != null;
-    }
-
-
-    private void setWhatsAppStatus(Bitmap bitmap) {
+    public static void sendBitmapToOtherApp(Context context,String packageApp, Bitmap bitmap) {
+        FileOutputStream outputStream = null;
+        File file = new File(context.getCacheDir(), "image.jpg");
         try {
-            Uri imageUri = getImageUri(bitmap);
-            Intent intent = new Intent("com.whatsapp.intent.action.SET_IMAGE");
-            intent.setType("image/*");
-            intent.putExtra(Intent.EXTRA_STREAM, imageUri);
-            intent.setPackage("com.whatsapp");
-            startActivity(intent);
-        } catch (Exception e) {
+            outputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Uri contentUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".fileprovider", file);
+
+        Intent sendIntent = new Intent("android.intent.action.SEND");
+        sendIntent.setPackage(packageApp);
+        sendIntent.setType("image/jpg");
+        sendIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+        sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        try {
+            context.startActivity(sendIntent);
+            //file.delete();
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(context, "La aplicacion no está instalado en tu dispositivo", Toast.LENGTH_SHORT).show();
+        }
     }
+
+
+
+
 
     private Uri getImageUri(Bitmap bitmap) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -390,26 +409,28 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
     }
 
 
-    @Override
-    public void onResume() {
-        /*recyclerView.getLayoutParams().height = (int) ( Util.getScreenDisplayMetrics(
-                getContext()
-        ).heightPixels * 0.40f );*/
-        super.onResume();
-    }
+
 
     private LinearLayout linearLayout;
     private static ActionMode mMode;
     private static TextView mTextSelected;
     private static int M_TYPE;
     private LinearLayout action,layoutPhoto;
-    private ImageButton randomColor,randomImage;
+    private TextView randomColor,randomImage;
     DrawerCitacion drawerCitacion = null;
     private int imageIndex = 0,colorIndex=0;
+    private int newColorIndex = 0;
 
-    int IMAGE =1;
-    int BOOK_MARK =2;
-    //RecyclerView recyclerView;
+
     ImageView imageView;
     Bitmap bitmapToSave;
+
+    @Override
+    public void onDestroy() {
+        File file = new File(getContext().getCacheDir(), "image.jpg");
+        if (file.exists())
+            file.delete();
+        super.onDestroy();
+
+    }
 }

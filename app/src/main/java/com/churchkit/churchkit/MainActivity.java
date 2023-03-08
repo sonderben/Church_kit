@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         ActivityMainBinding activityMainBinding=ActivityMainBinding.inflate(getLayoutInflater());
 
-
+//Songs and scripture to nourish your soul.
         setContentView(activityMainBinding.getRoot());
 
 
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                     ,chapterJson.getString("bookName") + chapterJson.getInt("position"))
                                     );
                                 }
-                                System.out.println("bibleVerseList: "+Util.prepopulateBibleVerse(MainActivity.this,bibleVerseList));
+
                                 //Util.prepopulateBibleVerse(MainActivity.this,bibleVerseList);
                             }
                         }
@@ -178,7 +178,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Iterator<String> keys = data.keys();
                     while (keys.hasNext()){
                         JSONObject songBookJson =data.getJSONObject(keys.next());
-                        System.out.println("konbye fwa");
 
 
 
@@ -204,7 +203,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 JSONObject chapterJson = listChapterJson.getJSONObject(keys1.next());
 
                                 String songId = chapterJson.getString("id");
-                                //System.out.println("cooooooooool: "+songId);
                                 if (songId != null){
                                     Song song = new Song(
                                             songId
@@ -230,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         );
 
                                     }
-                                    System.out.println("bibleVerseList: "+Util.prepopulateSongVerse(MainActivity.this,bibleVerseList));
+
                                 }
                             }
                         }
@@ -259,7 +257,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void init(ActivityMainBinding activityMainBinding){
 
-
+        PhoneInfo phoneInfo = new PhoneInfo();
+        System.out.println("phone info: "+phoneInfo);
 
        // getJsonFromFirebaseStorage();
 
@@ -271,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if(bibleBooks.size() == 0){
                     prepopulateBibleFromJSonFile();
                 }
-                System.out.println(bibleBooks);
+
             }
         });
 
@@ -323,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mNavController.addOnDestinationChangedListener((navController1, navDestination, bundle) -> {
             if ( isBottomFragment(navController1) ){
-                toolbar.setNavigationIcon(R.drawable.more_24);
+                toolbar.setNavigationIcon(R.drawable.menu_24);
             }else
                 toolbar.setNavigationIcon(R.drawable.arrow_back_24);
         });

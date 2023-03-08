@@ -1,7 +1,10 @@
 package com.churchkit.churchkit;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.widget.TextView;
 
 import com.churchkit.churchkit.database.ChurchKitDb;
 import com.churchkit.churchkit.database.entity.bible.BibleBook;
@@ -31,6 +34,31 @@ public class Util {
     public final static String FROM_BIBLE_HISTORY = "FROM_BIBLE_HISTORY";
     public final static String FROM_BIBLE = "FROM_BIBLE";
 
+    public static final int IMAGE =1;
+     public static final int BOOK_MARK =2;
+
+    public static String getSelectedText(TextView tv) {
+        String selectedText = null;
+
+        int start = tv.getSelectionStart();
+        int end = tv.getSelectionEnd();
+
+        if (start != -1 && end != -1) {
+            selectedText = tv.getText().toString().substring(start, end);
+        }
+
+        return selectedText;
+    }
+    public static void copyText(Context context,String textToCopy,String label){
+
+        textToCopy += "\n https://www.church-kit.com/download";
+
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+
+        ClipData clip = ClipData.newPlainText(label, textToCopy);
+        clipboard.setPrimaryClip(clip);
+
+    }
     private static JSONObject getJsonObjectFromAsset(Context context) throws IOException, JSONException {
         AssetManager assetManager = context.getAssets();
         InputStream inputStream = assetManager.open("data.json");

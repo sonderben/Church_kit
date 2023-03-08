@@ -11,11 +11,8 @@
         app:showAsAction="always"
         android:title="Bookmark" />
     <item
-        android:id="@+id/r"
+        android:id="@+id/copy"
         app:showAsAction="always"
         android:title="Copy" />
-    <item
-        android:id="@+id/rf"
-        app:showAsAction="always"
-        android:title="Share" />
+
 </menu>

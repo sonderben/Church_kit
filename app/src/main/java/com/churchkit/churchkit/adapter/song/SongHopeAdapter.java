@@ -1,6 +1,8 @@
 package com.churchkit.churchkit.adapter.song;
 
 import android.annotation.SuppressLint;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.Util;
 import com.churchkit.churchkit.database.entity.song.SongBook;
@@ -27,6 +30,7 @@ public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPa
     int typeView;
     FragmentManager fm;
     List<SongBook> songBooks;
+    CKPreferences ckPreferences;
 
 
     public void setTypeView(int newTypeViewHolder,int oldTypeViewHolder) {
@@ -42,6 +46,7 @@ public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPa
         this.fm = fm;
         this.songBooks = songBooks;
         this.typeView = typeView;
+        ckPreferences = new CKPreferences(fm.getPrimaryNavigationFragment().getContext());
     }
 
     @NonNull
@@ -62,6 +67,11 @@ public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPa
     public void onBindViewHolder(@NonNull ListPartViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.title.setText(songBooks.get(position).getName());
         holder.tileAcronym.setText(songBooks.get(position).getAbbreviation());
+
+        if (ckPreferences.getabbrColor())
+            holder.tileAcronym.setBackgroundTintList(ColorStateList.valueOf(com.churchkit.churchkit.ui.util.Util.getColorByPosition( holder.getAbsoluteAdapterPosition()+1 )));
+
+
         holder.number.setText(songBooks.get(position).getSongAmount()+" chants");
 
        holder.cardView.setOnClickListener(new View.OnClickListener() {

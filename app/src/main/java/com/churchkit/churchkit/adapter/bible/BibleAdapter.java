@@ -100,12 +100,13 @@ public class BibleAdapter extends RecyclerView.Adapter {
                 BibleBook bibleBook = bibleBooks.get(position);
                 Bundle bundle = new Bundle();
                 bundle.putString("ID", bibleBook.getBibleBookId());
+                System.out.println("eskew egal a null: "+bibleBook.getBibleBookId());
                 bundle.putString("BOOK_NAME_ABBREVIATION", bibleBook.getAbbreviation());
                 NavController navController = Navigation.findNavController(view);
                 navController.getGraph().findNode(R.id.listChapterFragment).setLabel(bibleBook.getTitle()+" ");
 
                 if (fromBookByTestamentFragment){
-                    navController.navigate(R.id.action_listChapterByTestamentFragment_to_listChapterFragment);
+                    navController.navigate(R.id.action_listChapterByTestamentFragment_to_listChapterFragment,bundle);
                 }else {
                     navController.navigate(R.id.action_bookmarkFragment_to_listChapterFragment,bundle);
                 }

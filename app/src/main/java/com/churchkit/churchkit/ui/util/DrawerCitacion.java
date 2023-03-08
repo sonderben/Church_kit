@@ -7,23 +7,18 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.TypedValue;
-import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
 
 import com.churchkit.churchkit.R;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -36,9 +31,15 @@ public class DrawerCitacion {
     private int  canvasHeight;
     private Context context;
     private Canvas canvas;
-    private int color;
+    private int bgColor;
+    private TextPaint appNamePaint;
+    private Bitmap tempImage;
+    private int tempBgColor;
+    private int fgColor ;
+    private int tempFgColor;
     //private int textSize;
-    Typeface typeface ;//= Typeface.createFromAsset(getAssets(), "fonts/myfont.ttf"); // replace "myfont.ttf" with the name of your custom font file
+    private Typeface typeface ;
+    private Typeface tempTypeface ;
 
 
     private int ratio=1;
@@ -47,19 +48,18 @@ public class DrawerCitacion {
         this.context = context;
         this.text = textToDraw;
         this.textSize = width/20;
+        appNamePaint = new TextPaint();
+        appNamePaint.setShadowLayer(1,2,4,Color.BLACK);
         textPaint = new TextPaint();
         textPaint.setTextSize(textSize);
         textPaint.setColor(Color.WHITE);//font/robotolight.ttf
-        typeface =  ResourcesCompat.getFont(context, R.font.robotolight);
+        typeface = Typeface.SANS_SERIF;  //ResourcesCompat.getFont(context, R.font.robotolight);
         textPaint.setTypeface(typeface);
+        appNamePaint.setTypeface(typeface);
 
     }
 
     public void draw(Canvas canvas) {
-
-
-
-
         Paint paint = new Paint();
         //int width = 400; // width of the canvas
         int maxHeight = 100; // maximum height of the StaticLayout in dp
@@ -75,13 +75,15 @@ public class DrawerCitacion {
             Rect imageRect = new Rect(0, 0, width, canvasHeight);
             canvas.drawBitmap(image, null, imageRect, null);
         }else {
-            if (color != Color.TRANSPARENT)
-                canvas.drawColor(color);
+            if (bgColor != Color.TRANSPARENT)
+                canvas.drawColor(bgColor);
         }
 
+        textPaint.setColor(fgColor);
+        //textPaint.setColor(Color.WHITE);
 
 
-        StaticLayout yourLayout = StaticLayout.Builder.obtain(text, 0, text.length(), textPaint, canvas.getWidth())
+        StaticLayout yourLayout = StaticLayout.Builder.obtain(text, 0, text.length(), textPaint, canvas.getWidth()-60)
                 //.setMaxLines(maxLines)
                 .setEllipsize(TextUtils.TruncateAt.END)
                 .setAlignment(Layout.Alignment.ALIGN_CENTER)
@@ -100,8 +102,8 @@ public class DrawerCitacion {
 
 
         String appName = "Church Kit";
-        TextPaint appNamePaint = new TextPaint();
-        appNamePaint.setColor(Color.RED);
+
+        appNamePaint.setColor(Color.WHITE);
         this.textSize = width/20;
         appNamePaint.setTextSize(textSize);
 
@@ -114,6 +116,11 @@ public class DrawerCitacion {
 
 
         canvas.translate(canvas.getWidth()-appNameWidth, (canvas.getHeight() )-appNameHeight-20);
+
+        int dy = (canvas.getHeight() )-appNameHeight-20;
+        int dx = (canvas.getHeight() )-appNameHeight-20;
+        canvas.drawLine((canvas.getHeight() )-appNameHeight,dy,(canvas.getHeight() ),dy,textPaint);
+
         appNameLayout.draw(canvas);
 
 
@@ -130,29 +137,62 @@ public class DrawerCitacion {
     }
 
 
-    public Bitmap getCitation(Bitmap bitmap){
+    public Bitmap getCitationWithBgColor(Bitmap bitmap){
         canvasHeight = width * ratio;
         Bitmap bit = Bitmap.createBitmap(width, canvasHeight, Bitmap.Config.ARGB_8888);
+
+        this.bgColor = this.tempBgColor;
+        this.typeface = tempTypeface;//
         image = bitmap;
+        tempImage = bitmap;
+        tempBgColor = 0;
+        canvas = new Canvas(bit);
+        draw(canvas);
+        return bit;
+    }
+    public Bitmap getCitationWithNewFgColor(int color){
+        canvasHeight = width * ratio;
+        Bitmap bit =  Bitmap.createBitmap(width,canvasHeight,Bitmap.Config.ARGB_8888);
+         this.bgColor = this.tempBgColor;
+        this.image = this.tempImage;
+        this.typeface = tempTypeface;
+         this.fgColor = color;
+         tempFgColor = color;
+        canvas = new Canvas(bit);
+        draw(canvas);
+        return bit;
+    }
+    public Bitmap getCitationWithNewFontStyle(int idFont){
+        canvasHeight = width * ratio;
+        Bitmap bit =  Bitmap.createBitmap(width,canvasHeight,Bitmap.Config.ARGB_8888);
+        this.bgColor = this.tempBgColor;
+        this.image = this.tempImage;
+        this.typeface =   ResourcesCompat.getFont(context, idFont);
         canvas = new Canvas(bit);
         draw(canvas);
         return bit;
     }
 
-    public Bitmap getCitation(int color){
+    public Bitmap getCitationWithBgColor(int color){
         canvasHeight = width * ratio;
         Bitmap bit = Bitmap.createBitmap(width, canvasHeight, Bitmap.Config.ARGB_8888);
-        this.color = color;
+        this.bgColor = color;
         image = null;
+        tempImage = null;
+        tempBgColor = color;
+        this.typeface = tempTypeface;
+        this.fgColor =/*Color.RED; */tempFgColor;
         canvas = new Canvas(bit);
         draw(canvas);
         return bit;
     }
 
-    public Bitmap getCitation(Context context,Uri uri) throws IOException {
+    public Bitmap getCitationWithBgColor(Context context, Uri uri) throws IOException {
         canvasHeight = width * ratio;
         Bitmap bit = Bitmap.createBitmap(width, canvasHeight, Bitmap.Config.ARGB_8888);
         image = getBitmapFromUri(context,uri);
+        tempImage = image;
+        tempBgColor = 0;
         canvas = new Canvas(bit);
         draw(canvas);
         return bit;
