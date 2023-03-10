@@ -35,12 +35,15 @@
         <item android:title="App">
             <menu>
                 <item
+                    android:id="@+id/aboutFragment"
                     android:icon="@drawable/song_24"
                     android:title="About" />
                 <item
+                    android:id="@+id/faqFragment"
                     android:icon="@drawable/song_24"
                     android:title="FAQ" />
                 <item
+                    android:id="@+id/donateFragment"
                     android:icon="@drawable/donate_48"
                     android:title="Donate" />
             </menu>

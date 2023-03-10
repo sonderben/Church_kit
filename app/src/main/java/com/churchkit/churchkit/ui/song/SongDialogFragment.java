@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Layout;
 import android.view.ActionMode;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
@@ -321,6 +323,9 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
                     churchKitDd.songFavoriteDao().insert(
                             new SongFavorite(mSongId,Calendar.getInstance().getTimeInMillis(), mReference)
                     );
+                    Toast toast=Toast.makeText(getContext(),"Add to favorite with success",Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.TOP,0,0);
+                    toast.show();
                 }
                 break;
             case R.id.more:

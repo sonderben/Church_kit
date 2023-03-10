@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.ActionMode;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -281,6 +282,9 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
                     db.bibleChapterFavoriteDao().insert(
                             new BibleChapterFavorite(mId, Calendar.getInstance().getTimeInMillis(), mReference)
                     );
+                    Toast toast=Toast.makeText(getContext(),"Add to favorite with success",Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.TOP,0,0);
+                    toast.show();
                 }
                 break;
             case R.id.more:

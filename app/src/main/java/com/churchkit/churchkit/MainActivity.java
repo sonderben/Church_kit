@@ -382,8 +382,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;
             case R.id.bibleHistory:
                 bundle.putString("FROM",Util.FROM_BIBLE_HISTORY);
-                mNavController.getGraph().findNode(R.id.listChapterFragment).setLabel(" Chapter Histories");
+                mNavController.getGraph().findNode(R.id.listChapterFragment).setLabel("Chapter Histories");
                 mNavController.navigate(R.id.listChapterFragment,bundle);
+                drawerLayout.close();
+                return true;
+            case R.id.aboutFragment:
+                mNavController.getGraph().findNode(R.id.aboutFragment).setLabel("About");
+                mNavController.navigate(R.id.aboutFragment);
+                drawerLayout.close();
+                return true;
+            case R.id.donateFragment:
+                mNavController.getGraph().findNode(R.id.donateFragment).setLabel("Donate");
+                mNavController.navigate(R.id.donateFragment);
+                drawerLayout.close();
+                return true;
+            case R.id.faqFragment:
+                mNavController.getGraph().findNode(R.id.faqFragment).setLabel("Faq");
+                mNavController.navigate(R.id.faqFragment);
                 drawerLayout.close();
                 return true;
         }
@@ -391,3 +406,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 }
+
+
+
+
+
+
+

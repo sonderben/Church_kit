@@ -117,5 +117,20 @@
         android:name="com.churchkit.churchkit.ui.song.SongFavoriteFragment"
         android:label="fragment_song_favorite"
         tools:layout="@layout/fragment_song_favorite" />
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.churchkit.churchkit.ui.aboutapp.AboutFragment"
+        android:label="fragment_about"
+        tools:layout="@layout/fragment_about" />
+    <fragment
+        android:id="@+id/donateFragment"
+        android:name="com.churchkit.churchkit.ui.aboutapp.DonateFragment"
+        android:label="fragment_donate"
+        tools:layout="@layout/fragment_donate" />
+    <fragment
+        android:id="@+id/faqFragment"
+        android:name="com.churchkit.churchkit.ui.aboutapp.FaqFragment"
+        android:label="fragment_faq"
+        tools:layout="@layout/fragment_faq" />
 
 </navigation>
