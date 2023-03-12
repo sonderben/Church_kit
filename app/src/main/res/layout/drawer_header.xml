@@ -8,11 +8,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 <ImageView
     android:id="@+id/icon_app"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="@dimen/_24sdp"
+    android:layout_height="@dimen/_24sdp"
 
-    android:src="@drawable/bible_24"
-    android:background="@android:color/darker_gray"
+    android:src="@mipmap/ic_launcher"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"/>
     <TextView

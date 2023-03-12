@@ -19,6 +19,7 @@ import com.churchkit.churchkit.database.entity.bible.BibleBook;
 import com.churchkit.churchkit.ui.bible.BibleFragment;
 import com.churchkit.churchkit.ui.bible.ChapterDialogFragment;
 import com.churchkit.churchkit.ui.bible.ListChapterFragment;
+import com.churchkit.churchkit.ui.util.Util;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
@@ -54,6 +55,8 @@ public class BibleAdapter extends RecyclerView.Adapter {
 
        if(viewType == 0){
            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_part_group_by_lang,parent,false);
+
+           view.getLayoutParams().height = (int) (Util.getScreenDisplayMetrics(parent.getContext()).heightPixels * 0.5f);
            return new GroupByTestamentViewHolder(view);
        }
        else {

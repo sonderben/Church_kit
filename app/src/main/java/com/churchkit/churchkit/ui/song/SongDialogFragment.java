@@ -108,7 +108,10 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
 
         //fab.setOnClickListener();
 
-        churchKitDd.verseDao().getAllVerseByIdSong(mSongId).observe(requireActivity(), verses -> tv.setText( listVerseToString(verses) ));
+        churchKitDd.verseDao().getAllVerseByIdSong(mSongId).observe(requireActivity(), verses -> {
+            System.out.println("m laaaaaa22: "+verses+" id: "+mSongId);
+            tv.setText(listVerseToString(verses));
+        });
 
         scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
             if (ckp.getButtonChorus())

@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     );
                                 }
 
-                                //Util.prepopulateBibleVerse(MainActivity.this,bibleVerseList);
+                                Util.prepopulateBibleVerse(MainActivity.this,bibleVerseList);
                             }
                         }
                     }
@@ -226,8 +226,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                         ,verseJson.getInt("position")
                                                         ,songId)
                                         );
-
                                     }
+                                    Util.prepopulateSongVerse(MainActivity.this,bibleVerseList);
 
                                 }
                             }
