@@ -68,11 +68,21 @@ public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPa
         holder.title.setText(songBooks.get(position).getName());
         holder.tileAcronym.setText(songBooks.get(position).getAbbreviation());
 
-        if (ckPreferences.getabbrColor())
-            holder.tileAcronym.setBackgroundTintList(ColorStateList.valueOf(com.churchkit.churchkit.ui.util.Util.getColorByPosition( holder.getAbsoluteAdapterPosition()+1 )));
+        if (ckPreferences.getabbrColor()) {
+            final int color = com.churchkit.churchkit.ui.util.Util.getColorByPosition(holder.getAbsoluteAdapterPosition() + 1);
+            holder.tileAcronym.setBackgroundTintList(
+                    ColorStateList.valueOf( color )
+            );
+           /* if (typeView == 2)
+                holder.tileAcronym.setTextColor(color);
+            else
+                holder.tileAcronym.setTextColor(Color.WHITE);*/
+        }
 
 
         holder.number.setText(songBooks.get(position).getSongAmount()+" chants");
+        if (holder.img != null)
+            holder.img.setImageResource( abbrToMipmapRessource( songBooks.get(holder.getAbsoluteAdapterPosition()).getAbbreviation() ) );
 
        holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,5 +134,13 @@ public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPa
         }
     }
 
+    private int abbrToMipmapRessource(String abbr){
+        switch (abbr){
+            case "CE": return R.mipmap.ce;
+            case "MJ": return R.mipmap.mj;
+            case "RN": return R.mipmap.rn;
+            default:return R.mipmap.nt;
+        }
+    }
 
 }

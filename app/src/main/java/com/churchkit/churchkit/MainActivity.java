@@ -1,10 +1,13 @@
 package com.churchkit.churchkit;
 
+import static com.churchkit.churchkit.ui.aboutapp.Payment.startPayment;
+
 import android.app.ActivityManager;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,6 +34,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.razorpay.Checkout;
+import com.razorpay.PaymentResultListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,7 +47,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PaymentResultListener {
 
 
     @Override
@@ -397,8 +402,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 drawerLayout.close();
                 return true;
             case R.id.donateFragment:
-                mNavController.getGraph().findNode(R.id.donateFragment).setLabel("Donate");
-                mNavController.navigate(R.id.donateFragment);
+                Checkout.preload( getApplicationContext() );
+                startPayment(MainActivity.this);
                 drawerLayout.close();
                 return true;
             case R.id.faqFragment:
@@ -409,6 +414,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         return false;
 
+    }
+
+    @Override
+    public void onPaymentSuccess(String s) {
+        Toast.makeText(MainActivity.this,"Thank you for your support.",Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public void onPaymentError(int i, String s) {
+       // Toast.makeText(MainActivity.this,"onPaymentError",Toast.LENGTH_LONG).show();
     }
 }
 

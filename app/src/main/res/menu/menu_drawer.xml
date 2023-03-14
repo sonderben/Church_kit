@@ -8,12 +8,13 @@
             <menu>
                 <item
                     android:id="@+id/songHistory"
-                    android:icon="@drawable/song_24"
+                    android:icon="@drawable/history_24"
                     app:actionViewClass="android.widget.TextView"
                     android:title="Histories" />
                 <item
                     android:id="@+id/songFavorite"
-                    android:icon="@drawable/song_24"
+                    app:iconTint="#f00"
+                    android:icon="@drawable/favorite_24"
                     android:title="Favorites" />
             </menu>
         </item>
@@ -23,11 +24,12 @@
             <menu>
                 <item
                     android:id="@+id/bibleHistory"
-                    android:icon="@drawable/song_24"
+                    android:icon="@drawable/history_24"
                     android:title="Histories" />
                 <item
                     android:id="@+id/bibleFavorite"
-                    android:icon="@drawable/song_24"
+                    app:iconTint="#f00"
+                    android:icon="@drawable/favorite_24"
                     android:title="Favorites" />
             </menu>
         </item>
@@ -36,15 +38,15 @@
             <menu>
                 <item
                     android:id="@+id/aboutFragment"
-                    android:icon="@drawable/song_24"
+                    android:icon="@drawable/about_24"
                     android:title="About" />
                 <item
                     android:id="@+id/faqFragment"
-                    android:icon="@drawable/song_24"
+                    android:icon="@drawable/faq_24"
                     android:title="FAQ" />
                 <item
                     android:id="@+id/donateFragment"
-                    android:icon="@drawable/donate_48"
+                    android:icon="@drawable/donate_24"
                     android:title="Donate" />
             </menu>
         </item>

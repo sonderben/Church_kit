@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.churchkit.churchkit.R;
+import com.churchkit.churchkit.Util;
 import com.churchkit.churchkit.database.entity.bible.BibleChapter;
 import com.churchkit.churchkit.database.entity.song.Song;
 
@@ -59,7 +60,7 @@ public class AutoCompleteTextViewAdapter extends ArrayAdapter<Object> implements
         if (object instanceof Song){
             Song song = (Song) object;
 
-            songPosition.setText( song.getPosition()+"" );
+            songPosition.setText( Util.formatNumberToString( song.getPosition() ) );
             title.setText( song.getTitle() );
             bookName.setText( song.getBookNameAbbr() );
         }else if (object instanceof BibleChapter){

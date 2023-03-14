@@ -3,6 +3,7 @@ package com.churchkit.churchkit.ui.song;
 
 import static com.churchkit.churchkit.Util.BOOK_MARK;
 import static com.churchkit.churchkit.Util.IMAGE;
+import static com.churchkit.churchkit.ui.aboutapp.Payment.startPayment;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -34,6 +35,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 
 import com.churchkit.churchkit.CKPreferences;
+import com.churchkit.churchkit.MainActivity;
 import com.churchkit.churchkit.PhoneInfo;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.database.ChurchKitDb;
@@ -43,6 +45,7 @@ import com.churchkit.churchkit.database.entity.song.Verse;
 import com.churchkit.churchkit.ui.EditorBottomSheet;
 import com.churchkit.churchkit.ui.util.Util;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.razorpay.Checkout;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -69,6 +72,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
 
           favorite.setOnClickListener(this::onClick);
           more.setOnClickListener(this::onClick);
+          donate.setOnClickListener(this::onClick);
 
           churchKitDd.songFavoriteDao().existed(mSongId).observe(getViewLifecycleOwner(), songFavorite -> {
 
@@ -358,6 +362,8 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
                 });
                 break;
             case R.id.donate:
+                Checkout.preload( getContext().getApplicationContext() );
+                startPayment(SongDialogFragment.this.getActivity());
                 break;
             case R.id.fab_clos:
                 SongDialogFragment.this.dismiss();

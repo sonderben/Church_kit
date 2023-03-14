@@ -69,8 +69,7 @@ public class BibleFragment extends Fragment {
 
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),1));
         mRecyclerView.addItemDecoration(new GridSpacingIDeco(32));
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
-        mRecyclerView.addItemDecoration(dividerItemDecoration);
+
 
 
         AutoCompleteTextViewAdapter autoCompleteAdapter = new AutoCompleteTextViewAdapter(getContext());

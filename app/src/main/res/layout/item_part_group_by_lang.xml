@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardview1"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:cardCornerRadius="20dp"
         app:strokeColor="@color/white"
@@ -18,27 +18,30 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:orientation="vertical"
             android:layout_height="match_parent">
             <ImageView
                 android:id="@+id/img1"
                 android:layout_width="wrap_content"
-                android:layout_height="173dp"
+                android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:src="@mipmap/img_bg_french" />
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/book_number"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:textStyle="bold"
-                android:textSize="18sp"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_12ssp"
                 android:layout_marginRight="10dp"
-                android:textColor="@color/white"
                 android:text="9 Pati"
+                android:textColor="#FBFBFB"
+                android:shadowColor="#7F000000"
+                android:shadowDx="1"
+                android:shadowDy="1"
                 app:layout_constraintBottom_toBottomOf="@id/img1"
                 app:layout_constraintRight_toRightOf="@id/img1"
-                android:textAlignment="textEnd"
+                android:layout_marginBottom="5dp"
                 />
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/name"
@@ -49,6 +52,7 @@
                 android:text="Kreyòl"
                 app:layout_constraintTop_toBottomOf="@id/img1"
                 app:layout_constraintEnd_toEndOf="@id/img1"
+                app:layout_constraintStart_toStartOf="@id/img1"
                 android:textAlignment="center"
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>

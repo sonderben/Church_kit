@@ -56,7 +56,7 @@ public class BibleAdapter extends RecyclerView.Adapter {
        if(viewType == 0){
            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_part_group_by_lang,parent,false);
 
-           view.getLayoutParams().height = (int) (Util.getScreenDisplayMetrics(parent.getContext()).heightPixels * 0.5f);
+           //view.getLayoutParams().height = (int) (Util.getScreenDisplayMetrics(parent.getContext()).heightPixels * 0.5f);
            return new GroupByTestamentViewHolder(view);
        }
        else {
@@ -71,6 +71,8 @@ public class BibleAdapter extends RecyclerView.Adapter {
             Bundle bundle = new Bundle();
             if(position == 0) {
                 ((GroupByTestamentViewHolder) holder).textView.setText("Old Testament");
+                ( (GroupByTestamentViewHolder) holder ).img.setImageResource(R.mipmap.ot);
+                ( (GroupByTestamentViewHolder) holder ).bookNumber.setText("39 Books");
                 bundle.putInt("TESTAMENT",-2);
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -85,6 +87,8 @@ public class BibleAdapter extends RecyclerView.Adapter {
             if (position == 1) {
                 bundle.putInt("TESTAMENT",2);
                 ((GroupByTestamentViewHolder) holder).textView.setText("New Testament");
+                ( (GroupByTestamentViewHolder) holder ).img.setImageResource(R.mipmap.nt);
+                ( (GroupByTestamentViewHolder) holder ).bookNumber.setText("27 Books");
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -133,10 +137,16 @@ public class BibleAdapter extends RecyclerView.Adapter {
     }
 
     class GroupByTestamentViewHolder extends RecyclerView.ViewHolder{
-        TextView textView;
+        TextView textView,bookNumber;
+        ImageView img;
         public GroupByTestamentViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.name);
+            img = itemView.findViewById(R.id.img1);
+            bookNumber = itemView.findViewById(R.id.book_number);
+
+            //view.getLayoutParams().height = (int) (Util.getScreenDisplayMetrics(parent.getContext()).heightPixels * 0.5f);
+            //img.getLayoutParams().height = 100;
         }
     }
 

@@ -2,6 +2,7 @@ package com.churchkit.churchkit.ui.bible;
 
 import static com.churchkit.churchkit.Util.BOOK_MARK;
 import static com.churchkit.churchkit.Util.IMAGE;
+import static com.churchkit.churchkit.ui.aboutapp.Payment.startPayment;
 
 import android.graphics.Color;
 import android.graphics.Point;
@@ -39,6 +40,7 @@ import com.churchkit.churchkit.ui.EditorBottomSheet;
 import com.churchkit.churchkit.ui.song.SongDialogFragment;
 import com.churchkit.churchkit.ui.util.Util;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.razorpay.Checkout;
 
 import java.util.Calendar;
 import java.util.List;
@@ -67,10 +69,12 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         headerLayout = root.findViewById(R.id.header);
         chapTitle.setText(mChapterhapter);
         fab = root.findViewById(R.id.fab_clos);
+        donate = root.findViewById(R.id.donate);
         fab.setOnClickListener(x->this.dismiss());
         endingFavoriteImageView = root.findViewById(R.id.favorite);
         more = root.findViewById(R.id.more);
         more.setOnClickListener(this::onClick);
+        donate.setOnClickListener(this::onClick);
 
         setChapterHistory();
 
@@ -213,7 +217,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
     }
 
 
-    ImageView closeButton, endingFavoriteImageView,more;
+    ImageView donate, endingFavoriteImageView,more;
     TextView versets,bookReference,chapTitle;
     static String mId;
     static String mReference, mChapterhapter;
@@ -314,6 +318,8 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
                 });
                 break;
             case R.id.donate:
+                Checkout.preload( getContext().getApplicationContext() );
+                startPayment(ChapterDialogFragment.this.getActivity());
                 break;
             case R.id.fab_clos:
                 ChapterDialogFragment.this.dismiss();
