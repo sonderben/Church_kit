@@ -14,21 +14,30 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
 import com.churchkit.churchkit.R;
+import com.churchkit.churchkit.adapter.AutoCompleteTextViewAdapter;
 import com.churchkit.churchkit.adapter.bible.BibleAdapter;
 import com.churchkit.churchkit.database.ChurchKitDb;
 import com.churchkit.churchkit.database.entity.bible.BibleBook;
+import com.churchkit.churchkit.database.entity.bible.BibleChapter;
+import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.databinding.FragmentBibleBinding;
+import com.churchkit.churchkit.ui.song.SongDialogFragment;
+import com.churchkit.churchkit.ui.song.SongHopeFragment;
 import com.churchkit.churchkit.ui.util.GridSpacingIDeco;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
 import java.util.List;
 
@@ -40,6 +49,7 @@ public class BibleFragment extends Fragment {
 
         FragmentBibleBinding bookmarkBinding = FragmentBibleBinding.inflate(getLayoutInflater());
         mRecyclerView = bookmarkBinding.recyclerview;
+        autoCompleteTextView = bookmarkBinding.search;
 
         sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         db=ChurchKitDb.getInstance(getContext());
@@ -63,6 +73,38 @@ public class BibleFragment extends Fragment {
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
 
+        AutoCompleteTextViewAdapter autoCompleteAdapter = new AutoCompleteTextViewAdapter(getContext());
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                BibleChapter bibleChapter = (BibleChapter) autoCompleteAdapter.getItem(position);
+
+                ChapterDialogFragment dialogFragment =
+                        ChapterDialogFragment.newInstance(bibleChapter.getBibleChapterId()
+                                , bibleChapter.getBibleBookAbbr()+" chapter "+bibleChapter.getPosition());
+                dialogFragment.show(getChildFragmentManager(),"");
+            }
+        });
+        autoCompleteTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                ChurchKitDb.getInstance(BibleFragment.this.getContext()).bibleChapterDao().bibleChapterFullTextSearch(s.toString()).observe(getViewLifecycleOwner(), bibleChapters -> {
+                    autoCompleteAdapter.setSongs(bibleChapters);
+                    autoCompleteTextView.setAdapter( autoCompleteAdapter );
+                });
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
 
         onCreateMenu();
@@ -114,6 +156,7 @@ public class BibleFragment extends Fragment {
     }
     RecyclerView mRecyclerView;
     BibleAdapter mAdapter;
+    MaterialAutoCompleteTextView autoCompleteTextView;
     private final String IS_GROUP_BY_TESTAMENT="IS_GROUP_BY_TESTAMENT";
     SharedPreferences sharedPreferences;
     ChurchKitDb db;

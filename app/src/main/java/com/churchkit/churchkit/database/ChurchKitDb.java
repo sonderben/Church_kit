@@ -21,18 +21,20 @@ import com.churchkit.churchkit.database.dao.song.VerseDao;
 import com.churchkit.churchkit.database.entity.bible.BibleBook;
 import com.churchkit.churchkit.database.entity.bible.BibleChapter;
 import com.churchkit.churchkit.database.entity.bible.BibleChapterFavorite;
+import com.churchkit.churchkit.database.entity.bible.BibleChapterFts;
 import com.churchkit.churchkit.database.entity.bible.BibleChapterHistory;
 import com.churchkit.churchkit.database.entity.bible.BibleVerse;
 import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.database.entity.song.SongBook;
 import com.churchkit.churchkit.database.entity.song.SongFavorite;
+import com.churchkit.churchkit.database.entity.song.SongFts;
 import com.churchkit.churchkit.database.entity.song.SongHistory;
 import com.churchkit.churchkit.database.entity.song.Verse;
 
 //@TypeConverters({ChurchKitConverter.class})
 @Database(entities = {SongBook.class, Song.class, Verse.class, BibleBook.class, BibleChapter.class,
         BibleVerse.class, SongFavorite.class,BibleChapterFavorite.class,
-        BibleChapterHistory.class,SongHistory.class},version = 1,exportSchema = false)
+        BibleChapterHistory.class,SongHistory.class, SongFts.class, BibleChapterFts.class},version = 1,exportSchema = false)
 public abstract class ChurchKitDb extends RoomDatabase {
     public abstract SongBookDao songBookDao();
     public abstract SongDao songDao();

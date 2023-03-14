@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         chapterJson.getString("bookName") + chapterJson.getInt("position")
                                         ,chapterJson.getInt("position")
                                         ,songBookJson.getString("name")+songBookJson.getInt("position"));
+                                bibleChapter.setBibleBookAbbr( songBookJson.getString("abbr") );
 
                                 Util.prepopulateBibleChapter(MainActivity.this,bibleChapter);
 
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 List<BibleVerse> bibleVerseList = new ArrayList<>(30);
                                 for (int i = 0; i < bibleVerseArray.length(); i++) {
                                     JSONObject verseJson = bibleVerseArray.getJSONObject(i);
+
                                     bibleVerseList.add(
                                             new BibleVerse(
                                                     verseJson.getString("reference")+verseJson.getInt("position")
@@ -144,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                     ,verseJson.getString("reference")
                                                     ,verseJson.getString("verseText")
                                                     ,chapterJson.getString("bookName") + chapterJson.getInt("position"))
+
                                     );
                                 }
 
@@ -209,7 +212,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             ,chapterJson.getString("title")
                                             ,chapterJson.getInt("position")
                                             ,chapterJson.getInt("page")
-                                            , songBookId);
+                                            , songBookId,songBookJson.getString("abbreviation"));
+
+                                    song.setBookName( songBookJson.getString("name") );
 
 
                                     Util.prepopulateSong(MainActivity.this,song);

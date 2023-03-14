@@ -20,28 +20,50 @@ public class Song {
     private String songID;
     @NonNull
     private String title;
+    @ColumnInfo(name = "book_name_abbr")
+    private String bookNameAbbr;
+    @ColumnInfo(name = "book_name")
+    private String bookName;
     private int position;
     private int page;
     @ColumnInfo(name = "song_book_id")
     private String songBookId;
 
-    public Song(String songID, @NonNull String title, int position, int page, String songBookId) {
+    public String getBookName() {
+        return bookName;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
+    }
+
+    public Song(String songID, @NonNull String title, int position, int page, String songBookId, String bookNameAbbr) {
         this.songID = songID;
         this.title = title;
+        this.bookNameAbbr = bookNameAbbr;
         this.position = position;
         this.page = page;
         this.songBookId = songBookId;
     }
 
+    public String getBookNameAbbr() {
+        return bookNameAbbr;
+    }
+
     @Override
     public String toString() {
         return "Song{" +
-                "songID=" + songID +
+                "songID='" + songID + '\'' +
                 ", title='" + title + '\'' +
-                ", num=" + position +
+                ", bookNameAbbr='" + bookNameAbbr + '\'' +
+                ", position=" + position +
                 ", page=" + page +
-                ", songBookId=" + songBookId +
+                ", songBookId='" + songBookId + '\'' +
                 '}';
+    }
+
+    public void setBookNameAbbr(String bookNameAbbr) {
+        this.bookNameAbbr = bookNameAbbr;
     }
 
     public String getSongID() {

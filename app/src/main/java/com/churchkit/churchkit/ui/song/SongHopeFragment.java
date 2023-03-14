@@ -3,14 +3,20 @@ package com.churchkit.churchkit.ui.song;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,8 +30,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.R;
+import com.churchkit.churchkit.adapter.AutoCompleteTextViewAdapter;
 import com.churchkit.churchkit.adapter.song.SongHopeAdapter;
 import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.database.entity.song.SongBook;
 import com.churchkit.churchkit.databinding.FragmentSongHopeBinding;
 import com.churchkit.churchkit.ui.util.GridSpacingItemDecoration;
@@ -65,17 +73,49 @@ public class SongHopeFragment extends Fragment {
             gridLayoutManager.setSpanCount(sharedPreferences.getInt(LIST_GRID,LIST));
         }
 
-        List<String> strings = new ArrayList<>();
-        strings.add("101");
-        strings.add("102");
-        strings.add("001");
-        strings.add("003");
-        strings.add("121");
-        strings.add("132");
-        strings.add("041");
-        strings.add("003");
-        SearchSongAutoCompleteAdapter autoCompleteAdapter = new SearchSongAutoCompleteAdapter(getContext(),strings);
-        autoCompleteTextView.setAdapter(autoCompleteAdapter);
+
+
+
+        AutoCompleteTextViewAdapter autoCompleteAdapter = new AutoCompleteTextViewAdapter(getContext());
+
+
+        autoCompleteTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                 ChurchKitDb.getInstance(SongHopeFragment.this.getContext()).songDao().songFullTextSearch("*"+s.toString()+"*").observe(getViewLifecycleOwner(), new Observer<List<Song>>() {
+                    @Override
+                    public void onChanged(List<Song> songs) {
+                       if ( s.length() >1 ){
+                           //Toast.makeText(getContext(),"men: "+songs,Toast.LENGTH_LONG).show();
+                           autoCompleteAdapter.setSongs(songs);
+                           autoCompleteTextView.setAdapter(autoCompleteAdapter);
+                       }
+                    }
+                });
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Song song = (Song) autoCompleteAdapter.getItem(position);
+                SongDialogFragment songDialogFragment = SongDialogFragment.newInstance(
+                        song.getSongID()
+                        ,song.getPosition()+" "+song.getBookName()
+                        ,song.getTitle());
+                songDialogFragment.show(getChildFragmentManager(),"");
+            }
+        });
 
 
 
@@ -93,6 +133,8 @@ public class SongHopeFragment extends Fragment {
 
 
         onCreateMenu();
+
+
 
         return root;
     }
@@ -142,27 +184,8 @@ public class SongHopeFragment extends Fragment {
         if (sharedPreferences.getInt(LIST_GRID,LIST) == 1) menuItem.setIcon(R.drawable.grid_view_24);
         else menuItem.setIcon(R.drawable.list_view_24);
     }
-    private static class SearchSongAutoCompleteAdapter extends ArrayAdapter<String > {
-        public SearchSongAutoCompleteAdapter(@NonNull Context context,  @NonNull List<String> objects) {
-            super(context, 0, objects);
-        }
 
 
-
-        @NonNull
-        @Override
-        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            if(convertView == null)
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_auto_complete,parent,false);
-
-            TextView number = convertView.findViewById(R.id.number);
-
-            number.setText(getItem(position));
-
-
-            return convertView;
-        }
-    }
 
     @Override
     public void onResume() {

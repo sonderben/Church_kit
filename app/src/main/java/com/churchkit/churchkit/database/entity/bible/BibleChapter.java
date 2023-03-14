@@ -18,7 +18,33 @@ public class BibleChapter {
     @ColumnInfo(name = "bible_book_id")
     private String bibleBookId;
 
-    public BibleChapter(String bibleChapterId, int position,  String bibleBookId) {
+    //
+    @ColumnInfo(name = "bible_book_abbr")
+    private String bibleBookAbbr;
+    @ColumnInfo(name = "bible_book_title")
+    private String bibleBookTitle;
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public String getBibleBookAbbr() {
+        return bibleBookAbbr;
+    }
+
+    public void setBibleBookAbbr(String bibleBookAbbr) {
+        this.bibleBookAbbr = bibleBookAbbr;
+    }
+
+    public String getBibleBookTitle() {
+        return bibleBookTitle;
+    }
+
+    public void setBibleBookTitle(String bibleBookTitle) {
+        this.bibleBookTitle = bibleBookTitle;
+    }
+
+    public BibleChapter(String bibleChapterId, int position, String bibleBookId) {
         this.bibleChapterId = bibleChapterId;
         this.position = position;
         this.bibleBookId = bibleBookId;
