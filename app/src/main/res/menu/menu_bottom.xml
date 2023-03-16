@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/homeFragment"
         android:title="@string/song"
         android:icon="@drawable/song_24"
@@ -11,8 +12,9 @@
         xmlns:android="http://schemas.android.com/apk/res/android" />
 
     <item android:id="@+id/historyFragment"
-        android:title="Plus"
-        android:icon="@drawable/menu_24"
+        android:title="@string/more"
+        android:icon="@drawable/settings_24"
+
         xmlns:android="http://schemas.android.com/apk/res/android" />
 
 </menu>

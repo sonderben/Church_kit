@@ -11,28 +11,13 @@ import org.json.JSONObject;
 public class Payment {
     public static void startPayment(Activity activity){
 
-        /**
-         * Instantiate Checkout
-         */
+
         Checkout checkout = new Checkout();
         checkout.setImage(R.mipmap.ic_launcher);
         checkout.setKeyID("rzp_test_sn2ShyAZPpq2aQ");
 
-        /*Checkout checkout = new Checkout();
-        checkout.setKeyID("rzp_test_eNwgA5oEnElHde");*/
-        /**
-         * Set your logo here
-         */
 
 
-        /**
-         * Reference to current activity
-         */
-        ///final Activity activity = getActivity();
-
-        /**
-         * Pass your payment options to the Razorpay Checkout as a JSONObject
-         */
         try {
             JSONObject options = new JSONObject();
 

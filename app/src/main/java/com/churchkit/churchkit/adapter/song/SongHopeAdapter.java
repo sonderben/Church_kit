@@ -64,7 +64,7 @@ public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPa
 
 
     @Override
-    public void onBindViewHolder(@NonNull ListPartViewHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull ListPartViewHolder holder,  int position) {
         holder.title.setText(songBooks.get(position).getName());
         holder.tileAcronym.setText(songBooks.get(position).getAbbreviation());
 

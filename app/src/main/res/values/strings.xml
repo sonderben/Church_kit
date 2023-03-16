@@ -1,17 +1,17 @@
 <resources>
     <string name="app_name">Church kit</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="song">Chant</string>
     <string name="bible">Bible</string>
-    <string name="more">More</string>
+    <string name="more">Settings</string>
     <string name="about_app">Welcome to Church Kit, the perfect app to enhance your worship and connection with God. \nCreated by two computer systems students, Benderson and Ersen, Church Kit is a practical and useful tool for those looking to deepen their Christian faith.\n\n
 The app has two main sections: the Bible section and the songs section. The Bible section allows you to access different versions of the Bible, with all the features you need to study and analyze the Word of God. You can also save your favorite verses, perform advanced searches, and read additional notes to help you better understand the texts.\n\n
 The songs section provides access to a wide variety of worship songs, from classic hymns to modern songs. You can view the lyrics, listen to the songs, and add your favorites to a personalized playlist. You can also find the chords and lyrics to play them in your church or worship meetings.\n\n
 Currently, Church Kit is available for free and without advertisements, but future versions will include advertising. This will allow us to continue developing the app and improving the user experience. If you have any comments, suggestions, or issues with the app, please do not hesitate to contact us through our support page.\n\n
 
 In summary, Church Kit is the ideal app for anyone looking to get closer to God through the Bible and worship music. Download it today and start enjoying all its features and useful tools for your worship experience and spiritual growth.</string>
-    <string name="song_hope">Chant d\'espérance</string>
+    <string name="song_hope">Song Hope</string>
     <string name="faq">1. How do I download the Church Kit app?\nYou can download the Church Kit app from your mobile device\'s app store.\n
 2. Is Church Kit free?\nYes, Church Kit is currently free.\n
 3. Can I access different versions of the Bible in Church Kit?\nYes, Church Kit allows access to different versions of the Bible.\n
@@ -32,4 +32,6 @@ In summary, Church Kit is the ideal app for anyone looking to get closer to God 
 18. Is Church Kit available in multiple languages?\nCurrently, Church Kit is only available in English.\n
 19. Can I share a verse or song on social media from Church Kit?\nYes, you can share a verse or song on social media from Church Kit.\n
 20. Can I add my own notes to verses in Church Kit?\nYes, you can add your own notes to verses in Church Kit\n</string>
+    <string name="old_testament">Old Testament</string>
+    <string name="new_testament">New Testament</string>
 </resources>

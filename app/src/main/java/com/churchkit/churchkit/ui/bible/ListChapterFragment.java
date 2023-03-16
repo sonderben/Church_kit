@@ -72,11 +72,9 @@ public class ListChapterFragment extends Fragment {
             default:
                 adapter = new Adapter(getChildFragmentManager(), getArguments().getString("BOOK_NAME_ABBREVIATION"));
                 bibleBookId = getArguments().getString("ID");
-                //System.out.println(" bibleChapters ->: m laaa: "+(bibleBookId));
-                System.out.println("eskew egal a null: "+getArguments().getString("ID"));
+
 
                 db.bibleChapterDao().getAllChapterByBookId(bibleBookId).observe(requireActivity(), bibleChapters -> {
-                    //System.out.println(" bibleChapters ->: "+bibleChapters);
                     adapter.setBibleChapters(bibleChapters);
                     mRecyclerView.setAdapter( adapter );
 

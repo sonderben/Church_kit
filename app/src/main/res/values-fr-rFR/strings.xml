@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Church kit</string>
+    <string name="song">Chant</string>
+    <string name="bible">Bible</string>
+    <string name="song_hope">Chant d\'espérance</string>
+    <string name="old_testament">Ancien Testament</string>
+    <string name="new_testament">Nouveau Testament</string>
+    <string name="more">Paramètres</string>
+</resources>

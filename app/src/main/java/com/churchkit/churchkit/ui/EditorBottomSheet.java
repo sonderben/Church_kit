@@ -2,11 +2,13 @@ package com.churchkit.churchkit.ui;
 
 import static com.churchkit.churchkit.Util.BOOK_MARK;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -30,6 +32,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -252,6 +256,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
 
     private void saveImageToGallery(Bitmap bitmap)  {
 
+
         File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/MyDirectory/");
         directory.mkdirs();
 
@@ -433,4 +438,5 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
         super.onDestroy();
 
     }
+
 }

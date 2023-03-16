@@ -56,7 +56,6 @@ public class BibleAdapter extends RecyclerView.Adapter {
        if(viewType == 0){
            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_part_group_by_lang,parent,false);
 
-           //view.getLayoutParams().height = (int) (Util.getScreenDisplayMetrics(parent.getContext()).heightPixels * 0.5f);
            return new GroupByTestamentViewHolder(view);
        }
        else {
@@ -70,7 +69,7 @@ public class BibleAdapter extends RecyclerView.Adapter {
         if (typeView ==0){
             Bundle bundle = new Bundle();
             if(position == 0) {
-                ((GroupByTestamentViewHolder) holder).textView.setText("Old Testament");
+                ((GroupByTestamentViewHolder) holder).textView.setText(R.string.old_testament);
                 ( (GroupByTestamentViewHolder) holder ).img.setImageResource(R.mipmap.ot);
                 ( (GroupByTestamentViewHolder) holder ).bookNumber.setText("39 Books");
                 bundle.putInt("TESTAMENT",-2);
@@ -78,7 +77,7 @@ public class BibleAdapter extends RecyclerView.Adapter {
                     @Override
                     public void onClick(View v) {
                         NavController navController = Navigation.findNavController(v);
-                        navController.getGraph().findNode(R.id.listChapterByTestamentFragment).setLabel("Old Testament");
+                        navController.getGraph().findNode(R.id.listChapterByTestamentFragment).setLabel(holder.itemView.getContext().getString( R.string.old_testament ));
                         navController.navigate(R.id.action_bookmarkFragment_to_listBookByTestamentFragment,bundle);
                     }
                 });
@@ -86,14 +85,14 @@ public class BibleAdapter extends RecyclerView.Adapter {
             }
             if (position == 1) {
                 bundle.putInt("TESTAMENT",2);
-                ((GroupByTestamentViewHolder) holder).textView.setText("New Testament");
+                ((GroupByTestamentViewHolder) holder).textView.setText(R.string.new_testament);
                 ( (GroupByTestamentViewHolder) holder ).img.setImageResource(R.mipmap.nt);
                 ( (GroupByTestamentViewHolder) holder ).bookNumber.setText("27 Books");
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         NavController navController = Navigation.findNavController(v);
-                        navController.getGraph().findNode(R.id.listChapterByTestamentFragment).setLabel("New Testament");
+                        navController.getGraph().findNode(R.id.listChapterByTestamentFragment).setLabel(holder.itemView.getContext().getString( R.string.new_testament ));
                         navController.navigate(R.id.action_bookmarkFragment_to_listBookByTestamentFragment,bundle);
                     }
                 });
@@ -107,7 +106,6 @@ public class BibleAdapter extends RecyclerView.Adapter {
                 BibleBook bibleBook = bibleBooks.get(position);
                 Bundle bundle = new Bundle();
                 bundle.putString("ID", bibleBook.getBibleBookId());
-                System.out.println("eskew egal a null: "+bibleBook.getBibleBookId());
                 bundle.putString("BOOK_NAME_ABBREVIATION", bibleBook.getAbbreviation());
                 NavController navController = Navigation.findNavController(view);
                 navController.getGraph().findNode(R.id.listChapterFragment).setLabel(bibleBook.getTitle()+" ");
