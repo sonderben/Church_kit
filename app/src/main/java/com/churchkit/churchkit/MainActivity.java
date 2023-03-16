@@ -34,6 +34,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 
@@ -175,74 +177,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     private void prepopulateSongFromJSonFile(){
         FirebaseStorage fs=FirebaseStorage.getInstance();
-        StorageReference storageRef = fs.getReference().child("song/songbook-v1.json");
+        StorageReference storageRef = fs.getReference().child("song/songbook-v2.json");
         storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
                 try {
+                    Gson gson = new Gson();
                     String jsonStr = new String(bytes, "UTF-8");
                     JSONObject jsonObject = new JSONObject(jsonStr);
-                    JSONObject data = jsonObject.getJSONObject("data");
-                    Iterator<String> keys = data.keys();
-                    while (keys.hasNext()){
-                        JSONObject songBookJson =data.getJSONObject(keys.next());
+                    JSONArray dataArray = jsonObject.getJSONArray("data");
+                    for (int i = 0; i < dataArray.length(); i++) {
+                       JSONObject songBookJson = dataArray.getJSONObject(i);
+                       SongBook songBook = gson.fromJson(songBookJson.toString(),SongBook.class);
+                       songBook.setSongBookId( songBookJson.getString("id") );
+                       Util.prepopulateSonBook(MainActivity.this,songBook);
 
+                      JSONArray songArrayJson = songBookJson.getJSONArray("songList");
+                        for (int j = 0; j < songArrayJson.length(); j++) {
+                            JSONObject songObj = songArrayJson.getJSONObject(j);
+                            Song song = gson.fromJson(songObj.toString(),Song.class);
+                            song.setSongID( songObj.getString("id") );
+                            song.setSongBookId( songBookJson.getString("id") );
+                            Util.prepopulateSong(MainActivity.this,song);
 
-
-                        String songBookId =songBookJson.getString("name")+songBookJson.getInt("position");
-                        SongBook  songBook = new SongBook(
-                                songBookId,
-                                songBookJson.getString("name"),
-                                songBookJson.getString("abbreviation"),
-                                songBookJson.getInt("songAmount"),
-                                songBookJson.getInt("position")
-                        );
-
-                        Util.prepopulateSonBook(MainActivity.this,songBook);
-
-                        JSONObject col = songBookJson.getJSONObject("__collections__");
-                        boolean hasNext = col.keys().hasNext();
-
-                        if (hasNext){
-                            JSONObject listChapterJson = col.getJSONObject(col.keys().next());
-                            Iterator<String> keys1 =listChapterJson.keys();
-
-                            while (keys1.hasNext()) {
-                                JSONObject chapterJson = listChapterJson.getJSONObject(keys1.next());
-
-                                String songId = chapterJson.getString("id");
-                                if (songId != null){
-                                    Song song = new Song(
-                                            songId
-                                            ,chapterJson.getString("title")
-                                            ,chapterJson.getInt("position")
-                                            ,chapterJson.getInt("page")
-                                            , songBookId,songBookJson.getString("abbreviation"));
-
-                                    song.setBookName( songBookJson.getString("name") );
-
-
-                                    Util.prepopulateSong(MainActivity.this,song);
-
-                                    JSONArray bibleVerseArray =chapterJson.getJSONArray("verseList");
-
-                                    List<Verse> bibleVerseList = new ArrayList<>(30);
-                                    for (int i = 0; i < bibleVerseArray.length(); i++) {
-                                        JSONObject verseJson = bibleVerseArray.getJSONObject(i);
-
-                                        bibleVerseList.add(
-                                                new Verse(verseJson.getInt("position")+songId
-                                                        ,verseJson.getString("verse")
-                                                        ,verseJson.getInt("position")
-                                                        ,songId)
-                                        );
-                                    }
-                                    Util.prepopulateSongVerse(MainActivity.this,bibleVerseList);
-
-                                }
+                            JSONArray verseArray = songObj.getJSONArray("verseList");
+                            List<Verse>verseList = new ArrayList<>();
+                            for (int k = 0; k < verseArray.length(); k++) {
+                                JSONObject verseObj = verseArray.getJSONObject(k);
+                                Verse verse = gson.fromJson(verseObj.toString(),Verse.class);
+                                verse.setVerseId( verseObj.getInt("position")+songObj.getString("id") );
+                                verse.setSongId( songObj.getString("id") );
+                                verseList.add( verse );
                             }
+                            Util.prepopulateSongVerse(MainActivity.this,verseList);
                         }
                     }
+
+
 
 
 

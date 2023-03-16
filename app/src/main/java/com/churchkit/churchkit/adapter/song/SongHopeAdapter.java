@@ -135,10 +135,14 @@ public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPa
     }
 
     private int abbrToMipmapRessource(String abbr){
-        switch (abbr){
+        switch (abbr.toUpperCase()){
             case "CE": return R.mipmap.ce;
             case "MJ": return R.mipmap.mj;
             case "RN": return R.mipmap.rn;
+            case "VR": return R.mipmap.ot;
+            //case "EE": return R.mipmap.img_bg_creole;
+            case "OR": return R.mipmap.img_bg_french;
+            //case "HC": return R.drawable.img3;
             default:return R.mipmap.nt;
         }
     }
