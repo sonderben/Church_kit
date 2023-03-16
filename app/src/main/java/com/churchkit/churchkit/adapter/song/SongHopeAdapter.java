@@ -66,13 +66,11 @@ public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPa
     @Override
     public void onBindViewHolder(@NonNull ListPartViewHolder holder,  int position) {
         holder.title.setText(songBooks.get(position).getName());
-        holder.tileAcronym.setText(songBooks.get(position).getAbbreviation());
+        holder.tileAcronym.setText(songBooks.get(position).getAbbreviation().toUpperCase());
 
         if (ckPreferences.getabbrColor()) {
             final int color = com.churchkit.churchkit.ui.util.Util.getColorByPosition(holder.getAbsoluteAdapterPosition() + 1);
-            holder.tileAcronym.setBackgroundTintList(
-                    ColorStateList.valueOf( color )
-            );
+            holder.tileAcronym.setTextColor(color);
            /* if (typeView == 2)
                 holder.tileAcronym.setTextColor(color);
             else

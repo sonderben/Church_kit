@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-android:background="@color/bg_item_config"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
@@ -11,11 +10,11 @@ android:background="@color/bg_item_config"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="20dp"
-        app:cardBackgroundColor="@color/bg_item_config"
+        app:cardBackgroundColor="#F224329F"
         app:cardCornerRadius="@dimen/_5sdp"
+
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent">
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -24,20 +23,42 @@ android:background="@color/bg_item_config"
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tile_abr"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/_38sdp"
                 android:layout_height="0dp"
                 android:text="RN"
+
                 android:padding="3dp"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:textStyle="bold"
-                android:backgroundTint="@color/colorPrimaryVariant"
-                android:background="@drawable/bg_edittext_title_abr"
-                android:textSize="30sp"
+                android:textSize="@dimen/_20ssp"
+                android:inputType="textCapCharacters"
                 android:paddingStart="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="@android:color/darker_gray"
+                android:layout_marginVertical="@dimen/_8sdp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/tile_abr"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/lang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="French"
+                android:includeFontPadding="false"
+                android:textColor="@android:color/darker_gray"
+                android:paddingHorizontal="5dp"
+                app:layout_constraintLeft_toLeftOf="@id/title"
+                app:layout_constraintTop_toBottomOf="@id/title" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/number_song"
@@ -45,24 +66,25 @@ android:background="@color/bg_item_config"
                 android:layout_height="wrap_content"
                 android:paddingBottom="5dp"
                 android:text="18 chants"
+                android:includeFontPadding="false"
                 android:textColor="@android:color/darker_gray"
                 android:paddingHorizontal="5dp"
                 app:layout_constraintLeft_toLeftOf="@id/title"
-                app:layout_constraintTop_toBottomOf="@id/title" />
+                app:layout_constraintTop_toBottomOf="@id/lang" />
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="0dp"
-
+                android:textColor="@color/white"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textStyle="bold"
-                android:textSize="20sp"
+                android:textSize="@dimen/_18ssp"
                 android:paddingHorizontal="5dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 app:layout_constraintTop_toTopOf="@id/tile_abr"
-                app:layout_constraintStart_toEndOf="@id/tile_abr"
+                app:layout_constraintStart_toEndOf="@id/divider"
 
                 android:text="Reveillons nous"/>
         </androidx.constraintlayout.widget.ConstraintLayout>

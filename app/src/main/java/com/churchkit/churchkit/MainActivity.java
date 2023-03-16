@@ -190,6 +190,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                        JSONObject songBookJson = dataArray.getJSONObject(i);
                        SongBook songBook = gson.fromJson(songBookJson.toString(),SongBook.class);
                        songBook.setSongBookId( songBookJson.getString("id") );
+
+
+
                        Util.prepopulateSonBook(MainActivity.this,songBook);
 
                       JSONArray songArrayJson = songBookJson.getJSONArray("songList");
@@ -198,6 +201,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             Song song = gson.fromJson(songObj.toString(),Song.class);
                             song.setSongID( songObj.getString("id") );
                             song.setSongBookId( songBookJson.getString("id") );
+
+                            song.setBookName( songBook.getName() );
+                            song.setBookNameAbbr( songBook.getAbbreviation() );
+
                             Util.prepopulateSong(MainActivity.this,song);
 
                             JSONArray verseArray = songObj.getJSONArray("verseList");

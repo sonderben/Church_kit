@@ -162,6 +162,8 @@ public class BibleAdapter extends RecyclerView.Adapter {
             number = itemView.findViewById(R.id.number_song);
             cardView = itemView.findViewById(R.id.cardview);
 
+            itemView.findViewById(R.id.lang).setVisibility(View.GONE);
+
 
         }
     }

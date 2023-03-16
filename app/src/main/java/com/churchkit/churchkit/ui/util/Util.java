@@ -17,7 +17,7 @@ public class Util {
         System.out.println("position: "+position);
 
         switch (position){
-            case 1:return Color.BLUE;
+            case 1:return Color.WHITE;
             case 2:return Color.argb(210,  136,  190, 1);
             case 3:return Color.argb(110,166,90,1);
             case 4:return Color.argb( 31,  138,  112, 1);

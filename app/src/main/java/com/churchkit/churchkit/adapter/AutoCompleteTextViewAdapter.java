@@ -62,7 +62,7 @@ public class AutoCompleteTextViewAdapter extends ArrayAdapter<Object> implements
 
             songPosition.setText( Util.formatNumberToString( song.getPosition() ) );
             title.setText( song.getTitle() );
-            bookName.setText( song.getBookNameAbbr() );
+            bookName.setText( song.getBookName()  );
         }else if (object instanceof BibleChapter){
             BibleChapter bibleChapter = (BibleChapter) object;
             songPosition.setText( "" );
@@ -82,12 +82,12 @@ public class AutoCompleteTextViewAdapter extends ArrayAdapter<Object> implements
         Filter filter = new Filter() {
             @Override
             public CharSequence convertResultToString(Object resultValue) {
-                if ( resultValue instanceof Song)
+                /*if ( resultValue instanceof Song)
                     return ((Song )resultValue).getTitle();
                 else if ( resultValue instanceof BibleChapter )
                     return  ((BibleChapter )resultValue).getBibleBookAbbr()+ " " + ((BibleChapter )resultValue).getPosition();
-                else
-                    return "";
+                else*/
+                    return mConstraint;
             }
 
             @Override
