@@ -38,6 +38,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:24.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'androidx.preference:preference:1.2.0'
 
 //////////////////Add///////////////////
     def nav_version = "2.5.2"

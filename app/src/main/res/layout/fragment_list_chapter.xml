@@ -22,6 +22,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:padding="@dimen/_1sdp"
             android:layout_marginEnd="@dimen/_7sdp"
+            app:tint="#00695C"
             android:src="@drawable/donate_24"
             app:layout_constraintEnd_toStartOf="@id/favorite" />
         <ImageView
@@ -155,6 +156,7 @@
         app:backgroundTint="@android:color/transparent"
         android:layout_marginBottom="@dimen/_10sdp"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
 
 
 

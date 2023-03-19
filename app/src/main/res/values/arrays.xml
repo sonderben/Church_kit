@@ -1,5 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="reply_entries">genial</string-array>
-    <string-array name="reply_values">tet chaje</string-array>
+
+
+    <string-array name="font_entry">
+        <item>Sans Serif</item>
+        <item>Roboto Light</item>
+        <item>Roboto Thin</item>
+        <item>Tangarine Regular</item>
+    </string-array>
+
+
+
+    <string-array name="font_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="dark_mode_entry">
+        <item>System\'s night mode</item>
+        <item>On</item>
+        <item>Off</item>
+    </string-array>
+
+    <string-array name="dark_mode_values">
+        <item>2</item>
+        <item>1</item>
+        <item>0</item>
+    </string-array>
+
+
+    <string-array name="language_entry">
+        <item>Kreyòl</item>
+        <item>English</item>
+        <item>Francais</item>
+        <item>Español</item>
+    </string-array>
+
+    <string-array name="language_values">
+        <item>ht</item>
+        <item>en</item>
+        <item>fr</item>
+        <item>es</item>
+    </string-array>
 </resources>

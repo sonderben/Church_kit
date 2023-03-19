@@ -2,66 +2,87 @@ package com.churchkit.churchkit;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
-import android.preference.Preference;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.prefs.Preferences;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.PreferenceManager;
 
 public class CKPreferences {
-    private static final String USE_DIF_COLOR = "USE_DIF_COLOR";
-    private static final String BUTTON_CHORUS = "BUTTON_CHORUS";
+    //private static final String USE_DIF_COLOR = "USE_DIF_COLOR";
+    //private static final String BUTTON_CHORUS = "BUTTON_CHORUS";
     Context context;
-    SharedPreferences preference;
+    //SharedPreferences preference;
     private final String CK_PREFERENCES= "CK_PREFERENCES";
     private final String FONT_SIZE= "FONT_SIZE";
     private final String TypeFace= "TypeFace";
+    private static  SharedPreferences settingPreferences = null;
+
+
+
 
     public CKPreferences(Context context){
         this.context = context;
-        preference = context.getSharedPreferences(CK_PREFERENCES,Context.MODE_PRIVATE);
+        //preference = context.getSharedPreferences(CK_PREFERENCES,Context.MODE_PRIVATE);
+        settingPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
     }
-
-    public void updateLetterSize(int fontSize){
-        SharedPreferences.Editor editor = preference.edit();
-        editor.putInt(FONT_SIZE,fontSize);
-        editor.apply();
-    }
-    public int getLetterSize(){
-        return  preference.getInt(FONT_SIZE,12);
+    public static SharedPreferences getSettingPref(Context context){
+        if (settingPreferences == null){
+            settingPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            return settingPreferences;
+        }
+        return settingPreferences;
     }
 
-    public void updateTypeFace(int typeFace){
-        SharedPreferences.Editor editor = preference.edit();
-        editor.putInt(TypeFace,typeFace);
-        editor.apply();
-    }
-    public int getTypeFace(){
-        return  preference.getInt(TypeFace, 0);
+    public  String getLanguage(){
+        //LANGUAGE
+        return settingPreferences.getString("LANGUAGE","fr");
     }
 
-    public List<Integer> listAllTYpeFace(){
-        return Arrays.asList(R.font.robotolight,R.font.robororhin,R.font.tangerine_regular);
-    }
-
-    public void updateAbbrColor(boolean useDifColor){
-        SharedPreferences.Editor editor = preference.edit();
-        editor.putBoolean(USE_DIF_COLOR,useDifColor);
-        editor.apply();
+    public  int getLetterSize(){
+        return settingPreferences.getInt("LETTER_SIZE", Integer.parseInt(context.getString(R.string.letter_size)));
     }
     public boolean getabbrColor(){
-        return  preference.getBoolean(USE_DIF_COLOR, false);
-    }
-
-    public void updateButtonChorus(boolean useDifColor){
-        SharedPreferences.Editor editor = preference.edit();
-        editor.putBoolean(BUTTON_CHORUS,useDifColor);
-        editor.apply();
+        return  settingPreferences.getBoolean("USE_DIF_COLOR", false);
     }
     public boolean getButtonChorus(){
-        return  preference.getBoolean(BUTTON_CHORUS, false);
+        return  settingPreferences.getBoolean("CHORUS", false);
+    }
+    public int getDarkMode(){
+
+                //AUto == 2
+                //Off =  0
+                // on ==  1
+
+
+        int darkMOde = Integer.parseInt(settingPreferences.getString("DARK_MODE","2"));
+        switch (darkMOde){
+            case 0: return AppCompatDelegate.MODE_NIGHT_NO;
+            case 1: return AppCompatDelegate.MODE_NIGHT_YES;
+            default:return AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
+        }
+    }
+    public int getTypeFace(){
+        int font = Integer.parseInt(settingPreferences.getString("FONT","0"));
+        System.out.println("settingPreferences:"+ settingPreferences.getString("FONT","0") );
+        switch (font){
+            case 1: return R.font.robotolight;
+            case 2: return R.font.robororhin;
+            case 3: return R.font.tangerine_regular;
+            default: return 0;
+        }
+
+
+
     }
 
 }
+
+
+
+
+
+
+
+
+
+

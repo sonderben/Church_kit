@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.content.res.Configuration;
 import android.widget.TextView;
 
 import com.churchkit.churchkit.database.ChurchKitDb;
@@ -14,7 +15,6 @@ import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.database.entity.song.SongBook;
 import com.churchkit.churchkit.database.entity.song.Verse;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Locale;
 
 public class Util {
     public final static String FROM_SONG_FAVORITE= "FROM_SONG_FAVORITE";
@@ -125,7 +126,15 @@ public class Util {
     }
 
 
+    public static void setAppLanguage(Context context, String languageCode) {
+        Locale locale = new Locale(languageCode);
+        Locale.setDefault(locale);
 
+        Configuration config = new Configuration();
+        config.locale = locale;
+
+        context.getResources().updateConfiguration(config, context.getResources().getDisplayMetrics());
+    }
 
     public static String formatNumberToString(int number){
         if(number >99)

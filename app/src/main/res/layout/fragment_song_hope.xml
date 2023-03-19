@@ -16,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_height="45dp"
         android:background="@drawable/bg_edittext"
-        android:hint="Chèche yon chan"
+        android:hint="Ex: 12 ce ou Gloire à Dieu notre créateur"
         android:paddingLeft="12dp"
         android:completionThreshold="1"
         android:inputType="textCapWords"

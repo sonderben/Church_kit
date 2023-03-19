@@ -4,33 +4,33 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:title="Song">
+            android:title="@string/song">
             <menu>
                 <item
                     android:id="@+id/songHistory"
                     android:icon="@drawable/history_24"
                     app:actionViewClass="android.widget.TextView"
-                    android:title="Histories" />
+                    android:title="@string/history" />
                 <item
                     android:id="@+id/songFavorite"
                     app:iconTint="#f00"
                     android:icon="@drawable/favorite_24"
-                    android:title="Favorites" />
+                    android:title="@string/favorite" />
             </menu>
         </item>
 
         <item
-            android:title="Chapter">
+            android:title="@string/bible">
             <menu>
                 <item
                     android:id="@+id/bibleHistory"
                     android:icon="@drawable/history_24"
-                    android:title="Histories" />
+                    android:title="@string/history" />
                 <item
                     android:id="@+id/bibleFavorite"
                     app:iconTint="#f00"
                     android:icon="@drawable/favorite_24"
-                    android:title="Favorites" />
+                    android:title="@string/favorite" />
             </menu>
         </item>
 
@@ -39,20 +39,21 @@
                 <item
                     android:id="@+id/aboutFragment"
                     android:icon="@drawable/about_24"
-                    android:title="About" />
+                    android:title="@string/about" />
                 <item
                     android:id="@+id/faqFragment"
                     android:icon="@drawable/faq_24"
                     android:title="FAQ" />
                 <item
                     android:id="@+id/donateFragment"
+                    app:iconTint="#00695C"
                     android:icon="@drawable/donate_24"
-                    android:title="Donate" />
+                    android:title="@string/donate" />
             </menu>
         </item>
         <item
             android:icon="@drawable/song_24"
-            android:title="Version: 1.0.0" />
+            android:title="@string/version_app" />
 
 
 

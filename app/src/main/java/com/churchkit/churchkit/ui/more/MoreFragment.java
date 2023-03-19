@@ -1,168 +1,129 @@
 package com.churchkit.churchkit.ui.more;
 
-import android.content.Context;
-import android.graphics.Typeface;
+import static com.churchkit.churchkit.Util.setAppLanguage;
+
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 
-import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.CompoundButton;
-import android.widget.ImageButton;
-import android.widget.Spinner;
-import android.widget.Switch;
-import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.SeekBarPreference;
+import androidx.preference.SwitchPreferenceCompat;
 
 import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.R;
 
-import java.util.Arrays;
-import java.util.List;
 
+public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements View.OnClickListener*/{
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-public class MoreFragment extends Fragment implements View.OnClickListener{
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
+        setPreferencesFromResource(R.xml.root_preferences, rootKey);
+        ckPreferences = new CKPreferences(getContext());
+        langListPreference =(ListPreference) findPreference("LANGUAGE");
+        seekBarPreference = (SeekBarPreference) findPreference("LETTER_SIZE");
+        darKModeListPreference = findPreference("DARK_MODE");
+        switchPreferenceCompat  = (SwitchPreferenceCompat) findPreference("ADAPTIVE_BRIGHTNESS");
 
-         root =  inflater.inflate(R.layout.more_history,container,false);
-         init();
-         increaseFontSize.setOnClickListener(this::onClick);
-         decreaseFontSize.setOnClickListener(this::onClick);
-
-        return root;
-    }
-    private void init(){
-        preferences = new CKPreferences(requireContext());
-        increaseFontSize = root.findViewById(R.id.increase);
-        decreaseFontSize = root.findViewById(R.id.decrease);
-        switchChorus = root.findViewById(R.id.switch_chorus);
-        switchSongAbbr = root.findViewById(R.id.switch_song_abbr);
-        fontSize = root.findViewById(R.id.font_size);
-        spinnerTypeFace = root.findViewById(R.id.spinner_font);
-        descriptionLetterSize = root.findViewById(R.id.description_letter_size);
-        descriptionLetterFont = root.findViewById(R.id.description_letter_font);
-        fontSizeInteger = preferences.getLetterSize();
-        fontSize.setText( String.valueOf( preferences.getLetterSize() ) );
-        //descriptionLetterSize.setTextSize(fontSizeInteger);
+        seekBarPreference.setSummary(ckPreferences.getLetterSize()+" px");
 
 
+        seekBarPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+            int value = (int) newValue;
+            seekBarPreference.setSummary(value+" px");
+            return true;
+        });
 
-        SpinnerAdapter adapter = new SpinnerAdapter();
-        spinnerTypeFace.setAdapter(adapter);
-
-        spinnerTypeFace.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        langListPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                SpinnerAdapter spinAdap = (SpinnerAdapter) parent.getAdapter();
-
-                int typeFaceInt= (int) spinAdap.getItemId(position);
-                Typeface typeface = typeFaceInt == 0 ? Typeface.DEFAULT : ResourcesCompat.getFont(getContext(), typeFaceInt);
-                //descriptionLetterFont.setTypeface(typeface);
-                preferences.updateTypeFace(typeFaceInt);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+            public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
+                String lang = (String) newValue;
+                setAppLanguage(getContext(),lang);
+                getActivity().recreate();
+                return true;
             }
         });
 
-        switchChorus.setChecked(preferences.getButtonChorus());
-        switchSongAbbr.setChecked(preferences.getabbrColor());
-        switchChorus.setOnCheckedChangeListener((buttonView, isChecked) -> preferences.updateButtonChorus(isChecked));
-        switchSongAbbr.setOnCheckedChangeListener((buttonView, isChecked) -> preferences.updateAbbrColor(isChecked));
+        darKModeListPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
+                String lang = (String) newValue;
+                setAppLanguage(getContext(),lang);
+                AppCompatDelegate.setDefaultNightMode(Integer.parseInt(lang));
+                getActivity().recreate();
+                return true;
+            }
+        });
 
-    }
-    private View root;
-    private ImageButton increaseFontSize,decreaseFontSize;
-    private TextView fontSize,descriptionLetterSize,descriptionLetterFont;
-    private int fontSizeInteger;
-    private CKPreferences preferences;
-    private Spinner spinnerTypeFace;
-    private Switch switchChorus,switchSongAbbr;
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.increase:
-                fontSizeInteger += 1;
-                fontSize.setText( String.valueOf(fontSizeInteger) );
-                //descriptionLetterSize.setTextSize(fontSizeInteger);
-                preferences.updateLetterSize(fontSizeInteger);
-                break;
-            case R.id.decrease:
-                if (fontSizeInteger > 12){
-                    fontSizeInteger -= 1;
-                    fontSize.setText( String.valueOf(fontSizeInteger) );
-                    //descriptionLetterSize.setTextSize(fontSizeInteger);
-                    preferences.updateLetterSize(fontSizeInteger);
+        switchPreferenceCompat.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
+                adapbri();
+                if (Settings.System.canWrite(getContext())) {
+                    // Tu aplicación tiene permiso para escribir en la configuración del sistema
+                    // Aquí puedes modificar el brillo manualmente
+                } else {
+                    // Solicita el permiso WRITE_SETTINGS al usuario
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                    intent.setData(Uri.parse("package:" + getActivity().getPackageName()));
+                    startActivityForResult(intent, MY_PERMISSIONS_REQUEST_WRITE_SETTINGS);
                 }
-                break;
-        }
+
+                return true;
+            }
+        });
+
+
     }
 
-    private final class SpinnerAdapter extends BaseAdapter{
 
-        class MyFont{
-            String name;
-            int id;
-            public MyFont(String name,int id){
-                this.id = id;
-                this.name = name;
-            }
-            public MyFont(){}
-            public List<MyFont> ListMyFont(){
-                return Arrays.asList(
-                        new MyFont("Sans Serif",0),
-                        new MyFont("Roboto Light",R.font.robotolight),
-                        new MyFont("Roboto Thin",R.font.robororhin),
-                        new MyFont("Tangarine Regular",R.font.tangerine_regular)
-                );
-            }
-        }
+    public void adapbri(){
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_SETTINGS)
+                != PackageManager.PERMISSION_GRANTED) {
 
-        List<MyFont> myFontList;
-        public SpinnerAdapter(){
-            myFontList = new MyFont().ListMyFont();
-
-        }
-
-
-        @Override
-        public int getCount() {
-            return myFontList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return myFontList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return myFontList.get(position).id;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            TextView typeFace = new TextView( getContext() );
-            typeFace.setTextSize(28);
-
-            typeFace.setText( myFontList.get(position).name );
-            int typeFaceInt= myFontList.get(position).id;
-            Typeface typeface = typeFaceInt == 0 ? Typeface.DEFAULT : ResourcesCompat.getFont(getContext(), typeFaceInt);
-
-            typeFace.setTypeface( typeface );
-            return typeFace;
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.WRITE_SETTINGS},
+                    MY_PERMISSIONS_REQUEST_WRITE_SETTINGS);
+        }else {
+            Settings.System.putInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+            Settings.System.putInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, 128);
         }
     }
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_SETTINGS = 12432;
+
+    SeekBarPreference seekBarPreference;
+    //ListPreference
+    ListPreference langListPreference;
+    ListPreference darKModeListPreference;
+    CKPreferences ckPreferences;
+    SwitchPreferenceCompat switchPreferenceCompat;
 
 }
+
+/*
+if (Settings.System.canWrite(this)) {
+    // Tu aplicación tiene permiso para escribir en la configuración del sistema
+    // Aquí puedes modificar el brillo manualmente
+} else {
+    // Solicita el permiso WRITE_SETTINGS al usuario
+    Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+    intent.setData(Uri.parse("package:" + getPackageName()));
+    startActivityForResult(intent, MY_PERMISSIONS_REQUEST_WRITE_SETTINGS);
+}
+
+* */

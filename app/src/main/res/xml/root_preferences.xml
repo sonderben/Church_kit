@@ -1,0 +1,70 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <ListPreference
+        app:defaultValue="fr"
+        app:entries="@array/language_entry"
+        app:entryValues="@array/language_values"
+        app:icon="@drawable/language_24"
+        app:key="LANGUAGE"
+        app:title="Language"
+        android:defaultValue="1"
+        app:useSimpleSummaryProvider="true" />
+
+    <PreferenceCategory app:title="Lectura">
+
+       <SeekBarPreference
+           app:title="Letter size"
+           app:key="LETTER_SIZE"
+           android:defaultValue="@string/letter_size"
+           app:icon="@drawable/text_size_24"
+           android:max="100"
+           android:progress="1"
+           android:summary="20 px"/>
+
+
+
+        <ListPreference
+            app:defaultValue="0"
+            app:entries="@array/font_entry"
+            app:entryValues="@array/font_values"
+            app:key="FONT"
+            app:icon="@drawable/text_font_24"
+            app:title="Font"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:key="bold"
+            app:summary="Not implemented yet"
+            app:icon="@drawable/text_bold_24"
+            app:title="Use bold font" />
+        <SwitchPreferenceCompat
+            app:key="CHORUS"
+            android:defaultValue="true"
+            app:icon="@drawable/scroll_chorus_24"
+            app:summary="Make the Chorus button appear when there is a chorus in a song. (have bug)"
+            app:title="Activate button chorus" />
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Display">
+
+        <ListPreference
+            app:defaultValue="2"
+            app:entries="@array/dark_mode_entry"
+            app:entryValues="@array/dark_mode_values"
+            app:key="DARK_MODE"
+            app:icon="@drawable/dark_mode_24"
+            app:title="Dark mode"
+            app:useSimpleSummaryProvider="true" />
+        <SwitchPreferenceCompat
+            app:key="ADAPTIVE_BRIGHTNESS"
+            app:icon="@drawable/brightness_24"
+            app:summary="Optimizing brightness level (Not implemented yet)"
+            app:title="Adaptive brightness" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

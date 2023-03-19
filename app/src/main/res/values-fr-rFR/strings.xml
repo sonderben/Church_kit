@@ -7,4 +7,9 @@
     <string name="old_testament">Ancien Testament</string>
     <string name="new_testament">Nouveau Testament</string>
     <string name="more">Paramètres</string>
+    <string name="about">À propos</string>
+    <string name="donate">Faire une donation</string>
+    <string name="favorite">Favoris</string>
+    <string name="history">Historiques</string>
+    <string name="version_app">Version</string>
 </resources>

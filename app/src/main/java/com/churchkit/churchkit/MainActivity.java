@@ -2,8 +2,11 @@ package com.churchkit.churchkit;
 
 import static com.churchkit.churchkit.ui.aboutapp.Payment.startPayment;
 
+import android.Manifest;
 import android.app.ActivityManager;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -11,6 +14,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
@@ -35,7 +41,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 
@@ -52,6 +57,8 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PaymentResultListener {
 
 
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_SETTINGS = 12432;
+
     @Override
     public void onBackPressed() {
         if(drawerLayout.isOpen())
@@ -62,8 +69,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+         ckPreferences = new CKPreferences(MainActivity.this);
+        Util.setAppLanguage(MainActivity.this,ckPreferences.getLanguage());
+
+
         super.onCreate(savedInstanceState);
         ActivityMainBinding activityMainBinding=ActivityMainBinding.inflate(getLayoutInflater());
+
+
+        AppCompatDelegate.setDefaultNightMode( ckPreferences.getDarkMode() );
+
+
+        /*if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_SETTINGS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_SETTINGS},
+                    MY_PERMISSIONS_REQUEST_WRITE_SETTINGS);
+        }else {
+            Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+            Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, 128);
+        }*/
+
+
+
+
 
 //Songs and scripture to nourish your soul.
         setContentView(activityMainBinding.getRoot());
@@ -80,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
     MaterialToolbar toolbar;
+    CKPreferences ckPreferences;
     BottomNavigationView bottomNavigationView;
     DrawerLayout drawerLayout;
     NavController mNavController;
@@ -404,6 +435,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onPaymentError(int i, String s) {
        // Toast.makeText(MainActivity.this,"onPaymentError",Toast.LENGTH_LONG).show();
     }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_PERMISSIONS_REQUEST_WRITE_SETTINGS) {
+            // Si el usuario concedió el permiso, continuar con la operación
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+                Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, 128);
+            } else {
+                Toast.makeText(MainActivity.this,"No vas a utilizar este funcion hasta que da este permiso",Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+
+
 }
 
 
