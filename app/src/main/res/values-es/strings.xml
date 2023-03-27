@@ -7,8 +7,22 @@
     <string name="bible">Biblia</string>
     <string name="song">Canción</string>
     <string name="song_hope">Canción de esperanza</string>
-    <string name="version_app">Versión</string>
+    <string name="version_app">Versión: 1.0.0</string>
     <string name="donate">Haz una Donación</string>
     <string name="about">Acerca</string>
     <string name="favorite">Favoritos</string>
+    <string name="chorus">-Coro-</string>
+    <string name="scroll_to_chorus">Desplazarse al coro</string>
+    <string name="language">Idioma</string>
+    <string name="reading">Lectura</string>
+    <string name="letter_size_title">Tamaño de letra</string>
+    <string name="font">Fuente</string>
+    <string name="use_bold_font">Usar fuente en negrita</string>
+    <string name="switch_title_btn_chorus">Activar coro de botones</string>
+    <string name="switch_summary_btn_chorus">Haga que aparezca el botón Coro cuando haya un coro en una canción.</string>
+    <string name="switch_title_btn_song_abrr_color">Color de la abreviatura  de la canción</string>
+    <string name="switch_summary_btn_song_abrr_color">Asigne un color diferente a cada abreviatura de cada canción.</string>
+    <string name="dark_mode">Modo oscuro</string>
+    <string name="display">Visualización</string>
+    <string name="history">historial</string>
 </resources>

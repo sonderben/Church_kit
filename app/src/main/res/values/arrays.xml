@@ -6,7 +6,12 @@
         <item>Sans Serif</item>
         <item>Roboto Light</item>
         <item>Roboto Thin</item>
-        <item>Tangarine Regular</item>
+        <item>Tangarine</item>
+
+        <item>Fasthand</item>
+        <item>Great vibes</item>
+        <item>Indie Flower</item>
+        <item>Sono</item>
     </string-array>
 
 
@@ -16,6 +21,11 @@
         <item>1</item>
         <item>2</item>
         <item>3</item>
+
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
     </string-array>
 
     <string-array name="dark_mode_entry">

@@ -153,6 +153,7 @@ public class BibleAdapter extends RecyclerView.Adapter {
         TextView title,tileAcronym,number;
         MaterialCardView cardView;
         ImageView img;
+        View view;
 
         public AllBookViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -163,6 +164,9 @@ public class BibleAdapter extends RecyclerView.Adapter {
             cardView = itemView.findViewById(R.id.cardview);
 
             itemView.findViewById(R.id.lang).setVisibility(View.GONE);
+            view = itemView.findViewById(R.id.point);
+            view.setVisibility(View.GONE);
+            //view.
 
 
         }

@@ -14,6 +14,7 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.TypedValue;
+import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
 
@@ -25,56 +26,58 @@ import java.io.InputStream;
 public class DrawerCitacion {
     private Bitmap image;
     private String text;
-    private int textSize;
+    //private int textSize;
+
     private TextPaint textPaint;
     private final int width = 1024;
-    private int  canvasHeight;
+    private int canvasHeight;
     private Context context;
     private Canvas canvas;
     private int bgColor;
     private TextPaint appNamePaint;
     private Bitmap tempImage;
     private int tempBgColor;
-    private int fgColor ;
+    private int fgColor;
     private int tempFgColor;
-    //private int textSize;
-    private Typeface typeface ;
-    private Typeface tempTypeface ;
+    private int textSize;
+    private Typeface typeface;
+    private Typeface tempTypeface;
 
 
-    private int ratio=1;
+    private int ratio = 1;
 
-    public DrawerCitacion(Context context,  String textToDraw)  {
+    public DrawerCitacion(Context context, String textToDraw) {
         this.context = context;
         this.text = textToDraw;
-        this.textSize = width/20;
+        this.textSize = width / 20;
         appNamePaint = new TextPaint();
-        appNamePaint.setShadowLayer(1,2,4,Color.BLACK);
+        appNamePaint.setShadowLayer(1, 2, 4, Color.BLACK);
         textPaint = new TextPaint();
         textPaint.setTextSize(textSize);
         textPaint.setColor(Color.WHITE);//font/robotolight.ttf
-        typeface = Typeface.SANS_SERIF;  //ResourcesCompat.getFont(context, R.font.robotolight);
+        typeface = /*Typeface.SANS_SERIF;*/  ResourcesCompat.getFont(context, R.font.robotolight);
         textPaint.setTypeface(typeface);
-        appNamePaint.setTypeface(typeface);
+
+        appNamePaint.setTypeface(Typeface.SANS_SERIF);
 
     }
 
     public void draw(Canvas canvas) {
-        Paint paint = new Paint();
+        //Paint paint = new Paint();
         //int width = 400; // width of the canvas
+        textPaint.setTextSize(textSize);
         int maxHeight = 100; // maximum height of the StaticLayout in dp
         int maxHeightPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, maxHeight, context.getResources().getDisplayMetrics()); // convert dp to px
 
-        int maxLines = (int) Math.ceil(maxHeightPx / paint.getFontSpacing()); // calculate the maximum number of lines that can fit within the desired height
-
+        ///int maxLines = (int) Math.ceil(maxHeightPx / paint.getFontSpacing()); // calculate the maximum number of lines that can fit within the desired height
 
 
         ////////////////
 
-        if ( image!=null ){
+        if (image != null) {
             Rect imageRect = new Rect(0, 0, width, canvasHeight);
             canvas.drawBitmap(image, null, imageRect, null);
-        }else {
+        } else {
             if (bgColor != Color.TRANSPARENT)
                 canvas.drawColor(bgColor);
         }
@@ -83,7 +86,7 @@ public class DrawerCitacion {
         //textPaint.setColor(Color.WHITE);
 
 
-        StaticLayout yourLayout = StaticLayout.Builder.obtain(text, 0, text.length(), textPaint, canvas.getWidth()-60)
+        StaticLayout yourLayout = StaticLayout.Builder.obtain(text, 0, text.length(), textPaint, canvas.getWidth() - 60)
                 //.setMaxLines(maxLines)
                 .setEllipsize(TextUtils.TruncateAt.END)
                 .setAlignment(Layout.Alignment.ALIGN_CENTER)
@@ -91,11 +94,10 @@ public class DrawerCitacion {
                 .build();
 
 
-
         canvas.translate((canvas.getWidth() / 2) - (yourLayout.getWidth() / 2), (canvas.getHeight() / 2) - ((yourLayout.getHeight() / 2)));
         yourLayout.draw(canvas);
 
-        canvas.translate(((canvas.getWidth() / 2) - (yourLayout.getWidth() / 2))*-1, ((canvas.getHeight() / 2) - ((yourLayout.getHeight() / 2)))*-1  );
+        canvas.translate(((canvas.getWidth() / 2) - (yourLayout.getWidth() / 2)) * -1, ((canvas.getHeight() / 2) - ((yourLayout.getHeight() / 2))) * -1);
 
         ///////
         // Draw the application name in the left bottom of the canvas
@@ -104,8 +106,8 @@ public class DrawerCitacion {
         String appName = "Church Kit";
 
         appNamePaint.setColor(Color.WHITE);
-        this.textSize = width/20;
-        appNamePaint.setTextSize(textSize);
+        //this.textSize = width / 20;
+        appNamePaint.setTextSize( width / 20);
 
         StaticLayout appNameLayout = new StaticLayout(appName, appNamePaint, 250,
                 Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false);
@@ -113,15 +115,18 @@ public class DrawerCitacion {
         int appNameWidth = appNameLayout.getWidth();
         int appNameHeight = appNameLayout.getHeight();
 
+        int dx1 =canvas.getWidth() - appNameWidth;
+        int dy1 = (canvas.getHeight()) - appNameHeight - 20;
+        canvas.translate(dx1, dy1);
 
-
-        canvas.translate(canvas.getWidth()-appNameWidth, (canvas.getHeight() )-appNameHeight-20);
-
-        int dy = (canvas.getHeight() )-appNameHeight-20;
-        int dx = (canvas.getHeight() )-appNameHeight-20;
-        canvas.drawLine((canvas.getHeight() )-appNameHeight,dy,(canvas.getHeight() ),dy,textPaint);
+        int dy = (canvas.getHeight()) - appNameHeight - 20;
+        //int dx = (canvas.getHeight()) - appNameHeight - 20;
+        canvas.drawLine((canvas.getHeight()) - appNameHeight, dy, (canvas.getHeight()), dy, textPaint);
 
         appNameLayout.draw(canvas);
+        canvas.translate(-30,-40);
+
+        context.getDrawable(R.drawable.android_logo_24).draw(canvas);
 
 
     }
@@ -132,12 +137,10 @@ public class DrawerCitacion {
         return BitmapFactory.decodeStream(inputStream);
     }
 
-    public void setProperties(int textSize){
-        this.textSize = textSize;
-    }
 
 
-    public Bitmap getCitationWithBgColor(Bitmap bitmap){
+
+    public Bitmap getCitationWithBgColor(Bitmap bitmap) {
         canvasHeight = width * ratio;
         Bitmap bit = Bitmap.createBitmap(width, canvasHeight, Bitmap.Config.ARGB_8888);
 
@@ -150,30 +153,44 @@ public class DrawerCitacion {
         draw(canvas);
         return bit;
     }
-    public Bitmap getCitationWithNewFgColor(int color){
+
+    public Bitmap getCitationWithNewFgColor(int color) {
         canvasHeight = width * ratio;
-        Bitmap bit =  Bitmap.createBitmap(width,canvasHeight,Bitmap.Config.ARGB_8888);
-         this.bgColor = this.tempBgColor;
+        Bitmap bit = Bitmap.createBitmap(width, canvasHeight, Bitmap.Config.ARGB_8888);
+        this.bgColor = this.tempBgColor;
         this.image = this.tempImage;
         this.typeface = tempTypeface;
-         this.fgColor = color;
-         tempFgColor = color;
+        this.fgColor = color;
+        tempFgColor = color;
         canvas = new Canvas(bit);
         draw(canvas);
         return bit;
     }
-    public Bitmap getCitationWithNewFontStyle(int idFont){
+    public Bitmap getCitationWithDiffSizeText(int textSize) {
         canvasHeight = width * ratio;
-        Bitmap bit =  Bitmap.createBitmap(width,canvasHeight,Bitmap.Config.ARGB_8888);
+        Bitmap bit = Bitmap.createBitmap(width, canvasHeight, Bitmap.Config.ARGB_8888);
         this.bgColor = this.tempBgColor;
         this.image = this.tempImage;
-        this.typeface =   ResourcesCompat.getFont(context, idFont);
+        this.typeface = tempTypeface;
+        this.textSize = textSize;
         canvas = new Canvas(bit);
         draw(canvas);
         return bit;
     }
 
-    public Bitmap getCitationWithBgColor(int color){
+    public Bitmap getCitationWithNewFontStyle(int idFont) {
+        canvasHeight = width * ratio;
+        Bitmap bit = Bitmap.createBitmap(width, canvasHeight, Bitmap.Config.ARGB_8888);
+        this.bgColor = this.tempBgColor;
+        this.image = this.tempImage;
+        this.typeface = ResourcesCompat.getFont(context, idFont);
+        textPaint.setTypeface( typeface );
+        canvas = new Canvas(bit);
+        draw(canvas);
+        return bit;
+    }
+
+    public Bitmap getCitationWithBgColor(int color) {
         canvasHeight = width * ratio;
         Bitmap bit = Bitmap.createBitmap(width, canvasHeight, Bitmap.Config.ARGB_8888);
         this.bgColor = color;
@@ -190,7 +207,7 @@ public class DrawerCitacion {
     public Bitmap getCitationWithBgColor(Context context, Uri uri) throws IOException {
         canvasHeight = width * ratio;
         Bitmap bit = Bitmap.createBitmap(width, canvasHeight, Bitmap.Config.ARGB_8888);
-        image = getBitmapFromUri(context,uri);
+        image = getBitmapFromUri(context, uri);
         tempImage = image;
         tempBgColor = 0;
         canvas = new Canvas(bit);

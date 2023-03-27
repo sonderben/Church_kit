@@ -76,6 +76,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         more.setOnClickListener(this::onClick);
         donate.setOnClickListener(this::onClick);
 
+        bookReference.setSelected(true);
         setChapterHistory();
 
         if (PhoneInfo.manufacturer.equalsIgnoreCase("Xiaomi"))
@@ -108,11 +109,11 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
             switch (item.getItemId()){
                 case R.id.g_image:
                     fab.setVisibility(View.GONE);
-                    editorBottomSheet = EditorBottomSheet.getInstance(mode,versets,IMAGE);
+                    editorBottomSheet = EditorBottomSheet.getInstance(mode,versets,IMAGE,mId);
                     editorBottomSheet.show(ChapterDialogFragment.this.getChildFragmentManager(),"");
                     break;
                 case R.id.book_mark:
-                    editorBottomSheet = EditorBottomSheet.getInstance(mode,versets,BOOK_MARK);
+                    editorBottomSheet = EditorBottomSheet.getInstance(mode,versets,BOOK_MARK,mId);
                     editorBottomSheet.show(ChapterDialogFragment.this.getChildFragmentManager(),"");
                     break;
                 case R.id.copy:
@@ -302,11 +303,11 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
                         switch (item.getItemId()){
                             case R.id.g_image:
                                 fab.setVisibility(View.GONE);
-                                editorBottomSheet = EditorBottomSheet.getInstance(null,versets,IMAGE);
+                                editorBottomSheet = EditorBottomSheet.getInstance(null,versets,IMAGE,mId);
                                 editorBottomSheet.show(ChapterDialogFragment.this.getChildFragmentManager(),"");
                                 break;
                             case R.id.book_mark:
-                                editorBottomSheet = EditorBottomSheet.getInstance(null,versets,BOOK_MARK);
+                                editorBottomSheet = EditorBottomSheet.getInstance(null,versets,BOOK_MARK,mId);
                                 editorBottomSheet.show(ChapterDialogFragment.this.getChildFragmentManager(),"");
                                 break;
                             case R.id.copy:

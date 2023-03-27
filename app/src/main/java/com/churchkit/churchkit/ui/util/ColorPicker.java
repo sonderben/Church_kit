@@ -1,7 +1,6 @@
 package com.churchkit.churchkit.ui.util;
 
 
-
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -11,43 +10,58 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
+import com.churchkit.churchkit.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
 public class ColorPicker extends HorizontalScrollView {
     OnClicked onClicked;
-    public ColorPicker(Context context,OnClicked onClicked) {
+    //Context mContext;
+
+    public ColorPicker(Context context, OnClicked onClicked) {
         super(context);
-this.onClicked = onClicked;
+        this.onClicked = onClicked;
+       // mContext = context;
         init(context);
-        addButtonColor();
-
-        vLayout.addView(hLayoutTop);
-
-
-        this.addView(vLayout);
     }
 
-    public interface OnClicked{
-        void clicked(View v,String stringColor);
+    public interface OnClicked {
+        void clicked(View v, String stringColor);
     }
 
 
+    public void init(Context context) {
+        stringColor = new ArrayList<>();
 
 
-    public void init(Context context){
-        stringColor=new ArrayList<>();
-        vLayout=new LinearLayout(context);
-        vLayout.setOrientation(LinearLayout.VERTICAL);
 
-        hLayoutTop=new LinearLayout(context);
+
+
+
+
+        hLayoutTop = new LinearLayout(context);
+
+        FloatingActionButton remove = new FloatingActionButton(context);
+        remove.setImageResource(R.drawable.bookmark);
+        remove.setSize(FloatingActionButton.SIZE_MINI);
+        hLayoutTop.addView(remove);
+
+        remove.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                view = v;
+                ColorPicker.this.onClicked.clicked(v, null);
+
+
+            }
+        });
+
+
         hLayoutTop.setOrientation(LinearLayout.HORIZONTAL);
 
+        super.addView(hLayoutTop);
 
-
-
-        imageViewArrayList=new ArrayList<>();
 
         stringColor.add(red);
         stringColor.add(green);
@@ -58,77 +72,57 @@ this.onClicked = onClicked;
         stringColor.add(ligthBlue);
         stringColor.add(orange);
         stringColor.add(brown);
-        buttonColor=new FloatingActionButton[stringColor.size()];
 
-        for(int i=0;i<stringColor.size();i++){
 
-            buttonColor[i]=new FloatingActionButton(context);
+        for (int i = 0; i < stringColor.size(); i++) {
 
-            ViewGroup.LayoutParams params=
-                    new LayoutParams(100,
-                            100);
-            ((LayoutParams) params).setMargins(0,0,10,10);
-            buttonColor[i].setLayoutParams(params);
-            buttonColor[i].setBackgroundTintList( ColorStateList.valueOf( Color.parseColor(stringColor.get(i)) ) );
+            FloatingActionButton floatingActionButton = new FloatingActionButton(context);
+            floatingActionButton.setSize(FloatingActionButton.SIZE_MINI);
+            hLayoutTop.addView(floatingActionButton);
+
+            LinearLayout.LayoutParams params =
+                    new LinearLayout.LayoutParams(100, 100);
+
+            params.setMargins(0, 0, 10, 10);
+
+            floatingActionButton.setLayoutParams(params);
+            floatingActionButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(stringColor.get(i))));
             int finalI = i;
-            buttonColor[i].setOnClickListener(new OnClickListener() {
+            floatingActionButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     view = v;
                     color = stringColor.get(finalI);
-                    //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        ColorPicker.this.onClicked.clicked(v, stringColor.get(finalI) );
-                    //}
+                    ColorPicker.this.onClicked.clicked(v, stringColor.get(finalI));
+
 
                 }
             });
 
 
         }
-        for (int i=0;i<buttonColor.length;i++){
-            imageViewArrayList.add(buttonColor[i]);
-        }
-    }
-
-
-    private void addButtonColor(){
-        for(int a=0;a<imageViewArrayList.size();a++){
-                hLayoutTop.addView(imageViewArrayList.get(a));
-        }
 
     }
+
 
     View view;
     String color;
-    LinearLayout vLayout;
+
 
     LinearLayout hLayoutTop;
 
-    FloatingActionButton[] buttonColor;
 
-    ArrayList<FloatingActionButton>imageViewArrayList;
+    ArrayList<String> stringColor;
 
-    ArrayList<String>stringColor;
+    final String red = "#ff0000";
+    final String green = "#00ff00";
+    final String blue = "#0000ff";
+    final String yellow = "#fff000";
+    final String cyan = "#00ffff";
+    final String purple = "#800080";
+    final String ligthBlue = "#add8e6";
+    final String orange = "#ffa500";
+    final String brown = "#8b4513";
 
-    final String red=         "#ff0000";
-    final String green=       "#00ff00";
-    final String blue=        "#0000ff";
-    final String yellow=      "#fff000";
-    //final String navy=        "#000080";
-    final String cyan=        "#00ffff";
-    //final String mayenta=     "#ff00ff";
-    //final String olive=       "#808000";
-    final String purple=      "#800080";
-    //final String gold=        "#ffd700";
-    final String ligthBlue=   "#add8e6";
-    final String orange=      "#ffa500";
-    //final String orangeRed=   "#808000";
-    //final String aqua=        "#00ffff";
-    //final String dodgerBlue=  "#1e90ff";
-    //final String deepPink=    "#ff1493";
-    //final String chartReuse=  "#7fff00";
-    final String brown=       "#8b4513";
-    //final String stateGray=   "#070809";
-    //final String indigo=      "#4b0082";
 
 }

@@ -12,6 +12,13 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Layout;
+import android.text.Spannable;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ClickableSpan;
+import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,6 +37,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
@@ -39,6 +47,7 @@ import com.churchkit.churchkit.MainActivity;
 import com.churchkit.churchkit.PhoneInfo;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.entity.song.BookMarkSong;
 import com.churchkit.churchkit.database.entity.song.SongFavorite;
 import com.churchkit.churchkit.database.entity.song.SongHistory;
 import com.churchkit.churchkit.database.entity.song.Verse;
@@ -95,6 +104,47 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
 
           });
 
+          churchKitDd.bookMarkSongDao().getAllBookMark(mSongId).observe(getViewLifecycleOwner(), bookMarkSongs -> {
+             if (bookMarkSongs.size() != 0){
+                 Spannable spannable = (Spannable) tv.getText();
+                 for (int i = 0; i < bookMarkSongs.size(); i++) {
+                     int start = bookMarkSongs.get(i).getStart();
+                     int end = bookMarkSongs.get(i).getEnd();
+
+                     //Toast.makeText(getContext(),"size: "+bookMarkSongs.size(),Toast.LENGTH_LONG).show();
+
+                     int color = Color.parseColor(bookMarkSongs.get(i).getColor().replace("#", "#6b"));
+
+
+                     ClickableSpan clickableSpan = new ClickableSpan() {
+                         @Override
+                         public void onClick(@NonNull View widget) {
+                            int index = bookMarkSongs.indexOf( new BookMarkSong("1","1","1",start,end,mSongId) );
+                           BookMarkSong bookMarkSong = bookMarkSongs.get(index);
+
+                           EditorBottomSheet editorBottomSheet = EditorBottomSheet.getInstance(bookMarkSong,tv,2,mSongId);
+                           editorBottomSheet.show(getChildFragmentManager(),"");
+                         }
+                         @Override
+                         public void updateDrawState(TextPaint ds) {
+                             super.updateDrawState(ds);
+                             ds.setUnderlineText(false); // remove underline
+                             ds.setColor(mTextViewColor);
+
+                         }
+                     };
+                    // try {
+                         spannable.setSpan(new BackgroundColorSpan(color), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                         spannable.setSpan(clickableSpan,start,end,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                     /*}catch (IndexOutOfBoundsException io){
+                         
+                     }*/
+
+                 }
+                 tv.setText(spannable);
+                 tv.setMovementMethod( LinkMovementMethod.getInstance() );
+             }
+          });
 
 
 
@@ -113,7 +163,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
         //fab.setOnClickListener();
 
         churchKitDd.verseDao().getAllVerseByIdSong(mSongId).observe(requireActivity(), verses -> {
-            System.out.println("m laaaaaa22: "+verses+" id: "+mSongId);
+
             tv.setText(listVerseToString(verses));
         });
 
@@ -150,11 +200,11 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
         switch (item.getItemId()){
             case R.id.g_image:
                 fab.setVisibility(View.GONE);
-                editorBottomSheet = EditorBottomSheet.getInstance(mode,tv,IMAGE);
+                editorBottomSheet = EditorBottomSheet.getInstance(mode,tv,IMAGE,mSongId);
                 editorBottomSheet.show(SongDialogFragment.this.getChildFragmentManager(),"");
                 break;
             case R.id.book_mark:
-                editorBottomSheet = EditorBottomSheet.getInstance(mode,tv,BOOK_MARK);
+                editorBottomSheet = EditorBottomSheet.getInstance(mode,tv,BOOK_MARK,mSongId);
                 editorBottomSheet.show(SongDialogFragment.this.getChildFragmentManager(),"");
                 break;
             case R.id.copy:
@@ -194,7 +244,11 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
      donate = root.findViewById(R.id.donate);
      more = root.findViewById(R.id.more);
 
+        mTextViewColor = tv.getCurrentTextColor();
+
      fab.setOnClickListener(this::onClick);
+
+     bookTitle.setSelected(true);
 
      if (PhoneInfo.manufacturer.equalsIgnoreCase("Xiaomi"))
          more.setVisibility(View.VISIBLE);
@@ -204,11 +258,14 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
 
 
     private  void setChorusButtonVisibility(){
-        if (isPhraseVisible("-Chorus-")){
+        if (isPhraseVisible(getContext().getString(R.string.chorus))){
             scrollToChorusTextView.setVisibility(View.GONE);
         }
-        else
+        else if (tv.getText().toString().contains( getContext().getString(R.string.chorus) ))
             scrollToChorusTextView.setVisibility(View.VISIBLE);
+        else {
+            scrollToChorusTextView.setVisibility(View.GONE);
+        }
     }
 
 
@@ -233,7 +290,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
             for (int i=0;i< verses.size();i++){
 
                 verse = verses.get(i);
-                verseString.append( verse.getPosition()<0?"-Chorus-":verse.getPosition() );
+                verseString.append( verse.getPosition()<0? getContext().getString(R.string.chorus) :verse.getPosition() );
                 verseString.append("\n");
                 verseString.append(verse.getVerse());
                 verseString.append("\n");
@@ -248,7 +305,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
     }
 
     private void scrollToChorus(){
-        int index = tv.getText().toString().indexOf("-Chorus-");
+        int index = tv.getText().toString().indexOf( getContext().getString(R.string.chorus) );
         Layout layout = tv.getLayout();
         int line = layout.getLineForOffset(index);
         int y = layout.getLineTop(line);
@@ -259,6 +316,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
     private boolean isPhraseVisible(@NonNull final String phrase) {
         int index = tv.getText().toString().indexOf(phrase);
         if (index == -1) {
+            System.out.println("isPhraseVisible: false1");
             return false;
         }
         Layout layout = tv.getLayout();
@@ -268,7 +326,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
         Rect rect = new Rect(0, y, tv.getWidth(), y2);
         Rect visibleRect = new Rect();
         tv.getLocalVisibleRect(visibleRect);
-        return Rect.intersects(rect, visibleRect);
+        return ( Rect.intersects(rect, visibleRect) );
     }
 
     @Override
@@ -276,7 +334,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
         super.onResume();
 
 
-        if (ckp.getButtonChorus()) {
+        if ( ckp.getButtonChorus() && isPhraseVisible( getContext().getString(R.string.chorus) ) ) {
             setChorusButtonVisibility();
             scrollToChorusTextView.setVisibility(View.VISIBLE);
         } else {
@@ -315,6 +373,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
     private ScrollView scrollView;
     private ImageView favorite,donate,more;
     private CKPreferences ckp ;
+    int mTextViewColor;
 
 
     @Override
@@ -346,11 +405,11 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
                         switch (item.getItemId()){
                             case R.id.g_image:
                                 fab.setVisibility(View.GONE);
-                                editorBottomSheet = EditorBottomSheet.getInstance(null,tv,IMAGE);
+                                editorBottomSheet = EditorBottomSheet.getInstance(null,tv,IMAGE,mSongId);
                                 editorBottomSheet.show(SongDialogFragment.this.getChildFragmentManager(),"");
                                 break;
                             case R.id.book_mark:
-                                editorBottomSheet = EditorBottomSheet.getInstance(null,tv,BOOK_MARK);
+                                editorBottomSheet = EditorBottomSheet.getInstance(null,tv,BOOK_MARK,mSongId);
                                 editorBottomSheet.show(SongDialogFragment.this.getChildFragmentManager(),"");
                                 break;
                             case R.id.copy:

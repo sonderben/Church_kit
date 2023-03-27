@@ -42,7 +42,7 @@ public class CKPreferences {
         return settingPreferences.getInt("LETTER_SIZE", Integer.parseInt(context.getString(R.string.letter_size)));
     }
     public boolean getabbrColor(){
-        return  settingPreferences.getBoolean("USE_DIF_COLOR", false);
+        return  settingPreferences.getBoolean("SONG_ABBR_COLOR", false);
     }
     public boolean getButtonChorus(){
         return  settingPreferences.getBoolean("CHORUS", false);
@@ -66,8 +66,12 @@ public class CKPreferences {
         System.out.println("settingPreferences:"+ settingPreferences.getString("FONT","0") );
         switch (font){
             case 1: return R.font.robotolight;
-            case 2: return R.font.robororhin;
+            case 2: return R.font.roboto_thin;
             case 3: return R.font.tangerine_regular;
+            case 4: return R.font.fasthand;
+            case 5: return R.font.great_vibes;
+            case 6: return R.font.indie_flower;
+            case 7: return R.font.sono_regular;
             default: return 0;
         }
 

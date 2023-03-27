@@ -51,6 +51,7 @@ public class BibleFragment extends Fragment {
         mRecyclerView = bookmarkBinding.recyclerview;
         autoCompleteTextView = bookmarkBinding.search;
 
+
         sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         db=ChurchKitDb.getInstance(getContext());
 
@@ -158,5 +159,6 @@ public class BibleFragment extends Fragment {
     MaterialAutoCompleteTextView autoCompleteTextView;
     private final String IS_GROUP_BY_TESTAMENT="IS_GROUP_BY_TESTAMENT";
     SharedPreferences sharedPreferences;
+
     ChurchKitDb db;
 }

@@ -13,11 +13,15 @@ import com.churchkit.churchkit.database.dao.bible.BibleChapterDao;
 import com.churchkit.churchkit.database.dao.bible.BibleChapterFavoriteDao;
 import com.churchkit.churchkit.database.dao.bible.BibleChapterHistoryDao;
 import com.churchkit.churchkit.database.dao.bible.BibleVerseDao;
+import com.churchkit.churchkit.database.dao.bible.BookMarkBibleDao;
+import com.churchkit.churchkit.database.dao.song.BookMarkSongDao;
 import com.churchkit.churchkit.database.dao.song.SongBookDao;
 import com.churchkit.churchkit.database.dao.song.SongDao;
 import com.churchkit.churchkit.database.dao.song.SongFavoriteDao;
 import com.churchkit.churchkit.database.dao.song.SongHistoryDao;
 import com.churchkit.churchkit.database.dao.song.VerseDao;
+import com.churchkit.churchkit.database.entity.bible.BookMarkChapter;
+import com.churchkit.churchkit.database.entity.song.BookMarkSong;
 import com.churchkit.churchkit.database.entity.bible.BibleBook;
 import com.churchkit.churchkit.database.entity.bible.BibleChapter;
 import com.churchkit.churchkit.database.entity.bible.BibleChapterFavorite;
@@ -34,7 +38,8 @@ import com.churchkit.churchkit.database.entity.song.Verse;
 //@TypeConverters({ChurchKitConverter.class})
 @Database(entities = {SongBook.class, Song.class, Verse.class, BibleBook.class, BibleChapter.class,
         BibleVerse.class, SongFavorite.class,BibleChapterFavorite.class,
-        BibleChapterHistory.class,SongHistory.class, SongFts.class, BibleChapterFts.class},version = 1,exportSchema = false)
+        BibleChapterHistory.class,SongHistory.class, SongFts.class, BibleChapterFts.class,
+        BookMarkSong.class, BookMarkChapter.class},version = 1,exportSchema = false)
 public abstract class ChurchKitDb extends RoomDatabase {
     public abstract SongBookDao songBookDao();
     public abstract SongDao songDao();
@@ -46,6 +51,9 @@ public abstract class ChurchKitDb extends RoomDatabase {
     public abstract SongHistoryDao songHistoryDao();
     public abstract BibleChapterFavoriteDao bibleChapterFavoriteDao();
     public abstract BibleChapterHistoryDao bibleChapterHistoryDao();
+
+    public abstract BookMarkBibleDao bookMarkBibleDao();
+    public abstract BookMarkSongDao bookMarkSongDao();
 
 
     public static volatile ChurchKitDb instance;

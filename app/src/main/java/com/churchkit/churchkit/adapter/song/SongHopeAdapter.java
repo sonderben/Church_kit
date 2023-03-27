@@ -1,8 +1,6 @@
 package com.churchkit.churchkit.adapter.song;
 
-import android.annotation.SuppressLint;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -96,6 +94,8 @@ public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPa
                 NavController navController = Navigation.findNavController(view);
                 navController.getGraph().findNode(R.id.listSongsFragment).setLabel(songBook.getName()+" ");
                 navController.navigate(R.id.action_homeFragment_to_listSongsFragment2,bundle);
+
+
 
             }
         });

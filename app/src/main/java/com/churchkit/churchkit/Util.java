@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -74,6 +75,12 @@ public class Util {
         JSONObject jsonObject = new JSONObject(jsonString);
 
         return jsonObject;
+    }
+
+    public static List<Integer>getAllFont(){
+        return Arrays.asList(R.font.fasthand,R.font.great_vibes,R.font.indie_flower,R.font.robotolight
+                ,R.font.roboto_thin,R.font.roboto_bold,R.font.sono_regular,R.font.sono_bold,R.font.tangerine_regular,
+                R.font.tangerine_bold);
     }
 
     public static String getJsonFromAssetForFireStore(Context context) throws IOException, JSONException {

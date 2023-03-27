@@ -8,48 +8,59 @@
         app:entryValues="@array/language_values"
         app:icon="@drawable/language_24"
         app:key="LANGUAGE"
-        app:title="Language"
+        app:title="@string/language"
         android:defaultValue="1"
         app:useSimpleSummaryProvider="true" />
 
-    <PreferenceCategory app:title="Lectura">
+    <PreferenceCategory app:title="@string/reading">
 
        <SeekBarPreference
-           app:title="Letter size"
+           app:title="@string/letter_size_title"
            app:key="LETTER_SIZE"
            android:defaultValue="@string/letter_size"
            app:icon="@drawable/text_size_24"
            android:max="100"
+           app:min="12"
            android:progress="1"
            android:summary="20 px"/>
 
 
 
         <ListPreference
-            app:defaultValue="0"
+            app:defaultValue="7"
             app:entries="@array/font_entry"
             app:entryValues="@array/font_values"
             app:key="FONT"
             app:icon="@drawable/text_font_24"
-            app:title="Font"
+            app:title="@string/font"
             app:useSimpleSummaryProvider="true" />
 
         <SwitchPreferenceCompat
             app:key="bold"
             app:summary="Not implemented yet"
             app:icon="@drawable/text_bold_24"
-            app:title="Use bold font" />
+            app:title="@string/use_bold_font" />
+
         <SwitchPreferenceCompat
             app:key="CHORUS"
             android:defaultValue="true"
             app:icon="@drawable/scroll_chorus_24"
-            app:summary="Make the Chorus button appear when there is a chorus in a song. (have bug)"
-            app:title="Activate button chorus" />
+            app:summary="@string/switch_summary_btn_chorus"
+            app:title="@string/switch_title_btn_chorus" />
 
 
     </PreferenceCategory>
+    <PreferenceCategory
+        app:title="">
+        <SwitchPreferenceCompat
+            app:key="SONG_ABBR_COLOR"
+            app:icon="@drawable/abbr_color"
+            app:summary="@string/switch_summary_btn_song_abrr_color"
+            app:title="@string/switch_title_btn_song_abrr_color" />
+    </PreferenceCategory>
 
-    <PreferenceCategory app:title="Display">
+
+    <PreferenceCategory app:title="@string/display">
 
         <ListPreference
             app:defaultValue="2"
@@ -57,13 +68,9 @@
             app:entryValues="@array/dark_mode_values"
             app:key="DARK_MODE"
             app:icon="@drawable/dark_mode_24"
-            app:title="Dark mode"
+            app:title="@string/dark_mode"
             app:useSimpleSummaryProvider="true" />
-        <SwitchPreferenceCompat
-            app:key="ADAPTIVE_BRIGHTNESS"
-            app:icon="@drawable/brightness_24"
-            app:summary="Optimizing brightness level (Not implemented yet)"
-            app:title="Adaptive brightness" />
+
 
     </PreferenceCategory>
 

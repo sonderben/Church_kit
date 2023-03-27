@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
@@ -57,8 +58,9 @@ public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.List
     public void onBindViewHolder(@NonNull ListSongsViewHolder holder, int position) {
 
         if (songList != null){
-            final Song tempSong = songList.get(position);
-            holder.title.setText(tempSong.getTitle());
+            final Song tempSong = songList.get(holder.getAbsoluteAdapterPosition());
+            holder.title.setText( tempSong.getTitle()+"." );
+
             holder.number.setText( formatNumberToString( tempSong.getPosition() ) );
             holder.date.setVisibility(View.GONE);
 
@@ -66,14 +68,15 @@ public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.List
                 SongDialogFragment listChapter = SongDialogFragment.newInstance(tempSong.getSongID(),formatNumberToString(tempSong.getPosition()) +songBookName, tempSong.getTitle());
                 listChapter.show(fm,"kek");
             } );
+
         }else if (songFavoriteWrapperList != null){
-            final Song tempSong = songFavoriteWrapperList.get(position).getSong();//songList.get(position);
+            final Song tempSong = songFavoriteWrapperList.get(holder.getAbsoluteAdapterPosition()).getSong();
             holder.title.setText(tempSong.getTitle());
             holder.number.setText( formatNumberToString( tempSong.getPosition() ) );
 
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis( songFavoriteWrapperList.get(position).getDate() );
-            DateFormat dateFormat=DateFormat.getDateInstance(DateFormat.MEDIUM);
+            DateFormat dateFormat=DateFormat.getDateInstance(DateFormat.SHORT);
 
             holder.date.setText( dateFormat.format(calendar.getTime()) );
 
@@ -84,12 +87,12 @@ public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.List
             } );
         }else if (songHistoryWrapperList!=null){
             final Song tempSong = songHistoryWrapperList.get(position).getSong();
-            holder.title.setText(tempSong.getTitle());
+            holder.title.setText(tempSong.getTitle().trim());
             holder.number.setText( formatNumberToString( tempSong.getPosition() ) );
 
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis( songHistoryWrapperList.get(position).getDate() );
-            DateFormat dateFormat=DateFormat.getDateInstance(DateFormat.MEDIUM);
+            DateFormat dateFormat=DateFormat.getDateInstance(DateFormat.SHORT);
 
             holder.date.setText( dateFormat.format(calendar.getTime()) );
 
@@ -124,6 +127,7 @@ public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.List
             number = itemView.findViewById(R.id.number);
             title = itemView.findViewById(R.id.title);
             date = itemView.findViewById(R.id.date);
+
         }
     }
 

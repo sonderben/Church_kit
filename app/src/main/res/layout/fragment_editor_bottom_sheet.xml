@@ -7,13 +7,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <View
+        android:layout_width="100dp"
+        android:background="@color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="5dp"/>
+
     <LinearLayout
         android:id="@+id/linear_layout_color_picker"
        android:layout_margin="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:minHeight="@dimen/_100sdp"
+        android:visibility="visible"
         app:layout_constraintTop_toTopOf="parent">
+        <EditText
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="title"/>
+        <EditText
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/_200sdp"
+            android:ems="10"
+            android:gravity="start|top"
+            android:hint="description"
+            android:inputType="textMultiLine" />
 
     </LinearLayout>
 
@@ -28,13 +52,11 @@
         app:layout_constraintRight_toRightOf="@id/linear_layout_color_picker"
         android:orientation="vertical"
         android:layout_height="wrap_content">
-        <View
-            android:layout_width="100dp"
-            android:background="@color/black"
-            android:layout_height="5dp"/>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp">
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/download_image"
                 android:layout_width="wrap_content"
@@ -45,8 +67,7 @@
                 android:layout_marginHorizontal="@dimen/_2sdp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:drawableLeft="@drawable/download_24"
-                android:background="@drawable/bg_gradient" />
+                android:drawableLeft="@drawable/download_24" />
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/status_whatsapp"
                 android:layout_width="wrap_content"
@@ -55,7 +76,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/download_image"
                 android:padding="@dimen/_5sdp"
-                android:background="@drawable/bg_gradient"
                 android:drawableLeft="@drawable/whatsapp_24"
                 android:layout_marginRight="6dp" />
             <com.google.android.material.textview.MaterialTextView
@@ -66,20 +86,40 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/status_whatsapp"
                 android:padding="@dimen/_5sdp"
-                android:background="@drawable/bg_gradient"
                 android:layout_marginRight="6dp"
                 android:drawableLeft="@drawable/instagram_24"/>
 
 
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/my_image_view"
+            android:layout_width="match_parent"
+            android:background="@drawable/textview_border"
+            android:layout_margin="5dp"
+            android:layout_marginTop="1dp"
+            app:layout_constraintBottom_toTopOf="@id/action"
+            android:layout_height="wrap_content"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            app:layout_constraintTop_toBottomOf="@id/action"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_font"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_margin="@dimen/_2sdp"
+                android:padding="@dimen/_5sdp"
+                android:drawableLeft="@drawable/text_font_24" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/text_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/random_color"
-                android:background="@drawable/bg_gradient"
+                app:layout_constraintLeft_toRightOf="@id/text_font"
                 android:layout_margin="@dimen/_2sdp"
                 android:padding="@dimen/_5sdp"
                 android:drawableLeft="@drawable/text_color_24" />
@@ -90,40 +130,36 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_2sdp"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@drawable/bg_gradient"
-                app:layout_constraintRight_toLeftOf="@id/random_img"
+                app:layout_constraintLeft_toRightOf="@id/text_color"
                 android:padding="@dimen/_5sdp"
-                android:drawableLeft="@drawable/color_palette" />
+                android:drawableLeft="@drawable/background_color_24" />
+            <include
+                layout="@layout/stepper"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/random_color"/>
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/random_img"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_2sdp"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@drawable/bg_gradient"
                 app:layout_constraintRight_toLeftOf="@id/open_gallery"
                 android:padding="@dimen/_5sdp"
-                android:drawableLeft="@drawable/photo_from_gallery"/>
+                android:drawableLeft="@drawable/random_photo_24"/>
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/open_gallery"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_2sdp"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@drawable/bg_gradient"
                 app:layout_constraintRight_toRightOf="parent"
                 android:padding="@dimen/_5sdp"
 
-                android:drawableLeft="@drawable/gallery_add_24"/>
+                android:drawableLeft="@drawable/open_gallery"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
-        <ImageView
-            android:id="@+id/my_image_view"
-            android:layout_width="match_parent"
-            android:background="@drawable/textview_border"
-            android:layout_margin="5dp"
-            android:layout_marginTop="1dp"
-            app:layout_constraintBottom_toTopOf="@id/action"
-            android:layout_height="wrap_content"/>
     </LinearLayout>
 
 
@@ -150,6 +186,7 @@
                android:layout_width="match_parent"
                android:orientation="horizontal"
                android:gravity="center"
+               android:visibility="gone"
                android:layout_height="wrap_content">
                <com.google.android.material.textview.MaterialTextView
                    android:layout_width="wrap_content"
@@ -231,5 +268,9 @@
         </LinearLayout>
 
     </LinearLayout>
+
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

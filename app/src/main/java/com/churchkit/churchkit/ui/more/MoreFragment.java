@@ -3,14 +3,17 @@ package com.churchkit.churchkit.ui.more;
 import static com.churchkit.churchkit.Util.setAppLanguage;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -38,7 +41,7 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
         langListPreference =(ListPreference) findPreference("LANGUAGE");
         seekBarPreference = (SeekBarPreference) findPreference("LETTER_SIZE");
         darKModeListPreference = findPreference("DARK_MODE");
-        switchPreferenceCompat  = (SwitchPreferenceCompat) findPreference("ADAPTIVE_BRIGHTNESS");
+        switchPreferenceCompat  = (SwitchPreferenceCompat) findPreference("SONG_ABBR_COLOR");
 
         seekBarPreference.setSummary(ckPreferences.getLetterSize()+" px");
 
@@ -73,16 +76,6 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
         switchPreferenceCompat.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
-                adapbri();
-                if (Settings.System.canWrite(getContext())) {
-                    // Tu aplicación tiene permiso para escribir en la configuración del sistema
-                    // Aquí puedes modificar el brillo manualmente
-                } else {
-                    // Solicita el permiso WRITE_SETTINGS al usuario
-                    Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
-                    intent.setData(Uri.parse("package:" + getActivity().getPackageName()));
-                    startActivityForResult(intent, MY_PERMISSIONS_REQUEST_WRITE_SETTINGS);
-                }
 
                 return true;
             }
@@ -92,38 +85,19 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
     }
 
 
-    public void adapbri(){
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_SETTINGS)
-                != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{Manifest.permission.WRITE_SETTINGS},
-                    MY_PERMISSIONS_REQUEST_WRITE_SETTINGS);
-        }else {
-            Settings.System.putInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
-            Settings.System.putInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, 128);
-        }
-    }
     private static final int MY_PERMISSIONS_REQUEST_WRITE_SETTINGS = 12432;
 
     SeekBarPreference seekBarPreference;
-    //ListPreference
+
     ListPreference langListPreference;
     ListPreference darKModeListPreference;
     CKPreferences ckPreferences;
     SwitchPreferenceCompat switchPreferenceCompat;
 
+
+
+
+
 }
 
-/*
-if (Settings.System.canWrite(this)) {
-    // Tu aplicación tiene permiso para escribir en la configuración del sistema
-    // Aquí puedes modificar el brillo manualmente
-} else {
-    // Solicita el permiso WRITE_SETTINGS al usuario
-    Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
-    intent.setData(Uri.parse("package:" + getPackageName()));
-    startActivityForResult(intent, MY_PERMISSIONS_REQUEST_WRITE_SETTINGS);
-}
-
-* */

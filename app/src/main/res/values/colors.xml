@@ -8,7 +8,10 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="bg_item_config">#F2EBEBEE</color>
-    <color name="main_bg">#fff</color>
+    <color name="main_bg">#D8DCD9</color>
+    <color name="bg_list_item">#fff</color>
+    <color name="primary_text">#374151</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!--F0FDF4-->
 </resources>

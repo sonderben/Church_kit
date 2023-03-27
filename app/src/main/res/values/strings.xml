@@ -12,6 +12,7 @@ Currently, Church Kit is available for free and without advertisements, but futu
 
 In summary, Church Kit is the ideal app for anyone looking to get closer to God through the Bible and worship music. Download it today and start enjoying all its features and useful tools for your worship experience and spiritual growth.</string>
     <string name="song_hope">Song Hope</string>
+    <string name="chorus">-Chorus-</string>
     <string name="faq">1. How do I download the Church Kit app?\nYou can download the Church Kit app from your mobile device\'s app store.\n
 2. Is Church Kit free?\nYes, Church Kit is currently free.\n
 3. Can I access different versions of the Bible in Church Kit?\nYes, Church Kit allows access to different versions of the Bible.\n
@@ -47,12 +48,33 @@ In summary, Church Kit is the ideal app for anyone looking to get closer to God 
     <string name="sync_title" translatable="false">Sync email periodically</string>
     <string name="letter_size" translatable="false">20</string>
     <string name="attachment_title" translatable="false">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    <string name="attachment_summary_on" translatable="false">Automatically download attachments for incoming emails
     </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="attachment_summary_off" translatable="false">Only download attachments when manually requested</string>
     <string name="history">Histories</string>
     <string name="favorite">Favorites</string>
     <string name="about">About</string>
     <string name="donate">Donate</string>
     <string name="version_app">Version: 1.0.0</string>
+    <string name="scroll_to_chorus">scroll to chorus</string>
+    <string name="language">Language</string>
+    <string name="reading">Reading</string>
+    <string name="letter_size_title">Letter size</string>
+    <string name="font">Font</string>
+    <string name="use_bold_font">Use bold font</string>
+    <string name="switch_title_btn_chorus">Activate button chorus</string>
+    <string name="switch_summary_btn_chorus">Make the Chorus button appear when there is a chorus in a song.</string>
+    <string name="switch_title_btn_song_abrr_color">Song color abbreviation</string>
+    <string name="switch_summary_btn_song_abrr_color">Assign a different color to each abbreviation for each song.</string>
+    <string name="display">Display</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="title_activity_list_song">ListSongActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

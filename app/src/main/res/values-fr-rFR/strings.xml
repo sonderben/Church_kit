@@ -11,5 +11,18 @@
     <string name="donate">Faire une donation</string>
     <string name="favorite">Favoris</string>
     <string name="history">Historiques</string>
-    <string name="version_app">Version</string>
+    <string name="version_app">Version: 1.0.0</string>
+    <string name="chorus">-Refrain-</string>
+    <string name="scroll_to_chorus">Défiler jusqu\'au refrain</string>
+    <string name="language">Language</string>
+    <string name="reading">Lecture</string>
+    <string name="font">Police</string>
+    <string name="dark_mode">Mode sombre</string>
+    <string name="switch_summary_btn_song_abrr_color">Attribuez une couleur différente à chaque abréviation pour chaque chanson.</string>
+    <string name="switch_title_btn_song_abrr_color">Abréviation de la couleur de la chanson</string>
+    <string name="switch_summary_btn_chorus">Faire apparaître le bouton refrain lorsqu\'il y a un refrain dans une chanson.</string>
+    <string name="switch_title_btn_chorus">Activez le bouton refrain.</string>
+    <string name="use_bold_font">Utiliser une police en gras.</string>
+    <string name="letter_size_title">Taille des lettres</string>
+    <string name="display">Affichage</string>
 </resources>

@@ -5,6 +5,11 @@ import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
+import com.churchkit.churchkit.R;
+
+import java.util.Arrays;
+import java.util.List;
+
 public class Util {
     public static DisplayMetrics getScreenDisplayMetrics(Context context) {
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -17,10 +22,10 @@ public class Util {
         System.out.println("position: "+position);
 
         switch (position){
-            case 1:return Color.WHITE;
+            case 1:return Color.BLUE;
             case 2:return Color.argb(210,  136,  190, 1);
             case 3:return Color.argb(110,166,90,1);
-            case 4:return Color.argb( 31,  138,  112, 1);
+            case 4:return Color.argb( 131,  138,  112, 1);
             case 5:return Color.argb( 191,  219,  56, 1);
             case 6:return Color.argb( 252,  115,  0, 1);
 
@@ -32,4 +37,6 @@ public class Util {
                 return Color.WHITE;
         }
     }
+
+
 }
