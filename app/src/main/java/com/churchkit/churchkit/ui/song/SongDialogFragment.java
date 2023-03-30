@@ -3,6 +3,7 @@ package com.churchkit.churchkit.ui.song;
 
 import static com.churchkit.churchkit.Util.BOOK_MARK;
 import static com.churchkit.churchkit.Util.IMAGE;
+import static com.churchkit.churchkit.Util.formatNumberToString;
 import static com.churchkit.churchkit.ui.aboutapp.Payment.startPayment;
 
 import android.graphics.Color;
@@ -40,6 +41,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 
 import com.churchkit.churchkit.CKPreferences;
@@ -48,6 +50,7 @@ import com.churchkit.churchkit.PhoneInfo;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.database.ChurchKitDb;
 import com.churchkit.churchkit.database.entity.song.BookMarkSong;
+import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.database.entity.song.SongFavorite;
 import com.churchkit.churchkit.database.entity.song.SongHistory;
 import com.churchkit.churchkit.database.entity.song.Verse;
@@ -56,16 +59,21 @@ import com.churchkit.churchkit.ui.util.Util;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.razorpay.Checkout;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
 
 public class SongDialogFragment extends DialogFragment implements View.OnClickListener{
-    public static SongDialogFragment newInstance(String idSong,String reference,String title){
-        mSongId = idSong;
-        mSongTitle = title;
-        mReference = reference;
+    public static final int SONG_BOOKMARK = 1;
+
+    public static SongDialogFragment newInstance(Song song){
+        mSong = song;
+        mSongId = song.getSongID();
+        mSongTitle = song.getTitle();
+        mReference = formatNumberToString(song.getPosition()) +song.getBookNameAbbr();
+
         return new SongDialogFragment();
     }
     @Nullable
@@ -83,6 +91,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
           more.setOnClickListener(this::onClick);
           donate.setOnClickListener(this::onClick);
 
+         liveDataBookMarkSong= churchKitDd.bookMarkSongDao().getAllBookMark(mSongId);
           churchKitDd.songFavoriteDao().existed(mSongId).observe(getViewLifecycleOwner(), songFavorite -> {
 
               favorite.setEnabled(true);
@@ -104,14 +113,19 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
 
           });
 
-          churchKitDd.bookMarkSongDao().getAllBookMark(mSongId).observe(getViewLifecycleOwner(), bookMarkSongs -> {
+
+         /* churchKitDd.bookMarkSongDao().getAllBookMark(mSongId).observe(getViewLifecycleOwner(), bookMarkSongs -> {
+
+              tv.setText(allVerse);
              if (bookMarkSongs.size() != 0){
                  Spannable spannable = (Spannable) tv.getText();
+
+
                  for (int i = 0; i < bookMarkSongs.size(); i++) {
                      int start = bookMarkSongs.get(i).getStart();
                      int end = bookMarkSongs.get(i).getEnd();
 
-                     //Toast.makeText(getContext(),"size: "+bookMarkSongs.size(),Toast.LENGTH_LONG).show();
+
 
                      int color = Color.parseColor(bookMarkSongs.get(i).getColor().replace("#", "#6b"));
 
@@ -122,7 +136,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
                             int index = bookMarkSongs.indexOf( new BookMarkSong("1","1","1",start,end,mSongId) );
                            BookMarkSong bookMarkSong = bookMarkSongs.get(index);
 
-                           EditorBottomSheet editorBottomSheet = EditorBottomSheet.getInstance(bookMarkSong,tv,2,mSongId);
+                           EditorBottomSheet editorBottomSheet = EditorBottomSheet.getInstance(bookMarkSong,tv,SONG_BOOKMARK,2,mSongId);
                            editorBottomSheet.show(getChildFragmentManager(),"");
                          }
                          @Override
@@ -133,22 +147,25 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
 
                          }
                      };
-                    // try {
+                     try {
                          spannable.setSpan(new BackgroundColorSpan(color), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                          spannable.setSpan(clickableSpan,start,end,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                     /*}catch (IndexOutOfBoundsException io){
+                     }catch (IndexOutOfBoundsException io){
                          
-                     }*/
+                     }
 
                  }
                  tv.setText(spannable);
                  tv.setMovementMethod( LinkMovementMethod.getInstance() );
              }
+
           });
+          */
 
 
 
         scrollToChorusTextView.setOnClickListener(v -> scrollToChorus());
+
 
 
 
@@ -160,11 +177,57 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
 
 
 
-        //fab.setOnClickListener();
-
         churchKitDd.verseDao().getAllVerseByIdSong(mSongId).observe(requireActivity(), verses -> {
+            allVerse = listVerseToString(verses);
+            tv.setText( allVerse );
 
-            tv.setText(listVerseToString(verses));
+            liveDataBookMarkSong.observe(getViewLifecycleOwner(), new Observer<List<BookMarkSong>>() {
+                @Override
+                public void onChanged(List<BookMarkSong> bookMarkSongs) {
+                    tv.setText(allVerse);
+                    if (bookMarkSongs.size() != 0){
+                        Spannable spannable = (Spannable) tv.getText();
+
+
+                        for (int i = 0; i < bookMarkSongs.size(); i++) {
+                            int start = bookMarkSongs.get(i).getStart();
+                            int end = bookMarkSongs.get(i).getEnd();
+
+
+
+                            int color = Color.parseColor(bookMarkSongs.get(i).getColor().replace("#", "#6b"));
+
+
+                            ClickableSpan clickableSpan = new ClickableSpan() {
+                                @Override
+                                public void onClick(@NonNull View widget) {
+                                    int index = bookMarkSongs.indexOf( new BookMarkSong("1","1","1",start,end,mSongId) );
+                                    BookMarkSong bookMarkSong = bookMarkSongs.get(index);
+
+                                    EditorBottomSheet editorBottomSheet = EditorBottomSheet.getInstance(bookMarkSong,tv,SONG_BOOKMARK,2,mSongId,getReferenceFromTextSelected(tv.getSelectionStart(),tv.getSelectionEnd()));
+                                    editorBottomSheet.show(getChildFragmentManager(),"");
+                                }
+                                @Override
+                                public void updateDrawState(TextPaint ds) {
+                                    super.updateDrawState(ds);
+                                    ds.setUnderlineText(false); // remove underline
+                                    ds.setColor(mTextViewColor);
+
+                                }
+                            };
+                            try {
+                                spannable.setSpan(new BackgroundColorSpan(color), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                spannable.setSpan(clickableSpan,start,end,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            }catch (IndexOutOfBoundsException io){
+
+                            }
+
+                        }
+                        tv.setText(spannable);
+                        tv.setMovementMethod( LinkMovementMethod.getInstance() );
+                    }
+                }
+            });
         });
 
         scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
@@ -200,11 +263,13 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
         switch (item.getItemId()){
             case R.id.g_image:
                 fab.setVisibility(View.GONE);
-                editorBottomSheet = EditorBottomSheet.getInstance(mode,tv,IMAGE,mSongId);
+                editorBottomSheet = EditorBottomSheet.getInstance(mode,tv,SONG_BOOKMARK,IMAGE,mSongId,getReferenceFromTextSelected(tv.getSelectionStart(),tv.getSelectionEnd()));
                 editorBottomSheet.show(SongDialogFragment.this.getChildFragmentManager(),"");
+
+
                 break;
             case R.id.book_mark:
-                editorBottomSheet = EditorBottomSheet.getInstance(mode,tv,BOOK_MARK,mSongId);
+                editorBottomSheet = EditorBottomSheet.getInstance(mode,tv,SONG_BOOKMARK,BOOK_MARK,mSongId,null);
                 editorBottomSheet.show(SongDialogFragment.this.getChildFragmentManager(),"");
                 break;
             case R.id.copy:
@@ -288,13 +353,24 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
                 Collections.swap(verses,0,1);
 
             for (int i=0;i< verses.size();i++){
-
                 verse = verses.get(i);
+
+                int lengthSpecial = 3;
+                if (verse.getPosition()<0)
+                    lengthSpecial =2+getString(R.string.chorus).length();
+
+                versePositionList.add(
+                        new Util.VersePosition( verse.getVerseId(), verse.getPosition(), verseString.length(),verseString.length()+verse.getVerse().length()+lengthSpecial )
+                );
+
+
+
                 verseString.append( verse.getPosition()<0? getContext().getString(R.string.chorus) :verse.getPosition() );
                 verseString.append("\n");
                 verseString.append(verse.getVerse());
                 verseString.append("\n");
             }
+            System.out.println( versePositionList );
 
 
         }else {
@@ -302,6 +378,34 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
         }
 
         return verseString.toString();
+    }
+
+    private String getReferenceFromTextSelected(int startSelected,int endSelected){
+
+        int startPosition =0;
+        int endPosition =0;
+
+
+        for (int i = 0; i < versePositionList.size(); i++) {
+            Util.VersePosition vp= versePositionList.get(i);
+
+            if(startSelected>=vp.getStart() && startSelected<=vp.getEnd() ){
+                startPosition = vp.getPosition();
+            }
+            if(endSelected<=vp.getEnd() &&endSelected>=vp.getStart()  ){
+                endPosition = vp.getPosition();
+            }
+        }
+        String a = "";
+        if (startPosition == endPosition){
+            a = startPosition<0?getString(R.string.chorus): String.valueOf(startPosition);
+        }else {
+            a = startPosition<0?getString(R.string.chorus): startPosition + " to "+
+                    (endPosition<0?getString(R.string.chorus): String.valueOf(endPosition));
+        }
+
+
+        return mReference+": " +a;
     }
 
     private void scrollToChorus(){
@@ -363,9 +467,17 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
         mReference = null;
         super.onDestroy();
     }
+
+    @Override
+    public void onStop() {
+        liveDataBookMarkSong.removeObservers( getViewLifecycleOwner() );
+        super.onStop();
+    }
+
     private ViewGroup root;
     private TextView tv,bookTitle,songTitle, scrollToChorusTextView;
     private static String mSongId;
+    private static Song mSong;
     private static String mSongTitle;
     private static String mReference;
     private FloatingActionButton fab;
@@ -373,7 +485,10 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
     private ScrollView scrollView;
     private ImageView favorite,donate,more;
     private CKPreferences ckp ;
+    private String allVerse="";
     int mTextViewColor;
+    LiveData< List<BookMarkSong> > liveDataBookMarkSong;
+    List<Util.VersePosition> versePositionList = new ArrayList<>();
 
 
     @Override
@@ -395,30 +510,35 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
                 }
                 break;
             case R.id.more:
-                PopupMenu popupMenu = new PopupMenu(getContext(),v);
+                final PopupMenu popupMenu = new PopupMenu(getContext(),v);
                 popupMenu.getMenuInflater().inflate(R.menu.selection_action_menu, popupMenu.getMenu());
                 popupMenu.show();
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        EditorBottomSheet editorBottomSheet;
-                        switch (item.getItemId()){
-                            case R.id.g_image:
-                                fab.setVisibility(View.GONE);
-                                editorBottomSheet = EditorBottomSheet.getInstance(null,tv,IMAGE,mSongId);
-                                editorBottomSheet.show(SongDialogFragment.this.getChildFragmentManager(),"");
-                                break;
-                            case R.id.book_mark:
-                                editorBottomSheet = EditorBottomSheet.getInstance(null,tv,BOOK_MARK,mSongId);
-                                editorBottomSheet.show(SongDialogFragment.this.getChildFragmentManager(),"");
-                                break;
-                            case R.id.copy:
-                                com.churchkit.churchkit.Util.copyText(getContext(), com.churchkit.churchkit.Util.getSelectedText(tv),"verse");
-                                break;
+                if (tv.getSelectionEnd()>0){
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            EditorBottomSheet editorBottomSheet;
+                            switch (item.getItemId()){
+                                case R.id.g_image:
+                                    fab.setVisibility(View.GONE);
+                                    editorBottomSheet = EditorBottomSheet.getInstance(null,tv,SONG_BOOKMARK,IMAGE,mSongId,getReferenceFromTextSelected(tv.getSelectionStart(),tv.getSelectionEnd()));
+                                    editorBottomSheet.show(SongDialogFragment.this.getChildFragmentManager(),"");
+                                    break;
+                                case R.id.book_mark:
+                                    editorBottomSheet = EditorBottomSheet.getInstance(null,tv,SONG_BOOKMARK,BOOK_MARK,mSongId,getReferenceFromTextSelected(tv.getSelectionStart(),tv.getSelectionEnd()));
+                                    editorBottomSheet.show(SongDialogFragment.this.getChildFragmentManager(),"");
+                                    break;
+                                case R.id.copy:
+                                    com.churchkit.churchkit.Util.copyText(getContext(), com.churchkit.churchkit.Util.getSelectedText(tv),"verse");
+                                    break;
+                            }
+                            return false;
                         }
-                        return false;
-                    }
-                });
+                    });
+                }else {
+                    Toast.makeText(getContext(), "Please select a text first", Toast.LENGTH_SHORT).show();
+                }
+
                 break;
             case R.id.donate:
                 Checkout.preload( getContext().getApplicationContext() );

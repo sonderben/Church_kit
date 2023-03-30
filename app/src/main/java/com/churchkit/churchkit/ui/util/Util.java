@@ -38,5 +38,45 @@ public class Util {
         }
     }
 
+    public static class VersePosition{
+        String verseId;
+        int start = 0;
+        int end = 0;
+        int position = 0;
+
+        public VersePosition(String verseId, int position, int start, int end){
+            this.verseId = verseId;
+            this.start = start;
+            this.end = end;
+            this.position = position;
+        }
+
+        @Override
+        public String toString() {
+            return "VersePosition{" +
+                    "verseId='" + verseId + '\'' +
+                    ", start=" + start +
+                    ", end=" + end +
+                    ", position=" + position +
+                    '}';
+        }
+
+        public String getVerseId() {
+            return verseId;
+        }
+
+        public int getStart() {
+            return start;
+        }
+
+        public int getEnd() {
+            return end;
+        }
+
+        public int getPosition() {
+            return position;
+        }
+    }
+
 
 }

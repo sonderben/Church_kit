@@ -40,10 +40,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.Util;
 import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.entity.bible.BookMarkChapter;
 import com.churchkit.churchkit.database.entity.song.BookMarkSong;
+import com.churchkit.churchkit.ui.bible.ChapterDialogFragment;
+import com.churchkit.churchkit.ui.song.SongDialogFragment;
 import com.churchkit.churchkit.ui.util.ColorPicker;
 import com.churchkit.churchkit.ui.util.DrawerCitacion;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -54,24 +58,28 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class EditorBottomSheet extends BottomSheetDialogFragment implements View.OnClickListener{
+public class EditorBottomSheet extends BottomSheetDialogFragment implements View.OnClickListener,ColorPicker.OnClicked{
     private int fontIndex=0;
 
-    public static EditorBottomSheet getInstance(ActionMode mode, TextView textSelected, int TYPE, String id) {
+    public static EditorBottomSheet getInstance(ActionMode mode, TextView textSelected, int TYPE_BOOKMARK, int TYPE, String id,String ref) {
         mMode = mode;
         mTextSelected = textSelected;
+        mTYPE_BOOKMARK = TYPE_BOOKMARK;
         M_TYPE = TYPE;
         mId = id;
+        mRef = ref;
 
 
         return new EditorBottomSheet();
     }
 
-    public static EditorBottomSheet getInstance(Object object, TextView textSelected, int TYPE, String id) {
+    public static EditorBottomSheet getInstance(Object object, TextView textSelected, int TYPE_BOOKMARK, int TYPE, String id,String ref) {
         mTextSelected = textSelected;
         M_TYPE = TYPE;
         mId = id;
         mBookMark = object;
+        mTYPE_BOOKMARK = TYPE_BOOKMARK;
+        mRef = ref;
 
 
         return new EditorBottomSheet();
@@ -205,64 +213,20 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
             }
         });
 
+        //BOOKMARK
         if (M_TYPE == BOOK_MARK) {
             layoutPhoto.setVisibility(View.GONE);
             action.setVisibility(View.GONE);
 
             int tempStart = 0, tempEnd = 0;
+            initEditorBookMark();
 
-            if (mBookMark instanceof BookMarkSong) {
-                BookMarkSong bookMarkSong = (BookMarkSong) mBookMark;
-                title.setText(bookMarkSong.getTitle());
-                description.setText(bookMarkSong.getDescription());
-                tempStart = bookMarkSong.getStart();
-                tempEnd = bookMarkSong.getEnd();
-            }
+            bookMarkLayout.addView(new ColorPicker(getContext(),getColorBookMarkSelected(),this), 0);
 
-            int finalTempStart = tempStart;
-            int finalTempEnd = tempEnd;
-            bookMarkLayout.addView(new ColorPicker(getContext(), (v, stringColor) -> {
-                Spannable spannable = (Spannable) mTextSelected.getText();
-                int start = mBookMark == null ? mTextSelected.getSelectionStart() : finalTempStart;
-                int end = mBookMark == null ? mTextSelected.getSelectionEnd() : finalTempEnd;
 
-                if (mBookMark == null)
-                    churchKitDb.bookMarkSongDao().insertBookMark(
-                            new BookMarkSong(title.getText().toString(),
-                                    description.getText().toString(),
-                                    stringColor,
-                                    start,
-                                    end,
-                                    mId)
-
-                    );
-                else {
-                    BookMarkSong bookMarkSong = (BookMarkSong) mBookMark;
-                    if (stringColor != null) {
-
-                        bookMarkSong.setTitle(title.getText().toString());
-                        bookMarkSong.setDescription(description.getText().toString());
-                        bookMarkSong.setColor(stringColor);
-                        churchKitDb.bookMarkSongDao().insertBookMark(
-                                bookMarkSong
-
-                        );
-                    } else {
-                        churchKitDb.bookMarkSongDao().deleteBookMark(bookMarkSong);
-                    }
-                }
-
-                System.out.println("spannable: start " + start + " end " + end);
-
-                int color = stringColor != null ? Color.parseColor(stringColor.replace("#", "#6b")) : Color.TRANSPARENT;
-                spannable.setSpan(new BackgroundColorSpan(color), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                if (mMode != null)
-                    mMode.finish();
-                EditorBottomSheet.this.dismiss();
-            }), 0);
         } else {
             bookMarkLayout.setVisibility(View.GONE);
-            drawerCitacion = new DrawerCitacion(EditorBottomSheet.this.getContext(), Util.getSelectedText(mTextSelected));
+            drawerCitacion = new DrawerCitacion(EditorBottomSheet.this.getContext(), Util.getSelectedText(mTextSelected)+"\n\n"+mRef);
 
 
             bitmapToSave = drawerCitacion.getCitationWithNewFgColor(Color.RED);
@@ -300,12 +264,38 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
 
     }
 
+    private void initEditorBookMark() {
+        if(mBookMark instanceof BookMarkSong){
+            BookMarkSong bookMark = (BookMarkSong) mBookMark;
+            title.setText( bookMark.getTitle() );
+            description.setText( bookMark.getDescription() );
+        }else if (mBookMark instanceof BookMarkChapter){
+            BookMarkChapter bookMark = (BookMarkChapter) mBookMark;
+            title.setText( bookMark.getTitle() );
+            description.setText( bookMark.getDescription() );
+        }
+    }
+
+    private String getColorBookMarkSelected() {
+        if (mBookMark!=null){
+            if (mBookMark instanceof BookMarkSong ){
+                return ( (BookMarkSong) mBookMark ).getColor();
+            }else if (mBookMark instanceof BookMarkChapter){
+                return ( (BookMarkChapter) mBookMark ).getColor();
+            }
+        }
+        return null;
+    }
+
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
         if (mMode != null)
             mMode.finish();
-        // Your code here
+
+        mBookMark=null;
+        mMode=null;
+
     }
 
     @Override
@@ -348,6 +338,11 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
 
     }
 
+    @Override
+    public int getTheme() {
+        return R.style.AppBottomSheetDialogTheme;
+        //return super.getTheme();
+    }
 
     public static void sendBitmapToOtherApp(Context context, String packageApp, Bitmap bitmap) {
         FileOutputStream outputStream = null;
@@ -391,24 +386,27 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
     private ImageButton increaseTextSize,decreaseTextSize;
     private static int M_TYPE;
     private static String mId;
+    private static String mRef;
     private LinearLayout action, layoutPhoto;
     private TextView randomColor, randomImage,textFont;
-    DrawerCitacion drawerCitacion = null;
+    private DrawerCitacion drawerCitacion = null;
     private int imageIndex = 0, colorIndex = 0;
     private int newColorIndex = 0;
     private ChurchKitDb churchKitDb;
-    private EditText title, description;
+    private TextInputEditText title, description;
     private static Object mBookMark;
+    private static int mTYPE_BOOKMARK;
 
 
-    ImageView imageView;
-    Bitmap bitmapToSave;
+    private ImageView imageView;
+    private Bitmap bitmapToSave;
 
     @Override
     public void onDestroy() {
         File file = new File(getContext().getCacheDir(), "image.jpg");
         if (file.exists())
             file.delete();
+        mTYPE_BOOKMARK=-1;
         super.onDestroy();
 
     }
@@ -416,7 +414,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.decrease: if (Integer.valueOf( fontSize.getText().toString().split(" ")[0] )>12){
+            case R.id.decrease: if (Integer.valueOf( fontSize.getText().toString().split(" ")[0] )>20){
                 int i =Integer.valueOf( fontSize.getText().toString().split(" ")[0] ) -1;
                 fontSize.setText( i+" px" );
 
@@ -424,55 +422,89 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
                 imageView.setImageBitmap( bitmapToSave );
             }
                 break;
-            case R.id.increase: int d =Integer.valueOf( fontSize.getText().toString().split(" ")[0] ) +1;
+            case R.id.increase: if ( Integer.valueOf( fontSize.getText().toString().split(" ")[0] ) <= 120 ){
+                int d =Integer.valueOf( fontSize.getText().toString().split(" ")[0] ) +1;
                 fontSize.setText( d+" px" );
 
                 bitmapToSave = drawerCitacion.getCitationWithDiffSizeText(d);
                 imageView.setImageBitmap( bitmapToSave );
+            }
 
                 break;
         }
     }
 
 
-    public class MyScaleGestures implements View.OnTouchListener, ScaleGestureDetector.OnScaleGestureListener {
+    @Override
+    public void clicked(View v, String stringColor) {
+        int finalTempStart=0,finalTempEnd=0;
+        if (mBookMark instanceof BookMarkSong){
+            ///update
 
-        private ScaleGestureDetector gestureScale;
-        private int textSize = 20;
+            BookMarkSong bookMark = (BookMarkSong) mBookMark;
+            //Toast.makeText(getContext(),"id: "+bookMark.get(),Toast.LENGTH_LONG).show();
+            bookMark.setColor(stringColor);
+            bookMark.setTitle( title.getText().toString() );
+            bookMark.setDescription( description.getText().toString() );
+
+            churchKitDb.bookMarkSongDao().insertBookMark(bookMark);
+
+        }else if (mBookMark instanceof BookMarkChapter){
+            BookMarkChapter bookMark = (BookMarkChapter) mBookMark;
+            bookMark.setColor(stringColor);
+            bookMark.setTitle( title.getText().toString() );
+            bookMark.setDescription( description.getText().toString() );
+            churchKitDb.bookMarkBibleDao().insertBookMark(bookMark);
+
+        }else {
+            ///insert
+            final int start =  mTextSelected.getSelectionStart() ;
+            final int end =  mTextSelected.getSelectionEnd() ;
+
+            if (SongDialogFragment.SONG_BOOKMARK == mTYPE_BOOKMARK){
+                churchKitDb.bookMarkSongDao().insertBookMark(
+                        new BookMarkSong(title.getText().toString(),
+                                description.getText().toString(),
+                                stringColor,
+                                start,
+                                end,
+                                mId));
+            }
+            else if (ChapterDialogFragment.BIBLE_BOOKMARK == mTYPE_BOOKMARK){
+
+               churchKitDb.bookMarkBibleDao().insertBookMark(
+                       new BookMarkChapter(title.getText().toString(),
+                               description.getText().toString(),
+                               stringColor,
+                               start,
+                               end,
+                               mId)
+               );
+            }
 
 
-        public MyScaleGestures (Context c){ gestureScale = new ScaleGestureDetector(c, this); }
-
-        @Override
-        public boolean onTouch(View view, MotionEvent event) {
-            gestureScale.onTouchEvent(event);
-            return true;
         }
+        Toast.makeText(getContext(),"size: "+mTYPE_BOOKMARK,Toast.LENGTH_LONG).show();
+        EditorBottomSheet.this.dismiss();
 
-        @Override
-        public boolean onScale(ScaleGestureDetector detector) {
-
-            textSize = (int) detector.getCurrentSpan();
-            fontSize.setText(textSize+" px");
-
-
-            return true;
-        }
-
-        @Override
-        public boolean onScaleBegin(ScaleGestureDetector detector) {
-            fontSize.setVisibility(View.VISIBLE);
-            return true;
-        }
-
-        @Override
-        public void onScaleEnd(ScaleGestureDetector detector) {
-            bitmapToSave = drawerCitacion.getCitationWithDiffSizeText(textSize);
-            imageView.setImageBitmap( bitmapToSave );
-        }
     }
 
+    @Override
+    public void deleteBookMark() {
 
 
+                if (SongDialogFragment.SONG_BOOKMARK == mTYPE_BOOKMARK){
+                    BookMarkSong bookMarkSong = (BookMarkSong) mBookMark;
 
+                    churchKitDb.bookMarkSongDao().deleteBookMark(bookMarkSong);
+                }
+                else if (ChapterDialogFragment.BIBLE_BOOKMARK == mTYPE_BOOKMARK){
+                    BookMarkChapter bookMarkSong = (BookMarkChapter) mBookMark;
+
+                    churchKitDb.bookMarkBibleDao().deleteBookMark(bookMarkSong);
+                }
+
+        EditorBottomSheet.this.dismiss();
+
+    }
 }

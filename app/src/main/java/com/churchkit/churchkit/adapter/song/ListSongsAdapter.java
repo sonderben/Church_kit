@@ -65,7 +65,7 @@ public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.List
             holder.date.setVisibility(View.GONE);
 
             holder.itemView.setOnClickListener(view -> {
-                SongDialogFragment listChapter = SongDialogFragment.newInstance(tempSong.getSongID(),formatNumberToString(tempSong.getPosition()) +songBookName, tempSong.getTitle());
+                SongDialogFragment listChapter = SongDialogFragment.newInstance(tempSong);
                 listChapter.show(fm,"kek");
             } );
 
@@ -82,7 +82,7 @@ public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.List
 
             holder.itemView.setOnClickListener(view -> {
                 songBookName = songFavoriteWrapperList.get(holder.getAbsoluteAdapterPosition()).getSongBookName();
-                SongDialogFragment listChapter = SongDialogFragment.newInstance(tempSong.getSongID(),songBookName, tempSong.getTitle());
+                SongDialogFragment listChapter = SongDialogFragment.newInstance(tempSong);
                 listChapter.show(fm,"kk");
             } );
         }else if (songHistoryWrapperList!=null){
@@ -98,7 +98,7 @@ public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.List
 
             holder.itemView.setOnClickListener(view -> {
                 songBookName = songHistoryWrapperList.get(holder.getAbsoluteAdapterPosition()).getSongBookName();
-                SongDialogFragment listChapter = SongDialogFragment.newInstance(tempSong.getSongID(),/*formatNumberToString(tempSong.getPosition()) +*/songBookName, tempSong.getTitle());
+                SongDialogFragment listChapter = SongDialogFragment.newInstance(tempSong);
                 listChapter.show(fm,"kkk");
             } );
         }

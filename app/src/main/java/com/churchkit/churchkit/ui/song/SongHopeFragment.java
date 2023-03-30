@@ -110,9 +110,7 @@ public class SongHopeFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Song song = (Song) autoCompleteAdapter.getItem(position);
                 SongDialogFragment songDialogFragment = SongDialogFragment.newInstance(
-                        song.getSongID()
-                        , com.churchkit.churchkit.Util.formatNumberToString( song.getPosition() ) +" "+song.getBookName()
-                        ,song.getTitle());
+                        song);
                 songDialogFragment.show(getChildFragmentManager(),"");
             }
         });

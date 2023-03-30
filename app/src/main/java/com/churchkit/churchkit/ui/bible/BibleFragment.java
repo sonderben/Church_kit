@@ -80,8 +80,7 @@ public class BibleFragment extends Fragment {
                 BibleChapter bibleChapter = (BibleChapter) autoCompleteAdapter.getItem(position);
 
                 ChapterDialogFragment dialogFragment =
-                        ChapterDialogFragment.newInstance(bibleChapter.getBibleChapterId()
-                                , bibleChapter.getBibleBookAbbr()+" chapter "+bibleChapter.getPosition());
+                        ChapterDialogFragment.newInstance(bibleChapter);
                 dialogFragment.show(getChildFragmentManager(),"");
             }
         });

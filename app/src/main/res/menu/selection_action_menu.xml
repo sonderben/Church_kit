@@ -9,7 +9,7 @@
     <item
         android:id="@+id/book_mark"
         app:showAsAction="always"
-        android:visible="false"
+        android:visible="true"
         android:title="Bookmark" />
     <item
         android:id="@+id/copy"

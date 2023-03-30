@@ -10,14 +10,24 @@ import com.churchkit.churchkit.database.entity.song.Song;
 
 import java.util.Objects;
 
-@Entity(tableName = "book_mark_song",primaryKeys = {"title","start","end"},
+@Entity(tableName = "book_mark_song",
         foreignKeys = @ForeignKey(entity = Song.class,
                 parentColumns = "song_id",
                 childColumns = "song_id"))
 //@Entity(primaryKeys = {"firstName", "lastName"})
 public class BookMarkSong {
-    /*@PrimaryKey(autoGenerate = true)
-    private int id;*/
+    @PrimaryKey//(autoGenerate = true)
+    @NonNull
+    private String id;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @NonNull
     private String title;
     @NonNull
@@ -35,6 +45,7 @@ public class BookMarkSong {
         this.start = start;
         this.end = end;
         this.songId = songId;
+        this.id = start+""+end+songId;
     }
 
     @Override

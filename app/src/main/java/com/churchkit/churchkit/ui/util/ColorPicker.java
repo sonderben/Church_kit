@@ -4,11 +4,14 @@ package com.churchkit.churchkit.ui.util;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.churchkit.churchkit.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -17,45 +20,50 @@ import java.util.ArrayList;
 
 public class ColorPicker extends HorizontalScrollView {
     OnClicked onClicked;
-    //Context mContext;
+    Context mContext;
+    String mColorSelected;
 
-    public ColorPicker(Context context, OnClicked onClicked) {
+    public ColorPicker(Context context,String colorSelected, OnClicked onClicked) {
         super(context);
         this.onClicked = onClicked;
-       // mContext = context;
+        mColorSelected = colorSelected;
+        mContext = context;
         init(context);
     }
 
     public interface OnClicked {
         void clicked(View v, String stringColor);
+        void deleteBookMark();
     }
 
 
     public void init(Context context) {
         stringColor = new ArrayList<>();
-
-
-
-
-
-
-
         hLayoutTop = new LinearLayout(context);
 
-        FloatingActionButton remove = new FloatingActionButton(context);
-        remove.setImageResource(R.drawable.bookmark);
-        remove.setSize(FloatingActionButton.SIZE_MINI);
-        hLayoutTop.addView(remove);
-
-        remove.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                view = v;
-                ColorPicker.this.onClicked.clicked(v, null);
 
 
-            }
-        });
+        if (mColorSelected != null) {
+            FloatingActionButton remove = new FloatingActionButton(context);
+            remove.setImageResource(R.drawable.ic_clear_24);
+            remove.setSize(FloatingActionButton.SIZE_MINI);
+            remove.setBackgroundTintList( ColorStateList.valueOf( Color.TRANSPARENT ) );
+            //remove.setElevation(0.01f);
+            remove.setCompatElevation(0.01f);
+            hLayoutTop.addView(remove);
+            remove.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    view = v;
+                    //ColorPicker.this.onClicked.clicked(v, null);
+                    ColorPicker.this.onClicked.deleteBookMark();
+
+
+                }
+            });
+        }
+
+
 
 
         hLayoutTop.setOrientation(LinearLayout.HORIZONTAL);
@@ -87,6 +95,16 @@ public class ColorPicker extends HorizontalScrollView {
 
             floatingActionButton.setLayoutParams(params);
             floatingActionButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(stringColor.get(i))));
+
+            if (mColorSelected!=null && stringColor.get(i).equalsIgnoreCase(mColorSelected)) {
+                Drawable myFabSrc = getResources().getDrawable(R.drawable.ic_check_24);
+                Drawable willBeWhite = myFabSrc.getConstantState().newDrawable();
+
+                willBeWhite.mutate().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+                floatingActionButton.setImageDrawable(willBeWhite);
+
+                //floatingActionButton.setImageResource(R.drawable.bookmark_selected_24);
+            }
             int finalI = i;
             floatingActionButton.setOnClickListener(new OnClickListener() {
                 @Override

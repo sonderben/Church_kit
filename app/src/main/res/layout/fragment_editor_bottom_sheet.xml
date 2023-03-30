@@ -24,20 +24,37 @@
         android:minHeight="@dimen/_100sdp"
         android:visibility="visible"
         app:layout_constraintTop_toTopOf="parent">
-        <EditText
-            android:id="@+id/title"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="title"/>
-        <EditText
-            android:id="@+id/description"
+            android:hint="Title"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/title"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="@dimen/_200sdp"
-            android:ems="10"
-            android:gravity="start|top"
-            android:hint="description"
-            android:inputType="textMultiLine" />
+            android:hint="Description"
+            android:layout_marginBottom="@dimen/_5sdp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/_200sdp"
+                android:selectAllOnFocus="true"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine" />
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 

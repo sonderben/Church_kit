@@ -139,10 +139,9 @@ public class ListChapterFragment extends Fragment {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String reference = bookNameAbbreviation+" chapter "+bibleChapter.getPosition();
+                        //String reference = bookNameAbbreviation+" chapter "+bibleChapter.getPosition();
                         ChapterDialogFragment dialogFragment = ChapterDialogFragment.newInstance(
-                                bibleChapter.getBibleChapterId(),
-                                reference);
+                                bibleChapter);
                         dialogFragment.show(fm, "ChapterDialogFragment");
                     }
                 });
@@ -155,10 +154,9 @@ public class ListChapterFragment extends Fragment {
                 holder.date.setText(dateFormat.format(calendar.getTime()));
 
                 holder.itemView.setOnClickListener(v -> {
-                    String reference = chapterFavoriteWrapperList.get(holder.getAbsoluteAdapterPosition()).getAbbreviation();
+                    //String reference = chapterFavoriteWrapperList.get(holder.getAbsoluteAdapterPosition()).getAbbreviation();
                     ChapterDialogFragment dialogFragment = ChapterDialogFragment.newInstance(
-                            bibleChapter.getBibleChapterId(),
-                            reference);
+                            bibleChapter);
                     dialogFragment.show(fm, "ChapterDialogFragment");
                 });
             }else if (chapterHistoryWrapperList != null){
@@ -170,10 +168,9 @@ public class ListChapterFragment extends Fragment {
                 holder.date.setText(dateFormat.format(calendar.getTime()));
 
                 holder.itemView.setOnClickListener(v -> {
-                    String reference = chapterHistoryWrapperList.get(holder.getAbsoluteAdapterPosition()).getAbbreviation();
+                    //String reference = chapterHistoryWrapperList.get(holder.getAbsoluteAdapterPosition()).getAbbreviation();
                     ChapterDialogFragment dialogFragment = ChapterDialogFragment.newInstance(
-                            bibleChapter.getBibleChapterId(),
-                            reference);
+                            bibleChapter);
                     dialogFragment.show(fm, "ChapterDialogFragment");
                 });
             }

@@ -1,19 +1,24 @@
 package com.churchkit.churchkit.database.entity.bible;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
+import com.churchkit.churchkit.database.entity.song.BookMarkSong;
 import com.churchkit.churchkit.database.entity.song.Song;
+
+import java.util.Objects;
 
 @Entity(tableName = "book_mark_chapter",
         foreignKeys = @ForeignKey(entity = BibleChapter.class,
                 parentColumns = "bible_chapter_id",
                 childColumns = "bible_chapter_id"))
 public class BookMarkChapter {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+    @NonNull
+    @PrimaryKey//(autoGenerate = true)
+    private String id;
     private String title;
     private String description;
     private String color;
@@ -29,13 +34,14 @@ public class BookMarkChapter {
         this.start = start;
         this.end = end;
         this.bibleChapterId = bibleChapterId;
+        this.id = start+""+end+bibleChapterId;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -85,5 +91,18 @@ public class BookMarkChapter {
 
     public void setBibleChapterId(String bibleChapterId) {
         this.bibleChapterId = bibleChapterId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BookMarkChapter that = (BookMarkChapter) o;
+        return start == that.start && end == that.end && Objects.equals(bibleChapterId, that.bibleChapterId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(start, end, bibleChapterId);
     }
 }

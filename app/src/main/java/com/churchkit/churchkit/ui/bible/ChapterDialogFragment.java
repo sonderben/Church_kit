@@ -10,6 +10,13 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,14 +34,19 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
 import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.PhoneInfo;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.entity.bible.BibleChapter;
 import com.churchkit.churchkit.database.entity.bible.BibleChapterFavorite;
 import com.churchkit.churchkit.database.entity.bible.BibleChapterHistory;
 import com.churchkit.churchkit.database.entity.bible.BibleVerse;
+import com.churchkit.churchkit.database.entity.bible.BookMarkChapter;
+import com.churchkit.churchkit.database.entity.song.BookMarkSong;
 import com.churchkit.churchkit.database.entity.song.SongFavorite;
 import com.churchkit.churchkit.ui.EditorBottomSheet;
 import com.churchkit.churchkit.ui.song.SongDialogFragment;
@@ -42,16 +54,22 @@ import com.churchkit.churchkit.ui.util.Util;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.razorpay.Checkout;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 public class ChapterDialogFragment extends DialogFragment implements View.OnClickListener{
+    public static final int BIBLE_BOOKMARK = 2;
+    private String allVersets="";
+    private int mTextViewColor;
+
     public ChapterDialogFragment(){
 
     }
-    public static ChapterDialogFragment newInstance(String id,String reference){
-        mId = id;
-        mReference = reference;
+    public static ChapterDialogFragment newInstance(/*String id,String reference*/BibleChapter bibleChapter){
+        mId = bibleChapter.getBibleChapterId();
+        //String reference = bookNameAbbreviation+" chapter "+bibleChapter.getPosition();
+        mReference = bibleChapter.getBibleBookAbbr()+" "+bibleChapter.getPosition();
         return new ChapterDialogFragment();
     }
     @Nullable
@@ -78,6 +96,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
 
         bookReference.setSelected(true);
         setChapterHistory();
+        mTextViewColor = versets.getCurrentTextColor();
 
         if (PhoneInfo.manufacturer.equalsIgnoreCase("Xiaomi"))
             more.setVisibility(View.VISIBLE);
@@ -109,11 +128,11 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
             switch (item.getItemId()){
                 case R.id.g_image:
                     fab.setVisibility(View.GONE);
-                    editorBottomSheet = EditorBottomSheet.getInstance(mode,versets,IMAGE,mId);
+                    editorBottomSheet = EditorBottomSheet.getInstance(null,versets,BIBLE_BOOKMARK,IMAGE,mId,getReferenceFromTextSelected(versets.getSelectionStart(),versets.getSelectionEnd()) );
                     editorBottomSheet.show(ChapterDialogFragment.this.getChildFragmentManager(),"");
                     break;
                 case R.id.book_mark:
-                    editorBottomSheet = EditorBottomSheet.getInstance(mode,versets,BOOK_MARK,mId);
+                    editorBottomSheet = EditorBottomSheet.getInstance(null,versets,BIBLE_BOOKMARK,BOOK_MARK,mId,"");
                     editorBottomSheet.show(ChapterDialogFragment.this.getChildFragmentManager(),"");
                     break;
                 case R.id.copy:
@@ -136,8 +155,60 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
     });
 
         db.bibleVerseDao().getAllVerse(mId).observe(requireActivity(), bibleVerseList -> {
-            versets.setText( listVerseToString(bibleVerseList) );
+            allVersets = listVerseToString(bibleVerseList);
+            versets.setText( allVersets );
             setVerseTitle( bibleVerseList);
+
+            liveDataBookMark.observe(getViewLifecycleOwner(), new Observer<List<BookMarkChapter>>() {
+                @Override
+                public void onChanged(List<BookMarkChapter> bookMarkChapters) {
+                    versets.setText(allVersets);
+
+                    if (bookMarkChapters.size() != 0){
+
+                        Spannable spannable = (Spannable) versets.getText();
+
+
+                        for (int i = 0; i < bookMarkChapters.size(); i++) {
+                            int start = bookMarkChapters.get(i).getStart();
+                            int end = bookMarkChapters.get(i).getEnd();
+                            // just for text
+
+
+                            int color = Color.parseColor(bookMarkChapters.get(i).getColor().replace("#", "#6b"));
+
+
+
+                            ClickableSpan clickableSpan = new ClickableSpan() {
+                                @Override
+                                public void onClick(@NonNull View widget) {
+                                    int index = bookMarkChapters.indexOf( new BookMarkChapter("1","1","1",start,end,mId) );
+                                    BookMarkChapter bookMarkSong = bookMarkChapters.get(index);
+
+                                    EditorBottomSheet editorBottomSheet = EditorBottomSheet.getInstance(bookMarkSong,versets,BIBLE_BOOKMARK,2,mId,null);
+                                    editorBottomSheet.show(getChildFragmentManager(),"");
+                                }
+                                @Override
+                                public void updateDrawState(TextPaint ds) {
+                                    super.updateDrawState(ds);
+                                    ds.setUnderlineText(false); // remove underline
+                                    ds.setColor(mTextViewColor);
+
+                                }
+                            };
+                            try {
+                                spannable.setSpan(new BackgroundColorSpan(color), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                spannable.setSpan(clickableSpan,start,end,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            }catch (IndexOutOfBoundsException io){
+
+                            }
+
+                        }
+                        versets.setText(spannable);
+                        versets.setMovementMethod( LinkMovementMethod.getInstance() );
+                    }
+                }
+            });
         });
 
         endingFavoriteImageView.setOnClickListener(this::onClick);
@@ -163,6 +234,10 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
             }
 
         });
+
+
+
+         liveDataBookMark = db.bookMarkBibleDao().getAllBookMark(mId);
 
 
 
@@ -194,6 +269,12 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
     }
 
+    @Override
+    public void onStart() {
+        liveDataBookMark.removeObservers(getViewLifecycleOwner());
+        super.onStart();
+    }
+
     private void setVerseTitle(List<BibleVerse> bibleVerseList){
 
             chapTitle.setText("Verse: 1 to "+bibleVerseList.size());
@@ -207,6 +288,16 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         if (bibleVerseList != null){
             for (int i=0;i< bibleVerseList.size();i++){
 
+                BibleVerse verse = bibleVerseList.get(i);
+                final int lengthSpecial = 2;
+
+
+
+
+                versePositionList.add(
+                        new Util.VersePosition( verse.getBibleVerseId(), verse.getPosition(), verseString.length(),verseString.length()+verse.getVerseText().length()+lengthSpecial )
+                );
+
                 verseString.append(positionToSupIndex(bibleVerseList.get(i).getPosition()));
                 verseString.append(bibleVerseList.get(i).getVerseText()+" ");
 
@@ -217,12 +308,41 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         return verseString.toString();
     }
 
+    private String getReferenceFromTextSelected(int startSelected,int endSelected){
 
+        int startPosition =0;
+        int endPosition =0;
+
+
+        for (int i = 0; i < versePositionList.size(); i++) {
+            Util.VersePosition vp= versePositionList.get(i);
+
+            if(startSelected>=vp.getStart() && startSelected<=vp.getEnd() ){
+                startPosition = vp.getPosition();
+            }
+            if(endSelected<=vp.getEnd() &&endSelected>=vp.getStart()  ){
+                endPosition = vp.getPosition();
+            }
+        }
+        String a = "";
+        if (startPosition == endPosition){
+            a = startPosition<0?getString(R.string.chorus): String.valueOf(startPosition);
+        }else {
+            a = startPosition<0?getString(R.string.chorus): startPosition + " to "+
+                    (endPosition<0?getString(R.string.chorus): String.valueOf(endPosition));
+        }
+
+
+        return mReference+": " +a;
+    }
+
+    LiveData< List<BookMarkChapter> > liveDataBookMark;
     ImageView donate, endingFavoriteImageView,more;
     TextView versets,bookReference,chapTitle;
     static String mId;
     static String mReference, mChapterhapter;
     static int mVerseAmount;
+    List<Util.VersePosition> versePositionList = new ArrayList<>();
     FloatingActionButton fab;
     ConstraintLayout headerLayout;
 
@@ -293,30 +413,34 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
                 }
                 break;
             case R.id.more:
-                PopupMenu popupMenu = new PopupMenu(getContext(),v);
+                final PopupMenu popupMenu = new PopupMenu(getContext(),v);
                 popupMenu.getMenuInflater().inflate(R.menu.selection_action_menu, popupMenu.getMenu());
                 popupMenu.show();
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        EditorBottomSheet editorBottomSheet;
-                        switch (item.getItemId()){
-                            case R.id.g_image:
-                                fab.setVisibility(View.GONE);
-                                editorBottomSheet = EditorBottomSheet.getInstance(null,versets,IMAGE,mId);
-                                editorBottomSheet.show(ChapterDialogFragment.this.getChildFragmentManager(),"");
-                                break;
-                            case R.id.book_mark:
-                                editorBottomSheet = EditorBottomSheet.getInstance(null,versets,BOOK_MARK,mId);
-                                editorBottomSheet.show(ChapterDialogFragment.this.getChildFragmentManager(),"");
-                                break;
-                            case R.id.copy:
-                                com.churchkit.churchkit.Util.copyText(getContext(), com.churchkit.churchkit.Util.getSelectedText(versets),"verse");
-                                break;
+                if (versets.getSelectionEnd()>0){
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            EditorBottomSheet editorBottomSheet;
+                            switch (item.getItemId()){
+                                case R.id.g_image:
+                                    fab.setVisibility(View.GONE);
+                                    editorBottomSheet = EditorBottomSheet.getInstance(null,versets,BIBLE_BOOKMARK,IMAGE,mId,getReferenceFromTextSelected(versets.getSelectionStart(),versets.getSelectionEnd()));
+                                    editorBottomSheet.show(ChapterDialogFragment.this.getChildFragmentManager(),"");
+                                    break;
+                                case R.id.book_mark:
+                                    editorBottomSheet = EditorBottomSheet.getInstance(null,versets,BIBLE_BOOKMARK,BOOK_MARK,mId,null);
+                                    editorBottomSheet.show(ChapterDialogFragment.this.getChildFragmentManager(),"");
+                                    break;
+                                case R.id.copy:
+                                    com.churchkit.churchkit.Util.copyText(getContext(), com.churchkit.churchkit.Util.getSelectedText(versets),"verse");
+                                    break;
+                            }
+                            return false;
                         }
-                        return false;
-                    }
-                });
+                    });
+                }else {
+                    Toast.makeText(getContext(), "Please select a text first", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.donate:
                 Checkout.preload( getContext().getApplicationContext() );

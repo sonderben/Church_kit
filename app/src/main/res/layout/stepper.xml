@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/_8ssp"
         android:padding="2dp"
-        android:text="12 px"/>
+        android:text="40 px"/>
     <ImageButton
         android:id="@+id/increase"
         android:layout_width="@dimen/_30sdp"
