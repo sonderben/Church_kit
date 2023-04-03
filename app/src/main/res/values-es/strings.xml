@@ -17,7 +17,7 @@
     <string name="reading">Lectura</string>
     <string name="letter_size_title">Tamaño de letra</string>
     <string name="font">Fuente</string>
-    <string name="use_bold_font">Usar fuente en negrita</string>
+    <string name="use_bold_font">Fuente en negrita</string>
     <string name="switch_title_btn_chorus">Activar coro de botones</string>
     <string name="switch_summary_btn_chorus">Haga que aparezca el botón Coro cuando haya un coro en una canción.</string>
     <string name="switch_title_btn_song_abrr_color">Color de la abreviatura  de la canción</string>

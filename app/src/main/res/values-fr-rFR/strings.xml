@@ -22,7 +22,7 @@
     <string name="switch_title_btn_song_abrr_color">Abréviation de la couleur de la chanson</string>
     <string name="switch_summary_btn_chorus">Faire apparaître le bouton refrain lorsqu\'il y a un refrain dans une chanson.</string>
     <string name="switch_title_btn_chorus">Activez le bouton refrain.</string>
-    <string name="use_bold_font">Utiliser une police en gras.</string>
+    <string name="use_bold_font">Police en gras.</string>
     <string name="letter_size_title">Taille des lettres</string>
     <string name="display">Affichage</string>
 </resources>

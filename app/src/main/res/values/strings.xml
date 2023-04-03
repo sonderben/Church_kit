@@ -61,7 +61,7 @@ In summary, Church Kit is the ideal app for anyone looking to get closer to God 
     <string name="reading">Reading</string>
     <string name="letter_size_title">Letter size</string>
     <string name="font">Font</string>
-    <string name="use_bold_font">Use bold font</string>
+    <string name="use_bold_font">Bold font</string>
     <string name="switch_title_btn_chorus">Activate button chorus</string>
     <string name="switch_summary_btn_chorus">Make the Chorus button appear when there is a chorus in a song.</string>
     <string name="switch_title_btn_song_abrr_color">Song color abbreviation</string>

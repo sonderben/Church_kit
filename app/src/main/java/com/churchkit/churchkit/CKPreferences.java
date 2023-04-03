@@ -61,17 +61,36 @@ public class CKPreferences {
             default:return AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
         }
     }
+
+    private boolean isTextBold(){
+        return settingPreferences.getBoolean("BOLD",false);
+    }
     public int getTypeFace(){
         int font = Integer.parseInt(settingPreferences.getString("FONT","0"));
-        System.out.println("settingPreferences:"+ settingPreferences.getString("FONT","0") );
         switch (font){
-            case 1: return R.font.robotolight;
-            case 2: return R.font.roboto_thin;
-            case 3: return R.font.tangerine_regular;
+            case 1:if (isTextBold()){
+                return R.font.roboto_bold;
+            }else {
+                return R.font.robotolight;
+            }
+            case 2:if (isTextBold()){
+                return R.font.roboto_bold;
+            }else {
+                return R.font.roboto_thin;
+            }
+            case 3:if (isTextBold()){
+                return R.font.tangerine_bold;
+            }else {
+                return R.font.tangerine_regular;
+            }
             case 4: return R.font.fasthand;
             case 5: return R.font.great_vibes;
             case 6: return R.font.indie_flower;
-            case 7: return R.font.sono_regular;
+            case 7:if (isTextBold()){
+                return R.font.sono_bold;
+            }else {
+                return R.font.sono_regular;
+            }
             default: return 0;
         }
 

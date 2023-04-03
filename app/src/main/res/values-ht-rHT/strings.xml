@@ -16,7 +16,7 @@
     <string name="reading">Lekti</string>
     <string name="letter_size_title">Gwosè lèt</string>
     <string name="font">Font</string>
-    <string name="use_bold_font">Itilize font fonse</string>
+    <string name="use_bold_font">Font fonse</string>
     <string name="switch_title_btn_chorus">Aktive bouton koral</string>
     <string name="switch_summary_btn_chorus">Fè bouton koral la parèt lè gen yon koral nan yon chante.</string>
     <string name="switch_title_btn_song_abrr_color">Koulè abrevyasyon chante.</string>

@@ -132,17 +132,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void prepopulateBibleFromJSonFile(){
         FirebaseStorage fs=FirebaseStorage.getInstance();
-        StorageReference storageRef = fs.getReference().child("bible/HATBIV-v1.json");
+        StorageReference storageRef = fs.getReference().child("bible/FRNTLS-v1.json");
         storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
                 try {
                     String jsonStr = new String(bytes, "UTF-8");
                     JSONObject jsonObject = new JSONObject(jsonStr);
-                    JSONObject data = jsonObject.getJSONObject("data");
-                    Iterator<String> keys = data.keys();
-                    while (keys.hasNext()){
-                        JSONObject songBookJson =data.getJSONObject(keys.next());
+                    JSONArray data = jsonObject.getJSONArray("data");
+                    //Iterator<String> keys = data.keys();
+                    for (int a =0;a<data.length();a++){
+                        JSONObject songBookJson =data.getJSONObject(a);
 
                         int testament = songBookJson.getString("testament").equalsIgnoreCase("OT")?-1:1;
 
@@ -155,13 +155,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 songBookJson.getInt("amountChapter"));
                         Util.prepopulateBible(MainActivity.this,bibleBook);
 
-                        JSONObject col = songBookJson.getJSONObject("__collections__");
-                        boolean hasNext = col.keys().hasNext();
-                        if (hasNext){
-                            JSONObject listChapterJson = col.getJSONObject(col.keys().next());
-                            Iterator<String> keys1 =listChapterJson.keys();
-                            while (keys1.hasNext()) {
-                                JSONObject chapterJson = listChapterJson.getJSONObject(keys1.next());
+
+                        JSONArray bibleChapterList =songBookJson.getJSONArray("bibleChapterList");
+
+                            for (int jj=0;jj<bibleChapterList.length();jj++) {
+                                JSONObject chapterJson = bibleChapterList.getJSONObject(jj);//listChapterJson.getJSONObject(keys1.next());
 
                                 BibleChapter bibleChapter = new BibleChapter(
                                         chapterJson.getString("bookName") + chapterJson.getInt("position")
@@ -177,11 +175,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 for (int i = 0; i < bibleVerseArray.length(); i++) {
                                     JSONObject verseJson = bibleVerseArray.getJSONObject(i);
 
+                                    String reference = songBookJson.getString("abbr")+" "+chapterJson.getInt("position")+":"+verseJson.getInt("position");
+
                                     bibleVerseList.add(
                                             new BibleVerse(
-                                                    verseJson.getString("reference")+verseJson.getInt("position")
+                                                    /*verseJson.getString("reference")*/reference+verseJson.getInt("position")
                                                     ,verseJson.getInt("position")
-                                                    ,verseJson.getString("reference")
+                                                    ,/*verseJson.getString("reference")*/ reference
                                                     ,verseJson.getString("verseText")
                                                     ,chapterJson.getString("bookName") + chapterJson.getInt("position"))
 
@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                                 Util.prepopulateBibleVerse(MainActivity.this,bibleVerseList);
                             }
-                        }
+                        //}
                     }
 
 
@@ -207,6 +207,66 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
     private void prepopulateSongFromJSonFile(){
+        FirebaseStorage fs=FirebaseStorage.getInstance();
+        StorageReference storageRef = fs.getReference().child("song/songbook-v2.json");
+        storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                try {
+                    Gson gson = new Gson();
+                    String jsonStr = new String(bytes, "UTF-8");
+                    JSONObject jsonObject = new JSONObject(jsonStr);
+                    JSONArray dataArray = jsonObject.getJSONArray("data");
+                    for (int i = 0; i < dataArray.length(); i++) {
+                        JSONObject songBookJson = dataArray.getJSONObject(i);
+                        SongBook songBook = gson.fromJson(songBookJson.toString(),SongBook.class);
+                        songBook.setSongBookId( songBookJson.getString("id") );
+
+
+
+                        Util.prepopulateSonBook(MainActivity.this,songBook);
+
+                        JSONArray songArrayJson = songBookJson.getJSONArray("songList");
+                        for (int j = 0; j < songArrayJson.length(); j++) {
+                            JSONObject songObj = songArrayJson.getJSONObject(j);
+                            Song song = gson.fromJson(songObj.toString(),Song.class);
+                            song.setSongID( songObj.getString("id") );
+                            song.setSongBookId( songBookJson.getString("id") );
+
+                            song.setBookName( songBook.getName() );
+                            song.setBookNameAbbr( songBook.getAbbreviation() );
+
+                            Util.prepopulateSong(MainActivity.this,song);
+
+                            JSONArray verseArray = songObj.getJSONArray("verseList");
+                            List<Verse>verseList = new ArrayList<>();
+                            for (int k = 0; k < verseArray.length(); k++) {
+                                JSONObject verseObj = verseArray.getJSONObject(k);
+                                Verse verse = gson.fromJson(verseObj.toString(),Verse.class);
+                                verse.setVerseId( verseObj.getInt("position")+songObj.getString("id") );
+                                verse.setSongId( songObj.getString("id") );
+                                verseList.add( verse );
+                            }
+                            Util.prepopulateSongVerse(MainActivity.this,verseList);
+                        }
+                    }
+
+
+
+
+
+                } catch (JSONException | UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+    }
+    private void prepopulateSongFromJSonFileEfase(){
         FirebaseStorage fs=FirebaseStorage.getInstance();
         StorageReference storageRef = fs.getReference().child("song/songbook-v2.json");
         storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {

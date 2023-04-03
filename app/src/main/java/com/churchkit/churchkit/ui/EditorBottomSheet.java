@@ -274,6 +274,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
             title.setText( bookMark.getTitle() );
             description.setText( bookMark.getDescription() );
         }
+
     }
 
     private String getColorBookMarkSelected() {

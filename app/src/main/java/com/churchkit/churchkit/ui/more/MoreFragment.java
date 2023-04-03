@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,12 +43,17 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
         seekBarPreference = (SeekBarPreference) findPreference("LETTER_SIZE");
         darKModeListPreference = findPreference("DARK_MODE");
         switchPreferenceCompat  = (SwitchPreferenceCompat) findPreference("SONG_ABBR_COLOR");
+        fontListPreference = findPreference("FONT");
+        isFontBold = findPreference("BOLD");
 
         seekBarPreference.setSummary(ckPreferences.getLetterSize()+" px");
 
 
+        isBoldVisibility(Integer.parseInt(fontListPreference.getValue()));
+
+
         seekBarPreference.setOnPreferenceChangeListener((preference, newValue) -> {
-            int value = (int) newValue;
+            final int value = (int) newValue;
             seekBarPreference.setSummary(value+" px");
             return true;
         });
@@ -58,6 +64,14 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
                 String lang = (String) newValue;
                 setAppLanguage(getContext(),lang);
                 getActivity().recreate();
+                return true;
+            }
+        });
+        fontListPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
+                final int index =  Integer.parseInt((String) newValue);
+                isBoldVisibility(index);
                 return true;
             }
         });
@@ -91,9 +105,22 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
     SeekBarPreference seekBarPreference;
 
     ListPreference langListPreference;
-    ListPreference darKModeListPreference;
+    ListPreference darKModeListPreference,fontListPreference;
     CKPreferences ckPreferences;
-    SwitchPreferenceCompat switchPreferenceCompat;
+    SwitchPreferenceCompat switchPreferenceCompat,isFontBold;
+
+    private void isBoldVisibility(int index){
+        switch (index){
+            case 1:
+            case 2:
+            case 3:
+            case 7:
+                isFontBold.setEnabled(true);
+                break;
+            default:
+                isFontBold.setEnabled(false);
+        }
+    }
 
 
 

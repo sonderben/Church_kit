@@ -36,8 +36,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <SwitchPreferenceCompat
-            app:key="bold"
-            app:summary="Not implemented yet"
+            app:key="BOLD"
             app:icon="@drawable/text_bold_24"
             app:title="@string/use_bold_font" />
 

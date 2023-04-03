@@ -10,7 +10,7 @@ import com.churchkit.churchkit.database.entity.bible.BibleBook;
 import java.util.List;
 @Dao
 public interface BibleBookDao {
-    @Query("SELECT * FROM BIBLE_BOOK ORDER BY position")
+    @Query("SELECT * FROM BIBLE_BOOK ORDER BY testament, position ")
      LiveData<List<BibleBook>> getAllBibleBook();
 
     @Query("SELECT * FROM BIBLE_BOOK WHERE testament  > 0 ORDER BY position")
