@@ -57,21 +57,18 @@ public abstract class ChurchKitDb extends RoomDatabase {
 
 
     public static volatile ChurchKitDb instance;
-    private static Context mContext;
+    //private static Context mContext;
 
 
 
     public static synchronized ChurchKitDb getInstance(Context context){
-        mContext = context;
+       // mContext = context;
         if (instance == null){
             instance = Room.databaseBuilder(context.getApplicationContext(),
                     ChurchKitDb.class,"church.db").addCallback(new Callback() {
                 @Override
                 public void onCreate(@NonNull SupportSQLiteDatabase db) {
                     super.onCreate(db);
-                    //insertData();
-                    System.out.println("base de datos creada");
-
 
                 }
 
