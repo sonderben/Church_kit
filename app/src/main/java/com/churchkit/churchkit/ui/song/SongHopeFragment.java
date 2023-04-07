@@ -12,35 +12,27 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
-import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.adapter.AutoCompleteTextViewAdapter;
 import com.churchkit.churchkit.adapter.song.SongHopeAdapter;
-import com.churchkit.churchkit.database.ChurchKitDb;
 import com.churchkit.churchkit.database.entity.song.Song;
-import com.churchkit.churchkit.database.entity.song.SongBook;
 import com.churchkit.churchkit.databinding.FragmentSongHopeBinding;
+import com.churchkit.churchkit.modelview.song.SongBookViewModel;
+import com.churchkit.churchkit.modelview.song.SongViewModel;
 import com.churchkit.churchkit.ui.util.GridSpacingItemDecoration;
 import com.churchkit.churchkit.ui.util.Util;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SongHopeFragment extends Fragment {
@@ -53,6 +45,11 @@ public class SongHopeFragment extends Fragment {
         FragmentSongHopeBinding songBinding = FragmentSongHopeBinding.inflate(getLayoutInflater());
         View root= songBinding.getRoot();
 
+        songBookViewModel = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getActivity().getApplication()).create(SongBookViewModel.class);
+
+        songViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication()).create(SongViewModel.class);
+
         sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
 
         autoCompleteTextView = songBinding.search;
@@ -62,6 +59,8 @@ public class SongHopeFragment extends Fragment {
         mRecyclerView.setLayoutManager(gridLayoutManager);
         /*DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
         mRecyclerView.addItemDecoration(dividerItemDecoration);*/
+
+
 
 
 
@@ -87,7 +86,7 @@ public class SongHopeFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                 ChurchKitDb.getInstance(SongHopeFragment.this.getContext()).songDao().songFullTextSearch("*"+s.toString()+"*").observe(getViewLifecycleOwner(), new Observer<List<Song>>() {
+                 /*ChurchKitDb.getInstance(SongHopeFragment.this.getContext()).songDao()*/songViewModel.songFullTextSearch("*"+s.toString()+"*").observe(getViewLifecycleOwner(), new Observer<List<Song>>() {
                     @Override
                     public void onChanged(List<Song> songs) {
                        if ( s.length() >1 ){
@@ -117,8 +116,8 @@ public class SongHopeFragment extends Fragment {
 
 
 
-        ChurchKitDb churchKitDb = ChurchKitDb.getInstance(getContext());
-        churchKitDb.songBookDao().getAllSongBook().observe(requireActivity(), songBooks -> {
+        //ChurchKitDb churchKitDb = ChurchKitDb.getInstance(getContext());
+        /*churchKitDb.songBookDao()*/songBookViewModel.getAllSongBook().observe(requireActivity(), songBooks -> {
             if(songBooks!=null){
                 homeAdapter = new SongHopeAdapter(
                         getTypeView(),songBooks,getActivity().getSupportFragmentManager()
@@ -201,6 +200,8 @@ public class SongHopeFragment extends Fragment {
     SongHopeAdapter homeAdapter;
     SharedPreferences sharedPreferences;
     GridLayoutManager gridLayoutManager;
+    private SongViewModel songViewModel;
+    private SongBookViewModel songBookViewModel;
 
     GridSpacingItemDecoration listGridItemDeco = new GridSpacingItemDecoration(2,32,false);
 

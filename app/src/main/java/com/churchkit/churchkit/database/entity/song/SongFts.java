@@ -8,10 +8,10 @@ import androidx.room.Fts4;
 @Fts4(contentEntity = Song.class)
 public class SongFts {
     private String title;
-    @ColumnInfo(name = "book_name")
-    private String bookName;
-    @ColumnInfo(name = "book_name_abbr")
-    private String bookNameAbbr;
+    @ColumnInfo(name = "book_title")
+    private String bookTitle;
+    @ColumnInfo(name = "book_abbreviation")
+    private String bookAbbreviation;
     private String position;
     private String page;
 
@@ -19,30 +19,32 @@ public class SongFts {
         return title;
     }
 
-    public String getBookNameAbbr() {
-        return bookNameAbbr;
-    }
-
-    public void setBookNameAbbr(String bookNameAbbr) {
-        this.bookNameAbbr = bookNameAbbr;
-    }
 
     @Override
     public String toString() {
         return "SongFts{" +
                 "title='" + title + '\'' +
-                ", bookName='" + bookName + '\'' +
+                ", bookTitle='" + bookTitle + '\'' +
+                ", bookAbbreviation='" + bookAbbreviation + '\'' +
                 ", position='" + position + '\'' +
                 ", page='" + page + '\'' +
                 '}';
     }
 
-    public String getBookName() {
-        return bookName;
+    public String getBookTitle() {
+        return bookTitle;
     }
 
-    public void setBookName(String bookName) {
-        this.bookName = bookName;
+    public void setBookTitle(String bookTitle) {
+        this.bookTitle = bookTitle;
+    }
+
+    public String getBookAbbreviation() {
+        return bookAbbreviation;
+    }
+
+    public void setBookAbbreviation(String bookAbbreviation) {
+        this.bookAbbreviation = bookAbbreviation;
     }
 
     public void setTitle(String title) {

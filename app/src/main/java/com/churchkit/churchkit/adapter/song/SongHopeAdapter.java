@@ -63,7 +63,7 @@ public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPa
 
     @Override
     public void onBindViewHolder(@NonNull ListPartViewHolder holder,  int position) {
-        holder.title.setText(songBooks.get(position).getName());
+        holder.title.setText(songBooks.get(position).getTitle());
         holder.tileAcronym.setText(songBooks.get(position).getAbbreviation().toUpperCase());
 
         if (ckPreferences.getabbrColor()) {
@@ -76,7 +76,7 @@ public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPa
         }
 
 
-        holder.number.setText(songBooks.get(position).getSongAmount()+" chants");
+        holder.number.setText(songBooks.get(position).getChildAmount()+" chants");
         if (holder.img != null)
             holder.img.setImageResource( abbrToMipmapRessource( songBooks.get(holder.getAbsoluteAdapterPosition()).getAbbreviation() ) );
 
@@ -88,11 +88,11 @@ public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPa
 
 
                 Bundle bundle = new Bundle();
-                bundle.putString("ID", songBook.getSongBookId());
-                bundle.putString("songBookName", songBook.getName());
+                bundle.putString("ID", songBook.getId());
+                bundle.putString("songBookName", songBook.getTitle());
                 bundle.putString("FROM", Util.FROM_SONG_HOPE);
                 NavController navController = Navigation.findNavController(view);
-                navController.getGraph().findNode(R.id.listSongsFragment).setLabel(songBook.getName()+" ");
+                navController.getGraph().findNode(R.id.listSongsFragment).setLabel(songBook.getTitle()+" ");
                 navController.navigate(R.id.action_homeFragment_to_listSongsFragment2,bundle);
 
 

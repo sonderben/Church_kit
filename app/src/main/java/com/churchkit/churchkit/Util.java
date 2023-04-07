@@ -101,7 +101,7 @@ public class Util {
 
     public static long prepopulateBible(Context context,BibleBook bibleBook){
         ChurchKitDb database = ChurchKitDb.getInstance(context);
-        return database.bibleBookDao().insertBibleBook(bibleBook);
+        return database.bibleBookDao().insert(bibleBook);
     }
     public static long prepopulateSonBook(Context context,SongBook songBook){
         ChurchKitDb database = ChurchKitDb.getInstance(context);
@@ -114,7 +114,7 @@ public class Util {
     }
     public static long prepopulateBibleChapter(Context context,BibleChapter bibleChapter){
         ChurchKitDb database = ChurchKitDb.getInstance(context);
-        return database.bibleChapterDao().insertChapter(bibleChapter);
+        return database.bibleChapterDao().insert(bibleChapter);
 
     }
     public static List<Long> prepopulateBibleVerse(Context context, List<BibleVerse> bibleVerses){
@@ -126,6 +126,7 @@ public class Util {
     }
     public static List<Long> prepopulateSongVerse(Context context, List<Verse> verses){
         if (verses.size()>0){
+            System.out.println("verseList"+verses);
             ChurchKitDb database = ChurchKitDb.getInstance(context);
             return database.verseDao().insertAll(verses);
         }

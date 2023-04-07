@@ -32,7 +32,7 @@ public class BibleChapterFavoriteWrapper {
 
 
          bibleChapterFavoriteWrapper.bibleChapter = entry.getValue();
-         bibleChapterFavoriteWrapper.abbreviation = entry.getKey().abbreviation;
+         bibleChapterFavoriteWrapper.abbreviation = entry.getKey().getAbbreviation();
 
 
          bibleChapterFavoriteWrappers.add(bibleChapterFavoriteWrapper);

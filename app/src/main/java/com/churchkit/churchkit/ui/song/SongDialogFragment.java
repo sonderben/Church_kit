@@ -19,15 +19,12 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ClickableSpan;
-import android.util.TypedValue;
 import android.view.ActionMode;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ScrollView;
@@ -37,23 +34,24 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.churchkit.churchkit.CKPreferences;
-import com.churchkit.churchkit.MainActivity;
 import com.churchkit.churchkit.PhoneInfo;
 import com.churchkit.churchkit.R;
-import com.churchkit.churchkit.database.ChurchKitDb;
 import com.churchkit.churchkit.database.entity.song.BookMarkSong;
 import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.database.entity.song.SongFavorite;
 import com.churchkit.churchkit.database.entity.song.SongHistory;
 import com.churchkit.churchkit.database.entity.song.Verse;
+import com.churchkit.churchkit.modelview.song.SongBookMarkViewModel;
+import com.churchkit.churchkit.modelview.song.SongFavoriteViewModel;
+import com.churchkit.churchkit.modelview.song.SongHistoryViewModel;
+import com.churchkit.churchkit.modelview.song.SongVerseViewModel;
 import com.churchkit.churchkit.ui.EditorBottomSheet;
 import com.churchkit.churchkit.ui.util.Util;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -70,9 +68,9 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
 
     public static SongDialogFragment newInstance(Song song){
         mSong = song;
-        mSongId = song.getSongID();
+        mSongId = song.getId();
         mSongTitle = song.getTitle();
-        mReference = formatNumberToString(song.getPosition()) +song.getBookNameAbbr();
+        mReference = formatNumberToString(song.getPosition()) +song.getBookAbbreviation();
 
         return new SongDialogFragment();
     }
@@ -84,6 +82,14 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
         ckp = new CKPreferences(getContext());
 
 
+        songHistoryViewModel = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getActivity().getApplication()).create(SongHistoryViewModel.class);
+        songFavoriteViewModel = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getActivity().getApplication()).create(SongFavoriteViewModel.class);
+        songBookMarkViewModel = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getActivity().getApplication()).create(SongBookMarkViewModel.class);
+        songVerseViewModel = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getActivity().getApplication()).create(SongVerseViewModel.class);
           init();
         setHistory();
 
@@ -91,8 +97,10 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
           more.setOnClickListener(this::onClick);
           donate.setOnClickListener(this::onClick);
 
-         liveDataBookMarkSong= churchKitDd.bookMarkSongDao().getAllBookMark(mSongId);
-          churchKitDd.songFavoriteDao().existed(mSongId).observe(getViewLifecycleOwner(), songFavorite -> {
+         liveDataBookMarkSong= songBookMarkViewModel.getAllBookMark(mSongId);
+
+        songFavoriteLiveData=songFavoriteViewModel.getSongFavoriteWithSongId(mSongId);
+        songFavoriteLiveData.observe(getViewLifecycleOwner(), songFavorite -> {
 
               favorite.setEnabled(true);
               Drawable drawable = favorite.getDrawable();
@@ -177,7 +185,9 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
 
 
 
-        churchKitDd.verseDao().getAllVerseByIdSong(mSongId).observe(requireActivity(), verses -> {
+        /*churchKitDd.verseDao()*/songVerseViewModel.getAllVerseByIdSong(mSongId).observe(requireActivity(), verses -> {
+            System.out.println("msongid: "+mSongId);
+           // System.out.println("verse: "+verses);
             allVerse = listVerseToString(verses);
             tv.setText( allVerse );
 
@@ -263,13 +273,13 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
         switch (item.getItemId()){
             case R.id.g_image:
                 fab.setVisibility(View.GONE);
-                editorBottomSheet = EditorBottomSheet.getInstance(mode,tv,SONG_BOOKMARK,IMAGE,mSongId,getReferenceFromTextSelected(tv.getSelectionStart(),tv.getSelectionEnd()));
+                editorBottomSheet = EditorBottomSheet.getInstanceWithActionMode(mode,tv,SONG_BOOKMARK,IMAGE,mSongId,getReferenceFromTextSelected(tv.getSelectionStart(),tv.getSelectionEnd()));
                 editorBottomSheet.show(SongDialogFragment.this.getChildFragmentManager(),"");
 
 
                 break;
             case R.id.book_mark:
-                editorBottomSheet = EditorBottomSheet.getInstance(mode,tv,SONG_BOOKMARK,BOOK_MARK,mSongId,null);
+                editorBottomSheet = EditorBottomSheet.getInstanceWithActionMode(mode,tv,SONG_BOOKMARK,BOOK_MARK,mSongId,null);
                 editorBottomSheet.show(SongDialogFragment.this.getChildFragmentManager(),"");
                 break;
             case R.id.copy:
@@ -298,7 +308,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
 
 
     private void init(){
-    churchKitDd = ChurchKitDb.getInstance(requireContext());
+    //churchKitDd = ChurchKitDb.getInstance(requireContext());
     scrollToChorusTextView = root.findViewById(R.id.chorus);
     scrollView = root.findViewById(R.id.scrollView);
     tv  = root.findViewById(R.id.text);
@@ -337,9 +347,10 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
 
     private void setHistory(){
 
-        churchKitDd.songHistoryDao().insert(
+
+        songHistoryViewModel.insert(
                 new SongHistory(mSongId,Calendar.getInstance().getTimeInMillis(), mReference)
-            );
+        );
 
     }
 
@@ -481,12 +492,17 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
     private static String mSongTitle;
     private static String mReference;
     private FloatingActionButton fab;
-    private ChurchKitDb churchKitDd;
+    //private ChurchKitDb churchKitDd;
     private ScrollView scrollView;
     private ImageView favorite,donate,more;
     private CKPreferences ckp ;
     private String allVerse="";
+    private SongHistoryViewModel songHistoryViewModel;
+    private SongFavoriteViewModel songFavoriteViewModel;
+    private SongBookMarkViewModel songBookMarkViewModel;
+    private SongVerseViewModel songVerseViewModel;
     int mTextViewColor;
+    private LiveData<SongFavorite> songFavoriteLiveData;
     LiveData< List<BookMarkSong> > liveDataBookMarkSong;
     List<Util.VersePosition> versePositionList = new ArrayList<>();
 
@@ -495,18 +511,19 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.favorite:
-                SongFavorite songFavorite= churchKitDd.songFavoriteDao().isExisted(mSongId);
+                SongFavorite songFavorite= songFavoriteLiveData.getValue();
                 favorite.setEnabled(false);
 
-                if (songFavorite != null)
-                    churchKitDd.songFavoriteDao().delete(songFavorite);
+                if (songFavorite != null) {
+                    songFavoriteViewModel.delete(songFavorite);
+                }
                 else{
-                    churchKitDd.songFavoriteDao().insert(
+                    songFavoriteViewModel.insert(
                             new SongFavorite(mSongId,Calendar.getInstance().getTimeInMillis(), mReference)
                     );
-                    Toast toast=Toast.makeText(getContext(),"Add to favorite with success",Toast.LENGTH_SHORT);
+                    /*Toast toast=Toast.makeText(getContext(),"Add to favorite with success",Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.TOP,0,0);
-                    toast.show();
+                    toast.show();*/
                 }
                 break;
             case R.id.more:

@@ -5,24 +5,28 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
+import com.churchkit.churchkit.database.dao.BaseDao;
 import com.churchkit.churchkit.database.entity.bible.BibleChapter;
 import com.churchkit.churchkit.database.entity.song.Song;
 
 import java.util.List;
 @Dao
-public interface BibleChapterDao {
-    @Query("SELECT * FROM bible_chapter WHERE bible_book_id = :id ORDER BY position")
-    public LiveData<List<BibleChapter>> getAllChapterByBookId(String id);
+public interface BibleChapterDao extends BaseDao<BibleChapter> {
+    @Query("SELECT * FROM bible_chapter WHERE book_id = :id ORDER BY position")
+     LiveData<List<BibleChapter>> getAllChapterByBookId(String id);
+
+    @Query("SELECT * FROM bible_chapter  ORDER BY position")
+    LiveData<List<BibleChapter>> getAllChapter();
 
 
     @Query("Select * from bible_chapter " +
             "join bible_chapter_fts on bible_chapter.position = bible_chapter_fts.position " +
-            "and bible_chapter.bible_book_abbr = bible_chapter_fts.bible_book_abbr " +
+            "and bible_chapter.book_abbreviation = bible_chapter_fts.book_abbreviation " +
             "where bible_chapter_fts match :query ORDER by bible_chapter.position")
     LiveData< List<BibleChapter> > bibleChapterFullTextSearch(String query);
 
 
 
-    @Insert
-    public long insertChapter(BibleChapter bibleChapter);
+   /* @Insert
+    public long insertChapter(BibleChapter bibleChapter);*/
 }

@@ -7,65 +7,29 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "song_favorite",indices = {@Index(value = {"song_id"},unique = true)},
+import com.churchkit.churchkit.database.entity.base.FavHis;
+
+@Entity(tableName = "song_favorite",indices = {@Index(value = {"parent_id"},unique = true)},
         foreignKeys = @ForeignKey(entity = Song.class,
-                parentColumns = "song_id",
-                childColumns = "song_id"))
-public class SongFavorite {
-    @PrimaryKey(autoGenerate = true)
-    @NonNull
-    @ColumnInfo(name = "song_favorite_id")
-    long songFavoriteId;
-    @ColumnInfo(name = "song_id")
-    String songId;
-    long date;
-    String bookName;
+                parentColumns = "id",
+                childColumns = "parent_id"))
+public class SongFavorite extends FavHis {
 
-    public String getBookName() {
-        return bookName;
-    }
-
-    public void setBookName(String bookName) {
-        this.bookName = bookName;
-    }
 
     @Override
     public String toString() {
         return "SongFavorite{" +
-                "songFavoriteId='" + songFavoriteId + '\'' +
-                ", songId='" + songId + '\'' +
+                "id=" + id +
+                ", parentId='" + parentId + '\'' +
                 ", date=" + date +
+                ", abbreviation='" + abbreviation + '\'' +
                 '}';
     }
 
     public SongFavorite(String songId, long date, String bookName) {
-        this.songId = songId;
-        this.date = date;
-        this.bookName = bookName;
+        super(songId,date,bookName);
     }
+    public SongFavorite(){}
 
-    @NonNull
-    public long getSongFavoriteId() {
-        return songFavoriteId;
-    }
 
-    public void setSongFavoriteId(@NonNull long songFavoriteId) {
-        this.songFavoriteId = songFavoriteId;
-    }
-
-    public String getSongId() {
-        return songId;
-    }
-
-    public void setSongId(String songId) {
-        this.songId = songId;
-    }
-
-    public long getDate() {
-        return date;
-    }
-
-    public void setDate(long date) {
-        this.date = date;
-    }
 }

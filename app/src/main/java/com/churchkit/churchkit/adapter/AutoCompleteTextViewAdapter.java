@@ -62,12 +62,12 @@ public class AutoCompleteTextViewAdapter extends ArrayAdapter<Object> implements
 
             songPosition.setText( Util.formatNumberToString( song.getPosition() ) );
             title.setText( song.getTitle() );
-            bookName.setText( song.getBookName()  );
+            bookName.setText( song.getBookTitle()  );
         }else if (object instanceof BibleChapter){
             BibleChapter bibleChapter = (BibleChapter) object;
             songPosition.setText( "" );
             title.setText( "");
-            bookName.setText( bibleChapter.getBibleBookAbbr()+" "+bibleChapter.getPosition() );
+            bookName.setText( bibleChapter.getBookAbbreviation()+" "+bibleChapter.getPosition() );
         }
 
 

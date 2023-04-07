@@ -7,7 +7,7 @@ import androidx.room.Fts4;
 @Fts4(contentEntity = BibleChapter.class)
 @Entity(tableName = "bible_chapter_fts")
 public class BibleChapterFts {
-    @ColumnInfo(name = "bible_book_abbr")
+    @ColumnInfo(name = "book_abbreviation")
     private String bibleBookAbbr;
     private int position;
 

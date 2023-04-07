@@ -38,7 +38,7 @@ public class SongHistoryWrapper {
 
          songHistoryWrapper.setDate(entry.getKey().getDate());
          songHistoryWrapper.setSong(entry.getValue());
-         songHistoryWrapper.songBookName = entry.getKey().bookName;
+         songHistoryWrapper.songBookName = entry.getKey().getAbbreviation();
 
 
          SongFavoriteWrapperList.add(songHistoryWrapper);

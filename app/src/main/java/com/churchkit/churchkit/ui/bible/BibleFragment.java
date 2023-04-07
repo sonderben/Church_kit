@@ -93,7 +93,7 @@ public class BibleFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                ChurchKitDb.getInstance(BibleFragment.this.getContext()).bibleChapterDao().bibleChapterFullTextSearch(s.toString()).observe(getViewLifecycleOwner(), bibleChapters -> {
+                ChurchKitDb.getInstance(BibleFragment.this.getContext()).bibleChapterDao().bibleChapterFullTextSearch("*"+s.toString()+"*").observe(getViewLifecycleOwner(), bibleChapters -> {
                     autoCompleteAdapter.setSongs(bibleChapters);
                     autoCompleteTextView.setAdapter( autoCompleteAdapter );
                 });

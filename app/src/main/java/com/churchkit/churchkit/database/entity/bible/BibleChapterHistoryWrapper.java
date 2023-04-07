@@ -32,7 +32,7 @@ public class BibleChapterHistoryWrapper {
 
 
          bibleChapterHistoryWrapper.bibleChapter = entry.getValue();
-         bibleChapterHistoryWrapper.abbreviation = entry.getKey().abbreviation;
+         bibleChapterHistoryWrapper.abbreviation = entry.getKey().getAbbreviation();
 
 
          bibleChapterFavoriteWrappers.add(bibleChapterHistoryWrapper);

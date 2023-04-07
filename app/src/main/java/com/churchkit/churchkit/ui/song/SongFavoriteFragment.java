@@ -60,7 +60,7 @@ public class SongFavoriteFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_song_favorite, container, false);
         recyclerView = view.findViewById(R.id.recyclerview);
 
-        db.songFavoriteDao().loadUserAndBookNames().observe(getViewLifecycleOwner(), new Observer<Map<SongFavorite, Song>>() {
+        db.songFavoriteDao().getAllSongFavoriteWithSong().observe(getViewLifecycleOwner(), new Observer<Map<SongFavorite, Song>>() {
             @Override
             public void onChanged(Map<SongFavorite, Song> songFavoriteSongMap) {
                 System.out.println("yow poze ui: "+songFavoriteSongMap);

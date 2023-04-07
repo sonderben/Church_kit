@@ -66,7 +66,7 @@ public class BibleAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        if (typeView ==0){
+        if (typeView ==0){ // group by testament
             Bundle bundle = new Bundle();
             if(position == 0) {
                 ((GroupByTestamentViewHolder) holder).textView.setText(R.string.old_testament);
@@ -100,12 +100,13 @@ public class BibleAdapter extends RecyclerView.Adapter {
         }else {
                 ((AllBookViewHolder) holder).title.setText(bibleBooks.get(position).getTitle());
                 ((AllBookViewHolder) holder).tileAcronym.setText(bibleBooks.get(position).getAbbreviation());
-                ((AllBookViewHolder) holder).number.setText( bibleBooks.get(position).getAmountChapter()+" Chapters" );
+                ((AllBookViewHolder) holder).number.setText( bibleBooks.get(position).getChildAmount()+" Chapters" );
 
             ((AllBookViewHolder) holder).itemView.setOnClickListener(view -> {
                 BibleBook bibleBook = bibleBooks.get(position);
                 Bundle bundle = new Bundle();
-                bundle.putString("ID", bibleBook.getBibleBookId());
+
+                bundle.putString("ID", bibleBook.getId());
                 bundle.putString("BOOK_NAME_ABBREVIATION", bibleBook.getAbbreviation());
                 NavController navController = Navigation.findNavController(view);
                 navController.getGraph().findNode(R.id.listChapterFragment).setLabel(bibleBook.getTitle()+" ");

@@ -36,6 +36,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.PhoneInfo;
@@ -48,6 +49,11 @@ import com.churchkit.churchkit.database.entity.bible.BibleVerse;
 import com.churchkit.churchkit.database.entity.bible.BookMarkChapter;
 import com.churchkit.churchkit.database.entity.song.BookMarkSong;
 import com.churchkit.churchkit.database.entity.song.SongFavorite;
+import com.churchkit.churchkit.modelview.bible.BibleBookMarkViewModel;
+import com.churchkit.churchkit.modelview.bible.BibleChapterViewModel;
+import com.churchkit.churchkit.modelview.bible.BibleFavoriteViewModel;
+import com.churchkit.churchkit.modelview.bible.BibleHistoryViewModel;
+import com.churchkit.churchkit.modelview.bible.BibleVerseViewModel;
 import com.churchkit.churchkit.ui.EditorBottomSheet;
 import com.churchkit.churchkit.ui.song.SongDialogFragment;
 import com.churchkit.churchkit.ui.util.Util;
@@ -66,10 +72,9 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
     public ChapterDialogFragment(){
 
     }
-    public static ChapterDialogFragment newInstance(/*String id,String reference*/BibleChapter bibleChapter){
-        mId = bibleChapter.getBibleChapterId();
-        //String reference = bookNameAbbreviation+" chapter "+bibleChapter.getPosition();
-        mReference = bibleChapter.getBibleBookAbbr()+" "+bibleChapter.getPosition();
+    public static ChapterDialogFragment newInstance(BibleChapter bibleChapter){
+        mId = bibleChapter.getId();
+        mReference = bibleChapter.getBookAbbreviation()+" "+bibleChapter.getPosition();
         return new ChapterDialogFragment();
     }
     @Nullable
@@ -95,9 +100,20 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         donate.setOnClickListener(this::onClick);
 
         bookReference.setSelected(true);
-        setChapterHistory();
-        mTextViewColor = versets.getCurrentTextColor();
 
+        mTextViewColor = versets.getCurrentTextColor();
+        bibleChapterViewModel = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getActivity().getApplication()).create(BibleHistoryViewModel.class);
+        bibleVerseViewModel = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getActivity().getApplication()).create(BibleVerseViewModel.class);
+
+        bibleFavoriteViewModel = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getActivity().getApplication()).create(BibleFavoriteViewModel.class);
+        bibleHistoryViewModel = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getActivity().getApplication()).create(BibleHistoryViewModel.class);
+        bibleBookMarkViewModel = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getActivity().getApplication()).create(BibleBookMarkViewModel.class);
+        setChapterHistory();
         if (PhoneInfo.manufacturer.equalsIgnoreCase("Xiaomi"))
             more.setVisibility(View.VISIBLE);
 
@@ -128,11 +144,11 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
             switch (item.getItemId()){
                 case R.id.g_image:
                     fab.setVisibility(View.GONE);
-                    editorBottomSheet = EditorBottomSheet.getInstance(null,versets,BIBLE_BOOKMARK,IMAGE,mId,getReferenceFromTextSelected(versets.getSelectionStart(),versets.getSelectionEnd()) );
+                    editorBottomSheet = EditorBottomSheet.getInstanceWithActionMode(mode,versets,BIBLE_BOOKMARK,IMAGE,mId,getReferenceFromTextSelected(versets.getSelectionStart(),versets.getSelectionEnd()) );
                     editorBottomSheet.show(ChapterDialogFragment.this.getChildFragmentManager(),"");
                     break;
                 case R.id.book_mark:
-                    editorBottomSheet = EditorBottomSheet.getInstance(null,versets,BIBLE_BOOKMARK,BOOK_MARK,mId,"");
+                    editorBottomSheet = EditorBottomSheet.getInstanceWithActionMode(mode,versets,BIBLE_BOOKMARK,BOOK_MARK,mId,"");
                     editorBottomSheet.show(ChapterDialogFragment.this.getChildFragmentManager(),"");
                     break;
                 case R.id.copy:
@@ -150,11 +166,14 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         public void onDestroyActionMode(ActionMode mode) {
             fab.setVisibility(View.VISIBLE);
             editorBottomSheet = null;
+
+            if(bibleFavoriteLiveData != null && bibleFavoriteLiveData.hasActiveObservers()){
+                bibleFavoriteLiveData.removeObservers(getViewLifecycleOwner());
+            }
         }
 
     });
-
-        db.bibleVerseDao().getAllVerse(mId).observe(requireActivity(), bibleVerseList -> {
+        /*db.bibleVerseDao()*/bibleVerseViewModel.getAllVerse(mId).observe(requireActivity(), bibleVerseList -> {
             allVersets = listVerseToString(bibleVerseList);
             versets.setText( allVersets );
             setVerseTitle( bibleVerseList);
@@ -214,7 +233,8 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         endingFavoriteImageView.setOnClickListener(this::onClick);
 
 
-        db.bibleChapterFavoriteDao().existed(mId).observe(getViewLifecycleOwner(), songFavorite -> {
+         bibleFavoriteLiveData = bibleFavoriteViewModel.existed(mId);
+        bibleFavoriteLiveData.observe(getViewLifecycleOwner(), songFavorite -> {
 
             endingFavoriteImageView.setEnabled(true);
             Drawable drawable = endingFavoriteImageView.getDrawable();
@@ -237,7 +257,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
 
 
 
-         liveDataBookMark = db.bookMarkBibleDao().getAllBookMark(mId);
+         liveDataBookMark = bibleBookMarkViewModel.getAllBookMark(mId); //db.bookMarkBibleDao().getAllBookMark(mId);
 
 
 
@@ -246,7 +266,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
     }
 
     private void setChapterHistory() {
-        db.bibleChapterHistoryDao().insert(
+        /*db.bibleChapterHistoryDao()*/bibleChapterViewModel.insert(
                 new BibleChapterHistory(mId, Calendar.getInstance().getTimeInMillis(), mReference)
         );
 
@@ -345,6 +365,12 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
     List<Util.VersePosition> versePositionList = new ArrayList<>();
     FloatingActionButton fab;
     ConstraintLayout headerLayout;
+    LiveData<BibleChapterFavorite> bibleFavoriteLiveData;
+    BibleHistoryViewModel bibleChapterViewModel;
+    BibleVerseViewModel bibleVerseViewModel;
+    BibleFavoriteViewModel bibleFavoriteViewModel;
+    BibleHistoryViewModel bibleHistoryViewModel;
+    BibleBookMarkViewModel bibleBookMarkViewModel;
 
     public  Point getLocationOnScreen(View view) {
         int[] location = new int[2];
@@ -353,7 +379,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         return new Point(location[0], location[1]);
     }
 
-    ChurchKitDb db= ChurchKitDb.getInstance(getContext());
+    //ChurchKitDb db= ChurchKitDb.getInstance(getContext());
     private String toUnicode( int position){
         final String zero = "\u2070";
         final String one = "\u00B9";
@@ -397,14 +423,14 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.favorite:
-                BibleChapterFavorite songFavorite= db.bibleChapterFavoriteDao().isExisted(mId);
+                BibleChapterFavorite songFavorite= bibleFavoriteLiveData.getValue();
                 endingFavoriteImageView.setEnabled(false);
 
                 if (songFavorite != null)
-                    db.bibleChapterFavoriteDao().delete(songFavorite);
+                    bibleFavoriteViewModel.delete(songFavorite);
                 else{
 
-                    db.bibleChapterFavoriteDao().insert(
+                    bibleFavoriteViewModel.insert(
                             new BibleChapterFavorite(mId, Calendar.getInstance().getTimeInMillis(), mReference)
                     );
                     Toast toast=Toast.makeText(getContext(),"Add to favorite with success",Toast.LENGTH_SHORT);

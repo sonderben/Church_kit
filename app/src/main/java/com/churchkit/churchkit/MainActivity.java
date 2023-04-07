@@ -2,7 +2,6 @@ package com.churchkit.churchkit;
 
 import static com.churchkit.churchkit.ui.aboutapp.Payment.startPayment;
 
-import android.Manifest;
 import android.app.ActivityManager;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -15,10 +14,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -32,6 +30,11 @@ import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.database.entity.song.SongBook;
 import com.churchkit.churchkit.database.entity.song.Verse;
 import com.churchkit.churchkit.databinding.ActivityMainBinding;
+import com.churchkit.churchkit.modelview.bible.BibleViewModelGeneral4Insert;
+import com.churchkit.churchkit.modelview.song.SongBookViewModel;
+import com.churchkit.churchkit.modelview.song.SongVerseViewModel;
+import com.churchkit.churchkit.modelview.song.SongViewModel;
+import com.churchkit.churchkit.modelview.song.SongViewModelGeneral4Insert;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -50,7 +53,6 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -72,24 +74,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
          ckPreferences = new CKPreferences(MainActivity.this);
         Util.setAppLanguage(MainActivity.this,ckPreferences.getLanguage());
 
-
+        songViewModelGeneral4Insert = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getApplication()).create(SongViewModelGeneral4Insert.class);
+        bibleViewModelGeneral4Insert = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getApplication()).create(BibleViewModelGeneral4Insert.class);
         super.onCreate(savedInstanceState);
         ActivityMainBinding activityMainBinding=ActivityMainBinding.inflate(getLayoutInflater());
 
 
         AppCompatDelegate.setDefaultNightMode( ckPreferences.getDarkMode() );
 
-
-        /*if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_SETTINGS)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_SETTINGS},
-                    MY_PERMISSIONS_REQUEST_WRITE_SETTINGS);
-        }else {
-            Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
-            Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, 128);
-        }*/
 
 
 
@@ -109,25 +103,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     }
-    MaterialToolbar toolbar;
-    CKPreferences ckPreferences;
-    BottomNavigationView bottomNavigationView;
-    DrawerLayout drawerLayout;
-    NavController mNavController;
-    ChurchKitDb churchKitDb;
+    private MaterialToolbar toolbar;
+    private CKPreferences ckPreferences;
+    private BottomNavigationView bottomNavigationView;
+    private DrawerLayout drawerLayout;
+    private NavController mNavController;
+    private ChurchKitDb churchKitDb;
     private FirebaseFirestore db;
-    NavigationView navView;
-    public static String generateRandomString(int length) {
-        String allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            int randomIndex = random.nextInt(allowedChars.length());
-            char randomChar = allowedChars.charAt(randomIndex);
-            sb.append(randomChar);
-        }
-        return sb.toString();
-    }
+    private NavigationView navView;
+    private SongViewModelGeneral4Insert songViewModelGeneral4Insert;
+    private BibleViewModelGeneral4Insert bibleViewModelGeneral4Insert;
+
+
 
 
     private void prepopulateBibleFromJSonFile(){
@@ -153,22 +140,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 songBookJson.getInt("position"),
                                 testament,
                                 songBookJson.getInt("amountChapter"));
-                        Util.prepopulateBible(MainActivity.this,bibleBook);
+                        //Util.prepopulateBible(MainActivity.this,bibleBook);
 
 
                         JSONArray bibleChapterList =songBookJson.getJSONArray("bibleChapterList");
+                        List<BibleChapter> bibleChapters = new ArrayList<>(50);
 
                             for (int jj=0;jj<bibleChapterList.length();jj++) {
                                 JSONObject chapterJson = bibleChapterList.getJSONObject(jj);//listChapterJson.getJSONObject(keys1.next());
 
+
                                 BibleChapter bibleChapter = new BibleChapter(
-                                        chapterJson.getString("bookName") + chapterJson.getInt("position")
-                                        ,chapterJson.getInt("position")
-                                        ,songBookJson.getString("name")+songBookJson.getInt("position"));
-                                bibleChapter.setBibleBookAbbr( songBookJson.getString("abbr") );
-
-                                Util.prepopulateBibleChapter(MainActivity.this,bibleChapter);
-
+                                        chapterJson.getString("bookName") + chapterJson.getInt("position"),
+                                        songBookJson.getString("name"),
+                                        chapterJson.getInt("position"),
+                                        songBookJson.getString("name")+songBookJson.getInt("position"),
+                                        songBookJson.getString("abbr")
+                                );
+                                bibleChapters.add(bibleChapter);
                                 JSONArray bibleVerseArray =chapterJson.getJSONArray("bibleVerses");
 
                                 List<BibleVerse> bibleVerseList = new ArrayList<>(30);
@@ -188,7 +177,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     );
                                 }
 
-                                Util.prepopulateBibleVerse(MainActivity.this,bibleVerseList);
+                                //Util.prepopulateBibleVerse(MainActivity.this,bibleVerseList);
+                                bibleViewModelGeneral4Insert.insert(bibleBook,bibleChapters,bibleVerseList);
                             }
                         //}
                     }
@@ -219,24 +209,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     JSONArray dataArray = jsonObject.getJSONArray("data");
                     for (int i = 0; i < dataArray.length(); i++) {
                         JSONObject songBookJson = dataArray.getJSONObject(i);
+
                         SongBook songBook = gson.fromJson(songBookJson.toString(),SongBook.class);
-                        songBook.setSongBookId( songBookJson.getString("id") );
+                        songBook.setId( songBookJson.getString("id") );
+                        songBook.setChildAmount(songBookJson.getInt("songAmount"));
+                        songBook.setTitle( songBookJson.getString("name") );
 
 
 
-                        Util.prepopulateSonBook(MainActivity.this,songBook);
+                        //Util.prepopulateSonBook(MainActivity.this,songBook);
+                       // songBookViewModel.insert(songBook);
 
                         JSONArray songArrayJson = songBookJson.getJSONArray("songList");
+                        List<Song>songList = new ArrayList<>();
                         for (int j = 0; j < songArrayJson.length(); j++) {
                             JSONObject songObj = songArrayJson.getJSONObject(j);
                             Song song = gson.fromJson(songObj.toString(),Song.class);
-                            song.setSongID( songObj.getString("id") );
-                            song.setSongBookId( songBookJson.getString("id") );
+                            song.setId( songObj.getString("id") );
+                            song.setBookId( songBookJson.getString("id") );
 
-                            song.setBookName( songBook.getName() );
-                            song.setBookNameAbbr( songBook.getAbbreviation() );
+                            song.setBookTitle( songBook.getTitle() );
+                            song.setBookAbbreviation( songBook.getAbbreviation() );
+                            songList.add(song);
+                            //Util.prepopulateSong(MainActivity.this,song);
+                           // songViewModel.insert(song);
 
-                            Util.prepopulateSong(MainActivity.this,song);
 
                             JSONArray verseArray = songObj.getJSONArray("verseList");
                             List<Verse>verseList = new ArrayList<>();
@@ -247,7 +244,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 verse.setSongId( songObj.getString("id") );
                                 verseList.add( verse );
                             }
-                            Util.prepopulateSongVerse(MainActivity.this,verseList);
+                            //Util.prepopulateSongVerse(MainActivity.this,verseList);
+                           // songVerseViewModel.insertAll(verseList);
+                            songViewModelGeneral4Insert.insert(songBook,songList,verseList);
+
                         }
                     }
 
@@ -266,66 +266,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
-    private void prepopulateSongFromJSonFileEfase(){
-        FirebaseStorage fs=FirebaseStorage.getInstance();
-        StorageReference storageRef = fs.getReference().child("song/songbook-v2.json");
-        storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                try {
-                    Gson gson = new Gson();
-                    String jsonStr = new String(bytes, "UTF-8");
-                    JSONObject jsonObject = new JSONObject(jsonStr);
-                    JSONArray dataArray = jsonObject.getJSONArray("data");
-                    for (int i = 0; i < dataArray.length(); i++) {
-                       JSONObject songBookJson = dataArray.getJSONObject(i);
-                       SongBook songBook = gson.fromJson(songBookJson.toString(),SongBook.class);
-                       songBook.setSongBookId( songBookJson.getString("id") );
 
-
-
-                       Util.prepopulateSonBook(MainActivity.this,songBook);
-
-                      JSONArray songArrayJson = songBookJson.getJSONArray("songList");
-                        for (int j = 0; j < songArrayJson.length(); j++) {
-                            JSONObject songObj = songArrayJson.getJSONObject(j);
-                            Song song = gson.fromJson(songObj.toString(),Song.class);
-                            song.setSongID( songObj.getString("id") );
-                            song.setSongBookId( songBookJson.getString("id") );
-
-                            song.setBookName( songBook.getName() );
-                            song.setBookNameAbbr( songBook.getAbbreviation() );
-
-                            Util.prepopulateSong(MainActivity.this,song);
-
-                            JSONArray verseArray = songObj.getJSONArray("verseList");
-                            List<Verse>verseList = new ArrayList<>();
-                            for (int k = 0; k < verseArray.length(); k++) {
-                                JSONObject verseObj = verseArray.getJSONObject(k);
-                                Verse verse = gson.fromJson(verseObj.toString(),Verse.class);
-                                verse.setVerseId( verseObj.getInt("position")+songObj.getString("id") );
-                                verse.setSongId( songObj.getString("id") );
-                                verseList.add( verse );
-                            }
-                            Util.prepopulateSongVerse(MainActivity.this,verseList);
-                        }
-                    }
-
-
-
-
-
-                } catch (JSONException | UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                exception.printStackTrace();
-            }
-        });
-    }
 
 
 
@@ -339,9 +280,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         PhoneInfo phoneInfo = new PhoneInfo();
         System.out.println("phone info: "+phoneInfo);
 
-       // getJsonFromFirebaseStorage();
-
-
         db = FirebaseFirestore.getInstance();
         churchKitDb.bibleBookDao().getAllBibleBook().observe(this, new Observer<List<BibleBook>>() {
             @Override
@@ -353,14 +291,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+
         churchKitDb.songBookDao().getAllSongBook().observe(this, new Observer<List<SongBook>>() {
             @Override
             public void onChanged(List<SongBook> songBooks) {
                 if(songBooks.size() == 0) {
                     prepopulateSongFromJSonFile();
                 }
+
             }
         });
+
+
 
 
 
@@ -453,6 +395,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 drawerLayout.close();
                 mNavController.getGraph().findNode(R.id.listSongsFragment).setLabel("Song Favorites");
                 mNavController.navigate(R.id.listSongsFragment,bundle);
+                return true;
             case R.id.bibleFavorite:
                 bundle.putString("FROM",Util.FROM_BIBLE_FAVORITE);
                 mNavController.getGraph().findNode(R.id.listChapterFragment).setLabel("Chapter Favorites");

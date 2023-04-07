@@ -40,6 +40,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.Util;
 import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.entity.base.BaseBookMark;
 import com.churchkit.churchkit.database.entity.bible.BookMarkChapter;
 import com.churchkit.churchkit.database.entity.song.BookMarkSong;
 import com.churchkit.churchkit.ui.bible.ChapterDialogFragment;
@@ -61,23 +62,21 @@ import java.util.List;
 public class EditorBottomSheet extends BottomSheetDialogFragment implements View.OnClickListener,ColorPicker.OnClicked{
     private int fontIndex=0;
 
-    public static EditorBottomSheet getInstance(ActionMode mode, TextView textSelected, int TYPE_BOOKMARK, int TYPE, String id,String ref) {
+    public static EditorBottomSheet getInstanceWithActionMode(ActionMode mode, TextView textSelected, int TYPE_BOOKMARK, int TYPE, String id,String ref) {
         mMode = mode;
         mTextSelected = textSelected;
         mTYPE_BOOKMARK = TYPE_BOOKMARK;
         M_TYPE = TYPE;
         mId = id;
         mRef = ref;
-
-
         return new EditorBottomSheet();
     }
 
-    public static EditorBottomSheet getInstance(Object object, TextView textSelected, int TYPE_BOOKMARK, int TYPE, String id,String ref) {
+    public static EditorBottomSheet getInstance(BaseBookMark baseBookMark, TextView textSelected, int TYPE_BOOKMARK, int TYPE, String id,String ref) {
         mTextSelected = textSelected;
         M_TYPE = TYPE;
         mId = id;
-        mBookMark = object;
+        mBookMark = baseBookMark;
         mTYPE_BOOKMARK = TYPE_BOOKMARK;
         mRef = ref;
 
@@ -265,27 +264,15 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
     }
 
     private void initEditorBookMark() {
-        if(mBookMark instanceof BookMarkSong){
-            BookMarkSong bookMark = (BookMarkSong) mBookMark;
-            title.setText( bookMark.getTitle() );
-            description.setText( bookMark.getDescription() );
-        }else if (mBookMark instanceof BookMarkChapter){
-            BookMarkChapter bookMark = (BookMarkChapter) mBookMark;
-            title.setText( bookMark.getTitle() );
-            description.setText( bookMark.getDescription() );
+        if(mBookMark!=null){
+            title.setText( mBookMark.getTitle() );
+            description.setText( mBookMark.getDescription() );
         }
 
     }
 
     private String getColorBookMarkSelected() {
-        if (mBookMark!=null){
-            if (mBookMark instanceof BookMarkSong ){
-                return ( (BookMarkSong) mBookMark ).getColor();
-            }else if (mBookMark instanceof BookMarkChapter){
-                return ( (BookMarkChapter) mBookMark ).getColor();
-            }
-        }
-        return null;
+            return mBookMark!=null?  mBookMark.getColor():null;
     }
 
     @Override
@@ -395,7 +382,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
     private int newColorIndex = 0;
     private ChurchKitDb churchKitDb;
     private TextInputEditText title, description;
-    private static Object mBookMark;
+    private static BaseBookMark mBookMark;
     private static int mTYPE_BOOKMARK;
 
 
@@ -440,22 +427,21 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
     public void clicked(View v, String stringColor) {
         int finalTempStart=0,finalTempEnd=0;
         if (mBookMark instanceof BookMarkSong){
-            ///update
 
             BookMarkSong bookMark = (BookMarkSong) mBookMark;
-            //Toast.makeText(getContext(),"id: "+bookMark.get(),Toast.LENGTH_LONG).show();
+
             bookMark.setColor(stringColor);
             bookMark.setTitle( title.getText().toString() );
             bookMark.setDescription( description.getText().toString() );
 
-            churchKitDb.bookMarkSongDao().insertBookMark(bookMark);
+            churchKitDb.bookMarkSongDao().insert(bookMark);
 
         }else if (mBookMark instanceof BookMarkChapter){
             BookMarkChapter bookMark = (BookMarkChapter) mBookMark;
             bookMark.setColor(stringColor);
             bookMark.setTitle( title.getText().toString() );
             bookMark.setDescription( description.getText().toString() );
-            churchKitDb.bookMarkBibleDao().insertBookMark(bookMark);
+            churchKitDb.bookMarkBibleDao().insert(bookMark);
 
         }else {
             ///insert
@@ -463,7 +449,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
             final int end =  mTextSelected.getSelectionEnd() ;
 
             if (SongDialogFragment.SONG_BOOKMARK == mTYPE_BOOKMARK){
-                churchKitDb.bookMarkSongDao().insertBookMark(
+                churchKitDb.bookMarkSongDao().insert(
                         new BookMarkSong(title.getText().toString(),
                                 description.getText().toString(),
                                 stringColor,
@@ -473,7 +459,9 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
             }
             else if (ChapterDialogFragment.BIBLE_BOOKMARK == mTYPE_BOOKMARK){
 
-               churchKitDb.bookMarkBibleDao().insertBookMark(
+
+
+               churchKitDb.bookMarkBibleDao().insert(
                        new BookMarkChapter(title.getText().toString(),
                                description.getText().toString(),
                                stringColor,
@@ -497,12 +485,12 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
                 if (SongDialogFragment.SONG_BOOKMARK == mTYPE_BOOKMARK){
                     BookMarkSong bookMarkSong = (BookMarkSong) mBookMark;
 
-                    churchKitDb.bookMarkSongDao().deleteBookMark(bookMarkSong);
+                    churchKitDb.bookMarkSongDao().delete(bookMarkSong);
                 }
                 else if (ChapterDialogFragment.BIBLE_BOOKMARK == mTYPE_BOOKMARK){
                     BookMarkChapter bookMarkSong = (BookMarkChapter) mBookMark;
 
-                    churchKitDb.bookMarkBibleDao().deleteBookMark(bookMarkSong);
+                    churchKitDb.bookMarkBibleDao().insert(bookMarkSong);
                 }
 
         EditorBottomSheet.this.dismiss();

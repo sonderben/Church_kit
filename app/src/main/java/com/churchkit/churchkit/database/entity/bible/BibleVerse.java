@@ -7,8 +7,8 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "bible_verse"/*,indices = {@Index(value = {"verse_text"},unique = true)}*/,
-foreignKeys = @ForeignKey(entity = BibleChapter.class,parentColumns = "bible_chapter_id",childColumns = "bible_chapter_id"))
+@Entity(tableName = "bible_verse",indices = {@Index(value = {"bible_chapter_id"})},
+foreignKeys = @ForeignKey(entity = BibleChapter.class,parentColumns = "id",childColumns = "bible_chapter_id"))
 public class BibleVerse {
     @PrimaryKey
     @NonNull

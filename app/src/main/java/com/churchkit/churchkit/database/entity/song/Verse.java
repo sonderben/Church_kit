@@ -8,9 +8,9 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 ;
 
-@Entity(tableName = "verse"/*,indices = {@Index(value = {"verse","song_id"},unique = true)}*/,
+@Entity(tableName = "verse",indices = {@Index(value = {"song_id"})},
         foreignKeys = @ForeignKey(entity = Song.class,
-                parentColumns = "song_id",
+                parentColumns = "id",
                 childColumns = "song_id"))
 public class Verse {
     @PrimaryKey()
