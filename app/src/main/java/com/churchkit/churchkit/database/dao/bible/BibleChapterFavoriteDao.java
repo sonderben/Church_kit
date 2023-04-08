@@ -30,7 +30,8 @@ public interface BibleChapterFavoriteDao extends BaseDao<BibleChapterFavorite> {
     BibleChapterFavorite  isExisted(String id);
 
 
-
+    @Query("Select COUNT(*) FROM chapter_favorite")
+    LiveData<Integer> getAmount();
 
 
 

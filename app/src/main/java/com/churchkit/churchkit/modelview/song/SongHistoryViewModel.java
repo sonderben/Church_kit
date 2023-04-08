@@ -33,4 +33,7 @@ public class SongHistoryViewModel extends AndroidViewModel {
     public void delete(SongHistory songHistory){
         shr.delete(songHistory);
     }
+    public LiveData<Integer> getAmount(){
+        return shr.getAmount();
+    }
 }

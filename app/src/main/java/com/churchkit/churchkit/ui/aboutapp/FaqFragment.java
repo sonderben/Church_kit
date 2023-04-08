@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.churchkit.churchkit.R;
 
@@ -48,6 +49,9 @@ public class FaqFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_faq, container, false);
+        View root = inflater.inflate(R.layout.fragment_faq, container, false);
+        /*TextView textView = root.findViewById(R.id.faq_txtview);
+        textView.setText( getString(R.string.faq) );*/
+        return root;
     }
 }

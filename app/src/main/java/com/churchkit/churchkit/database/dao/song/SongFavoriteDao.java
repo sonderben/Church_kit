@@ -20,6 +20,9 @@ public interface SongFavoriteDao extends BaseDao<SongFavorite> {
     @Query("SELECT  * FROM song_favorite WHERE parent_id = :id")
     LiveData <SongFavorite> getSongFavoriteWithSongId(String id);
 
+    @Query("Select COUNT(*) FROM song_favorite")
+    LiveData<Integer> getAmount();
+
 
     /*@Query("SELECT  * FROM song_favorite WHERE parent_id = :id")
     SongFavorite  isExisted(String id);*/

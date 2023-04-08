@@ -20,6 +20,8 @@ public interface BibleChapterHistoryDao extends BaseDao<BibleChapterHistory> {
     @Query("Select * from chapter_history Join bible_chapter ON bible_chapter.id = chapter_history.parent_id")
      LiveData< Map<BibleChapterHistory, BibleChapter> > loadHistoriesChapter();
 
+    @Query("Select COUNT(*) FROM chapter_history")
+    LiveData<Integer> getAmount();
 
 
 

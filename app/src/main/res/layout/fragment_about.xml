@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textSize="@dimen/_14ssp"
-            android:fontFamily="@font/robotolight"
+            android:fontFamily="@font/sono_regular"
             android:text="@string/about_app" />
     </ScrollView>
 

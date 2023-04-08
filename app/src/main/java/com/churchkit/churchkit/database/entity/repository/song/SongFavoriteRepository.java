@@ -19,7 +19,9 @@ public class SongFavoriteRepository extends BaseRepository<SongFavoriteDao, Song
     /*public SongFavorite isExisted(String id){
         return songHistoryDao.isExisted(id);
     }*/
-
+    public LiveData<Integer> getAmount(){
+        return dao.getAmount();
+    }
     public LiveData<Map<SongFavorite, Song>> loadUserAndBookNames(){
         return dao.getAllSongFavoriteWithSong();
     }

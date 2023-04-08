@@ -20,5 +20,7 @@ public class SongHistoryRepository extends BaseRepository<SongHistoryDao,SongHis
         return dao.loadHistorySong();
     }
 
-
+    public LiveData<Integer> getAmount(){
+        return dao.getAmount();
+    }
 }

@@ -48,5 +48,8 @@ public class BibleFavoriteViewModel extends AndroidViewModel {
     public void delete(BibleChapterFavorite bibleChapterFavorite){
         shr.delete(bibleChapterFavorite);
     }
+    public LiveData<Integer> getAmount(){
+        return shr.getAmount();
+    }
 
 }

@@ -29,6 +29,9 @@ public class BibleFavoriteRepository extends BaseRepository<BibleChapterFavorite
     }
 
 
+    public LiveData<Integer> getAmount(){
+        return dao.getAmount();
+    }
 
     public BibleChapterFavorite  isExisted(String id){
         return dao.isExisted(id);

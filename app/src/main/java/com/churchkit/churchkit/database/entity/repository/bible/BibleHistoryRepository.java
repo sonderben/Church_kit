@@ -16,7 +16,9 @@ public class BibleHistoryRepository extends BaseRepository<BibleChapterHistoryDa
         super(bibleChapterDao);
     }
 
-
+    public LiveData<Integer> getAmount(){
+        return dao.getAmount();
+    }
 
     public LiveData< Map<BibleChapterHistory, BibleChapter> > loadHistoriesChapter(){
         return dao.loadHistoriesChapter();

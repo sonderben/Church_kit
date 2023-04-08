@@ -26,7 +26,9 @@ public class BibleHistoryViewModel extends AndroidViewModel {
 
         liveData = shr.loadHistoriesChapter();
     }
-
+    public LiveData<Integer> getAmount(){
+        return shr.getAmount();
+    }
 
     public LiveData< Map<BibleChapterHistory, BibleChapter> > loadHistoriesChapter(){
         return liveData;

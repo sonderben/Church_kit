@@ -34,4 +34,7 @@ public class SongFavoriteViewModel extends AndroidViewModel {
     public void delete(SongFavorite sf){
         shr.delete(sf);
     }
+    public LiveData<Integer> getAmount(){
+       return shr.getAmount();
+    }
 }

@@ -18,6 +18,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -25,13 +26,18 @@ import androidx.navigation.ui.NavigationUI;
 import com.churchkit.churchkit.database.ChurchKitDb;
 import com.churchkit.churchkit.database.entity.bible.BibleBook;
 import com.churchkit.churchkit.database.entity.bible.BibleChapter;
+import com.churchkit.churchkit.database.entity.bible.BibleChapterFavorite;
 import com.churchkit.churchkit.database.entity.bible.BibleVerse;
 import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.database.entity.song.SongBook;
 import com.churchkit.churchkit.database.entity.song.Verse;
 import com.churchkit.churchkit.databinding.ActivityMainBinding;
+import com.churchkit.churchkit.modelview.bible.BibleFavoriteViewModel;
+import com.churchkit.churchkit.modelview.bible.BibleHistoryViewModel;
 import com.churchkit.churchkit.modelview.bible.BibleViewModelGeneral4Insert;
 import com.churchkit.churchkit.modelview.song.SongBookViewModel;
+import com.churchkit.churchkit.modelview.song.SongFavoriteViewModel;
+import com.churchkit.churchkit.modelview.song.SongHistoryViewModel;
 import com.churchkit.churchkit.modelview.song.SongVerseViewModel;
 import com.churchkit.churchkit.modelview.song.SongViewModel;
 import com.churchkit.churchkit.modelview.song.SongViewModelGeneral4Insert;
@@ -78,6 +84,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getInstance(getApplication()).create(SongViewModelGeneral4Insert.class);
         bibleViewModelGeneral4Insert = ViewModelProvider.AndroidViewModelFactory.
                 getInstance(getApplication()).create(BibleViewModelGeneral4Insert.class);
+
+        bibleFavoriteViewModel = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getApplication()).create(BibleFavoriteViewModel.class);
+        bibleHistoryViewModel = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getApplication()).create(BibleHistoryViewModel.class);
+
+        songFavoriteViewModel = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getApplication()).create(SongFavoriteViewModel.class);
+        songHistoryViewModel = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getApplication()).create(SongHistoryViewModel.class);
+
         super.onCreate(savedInstanceState);
         ActivityMainBinding activityMainBinding=ActivityMainBinding.inflate(getLayoutInflater());
 
@@ -85,7 +102,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         AppCompatDelegate.setDefaultNightMode( ckPreferences.getDarkMode() );
 
 
-
+        //////////////////////////////////////////
+        //BottomNavigationView navView = findViewById(R.id.nav_view);
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        /*AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
+                .build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main_activityefase);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(binding.navView, navController);*/
+        ///////////////////////////////////////
 
 
 
@@ -114,10 +141,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SongViewModelGeneral4Insert songViewModelGeneral4Insert;
     private BibleViewModelGeneral4Insert bibleViewModelGeneral4Insert;
 
+    private BibleFavoriteViewModel bibleFavoriteViewModel;
+    private BibleHistoryViewModel bibleHistoryViewModel;
+    private SongFavoriteViewModel songFavoriteViewModel;
+    private SongHistoryViewModel songHistoryViewModel;
 
 
 
-    private void prepopulateBibleFromJSonFile(){
+
+    private void  prepopulateBibleFromJSonFile(){
         FirebaseStorage fs=FirebaseStorage.getInstance();
         StorageReference storageRef = fs.getReference().child("bible/FRNTLS-v1.json");
         storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -127,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     String jsonStr = new String(bytes, "UTF-8");
                     JSONObject jsonObject = new JSONObject(jsonStr);
                     JSONArray data = jsonObject.getJSONArray("data");
-                    //Iterator<String> keys = data.keys();
+
                     for (int a =0;a<data.length();a++){
                         JSONObject songBookJson =data.getJSONObject(a);
 
@@ -140,14 +172,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 songBookJson.getInt("position"),
                                 testament,
                                 songBookJson.getInt("amountChapter"));
-                        //Util.prepopulateBible(MainActivity.this,bibleBook);
-
 
                         JSONArray bibleChapterList =songBookJson.getJSONArray("bibleChapterList");
                         List<BibleChapter> bibleChapters = new ArrayList<>(50);
 
                             for (int jj=0;jj<bibleChapterList.length();jj++) {
-                                JSONObject chapterJson = bibleChapterList.getJSONObject(jj);//listChapterJson.getJSONObject(keys1.next());
+                                JSONObject chapterJson = bibleChapterList.getJSONObject(jj);
 
 
                                 BibleChapter bibleChapter = new BibleChapter(
@@ -177,7 +207,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     );
                                 }
 
-                                //Util.prepopulateBibleVerse(MainActivity.this,bibleVerseList);
                                 bibleViewModelGeneral4Insert.insert(bibleBook,bibleChapters,bibleVerseList);
                             }
                         //}
@@ -217,9 +246,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-                        //Util.prepopulateSonBook(MainActivity.this,songBook);
-                       // songBookViewModel.insert(songBook);
-
                         JSONArray songArrayJson = songBookJson.getJSONArray("songList");
                         List<Song>songList = new ArrayList<>();
                         for (int j = 0; j < songArrayJson.length(); j++) {
@@ -231,8 +257,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             song.setBookTitle( songBook.getTitle() );
                             song.setBookAbbreviation( songBook.getAbbreviation() );
                             songList.add(song);
-                            //Util.prepopulateSong(MainActivity.this,song);
-                           // songViewModel.insert(song);
+
 
 
                             JSONArray verseArray = songObj.getJSONArray("verseList");
@@ -244,8 +269,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 verse.setSongId( songObj.getString("id") );
                                 verseList.add( verse );
                             }
-                            //Util.prepopulateSongVerse(MainActivity.this,verseList);
-                           // songVerseViewModel.insertAll(verseList);
+
                             songViewModelGeneral4Insert.insert(songBook,songList,verseList);
 
                         }
@@ -271,24 +295,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-
-
-
-
     private void init(ActivityMainBinding activityMainBinding){
 
         PhoneInfo phoneInfo = new PhoneInfo();
         System.out.println("phone info: "+phoneInfo);
 
         db = FirebaseFirestore.getInstance();
-        churchKitDb.bibleBookDao().getAllBibleBook().observe(this, new Observer<List<BibleBook>>() {
-            @Override
-            public void onChanged(List<BibleBook> bibleBooks) {
-                if(bibleBooks.size() == 0){
-                    prepopulateBibleFromJSonFile();
-                }
-
+        churchKitDb.bibleBookDao().getAllBibleBook().observe(this, bibleBooks -> {
+            if(bibleBooks.size() == 0){
+                prepopulateBibleFromJSonFile();
             }
+
         });
 
 
@@ -329,12 +346,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         appBarConfiguration = builder.setOpenableLayout(drawerLayout).build();
 
 
-        TextView songHistory;
+        TextView songHistory,songFavorite,bibleHistory,bibleFavorite;
 
-        songHistory=
-                (TextView) navView.getMenu().findItem(R.id.songHistory).getActionView();
+        songHistory= (TextView) navView.getMenu().findItem(R.id.songHistory).getActionView();
         songHistory.setGravity(Gravity.CENTER);
-        songHistory.setText("+12");
+
+        songFavorite= (TextView) navView.getMenu().findItem(R.id.songFavorite).getActionView();
+        songFavorite.setGravity(Gravity.CENTER);
+
+        bibleHistory= (TextView) navView.getMenu().findItem(R.id.bibleHistory).getActionView();
+        bibleHistory.setGravity(Gravity.CENTER);
+
+        bibleFavorite= (TextView) navView.getMenu().findItem(R.id.bibleFavorite).getActionView();
+        bibleFavorite.setGravity(Gravity.CENTER);
+
+        songHistoryViewModel.getAmount().observe(this, integer -> songHistory.setText(integer>0? "+"+integer:"" ));
+        songFavoriteViewModel.getAmount().observe(this, integer -> songFavorite.setText(integer>0? "+"+integer:"" ));
+
+        bibleHistoryViewModel.getAmount().observe(this, integer -> bibleHistory.setText(integer>0? "+"+integer:"" ));
+        bibleFavoriteViewModel.getAmount().observe(this, integer -> bibleFavorite.setText(integer>0? "+"+integer:"" ));
 
 
 

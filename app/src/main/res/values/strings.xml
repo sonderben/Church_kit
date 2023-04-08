@@ -13,26 +13,26 @@ Currently, Church Kit is available for free and without advertisements, but futu
 In summary, Church Kit is the ideal app for anyone looking to get closer to God through the Bible and worship music. Download it today and start enjoying all its features and useful tools for your worship experience and spiritual growth.</string>
     <string name="song_hope">Song Hope</string>
     <string name="chorus">-Chorus-</string>
-    <string name="faq">1. How do I download the Church Kit app?\nYou can download the Church Kit app from your mobile device\'s app store.\n
-2. Is Church Kit free?\nYes, Church Kit is currently free.\n
-3. Can I access different versions of the Bible in Church Kit?\nYes, Church Kit allows access to different versions of the Bible.\n
-4. Can I save my favorite verses in Church Kit?\nYes, Church Kit allows you to save favorite verses.\n
-5. Can I perform advanced searches in Church Kit?\nYes, Church Kit allows for advanced searches in the Bible.\n
-6. Can I read additional notes in Church Kit to better understand the biblical texts?\nYes, Church Kit provides additional notes to help understand the biblical texts.\n
-7. Can I access a wide variety of worship songs in Church Kit?\nYes, Church Kit provides access to a wide variety of worship songs.\n
-8. Can I add my favorite songs to a personalized playlist in Church Kit?\nYes, Church Kit allows you to add favorite songs to a personalized playlist.\n
-9.Can I find the chords and lyrics of songs in Church Kit?\nYes, Church Kit provides chords and lyrics of songs.\n
-10. Can I use Church Kit to play worship songs in my church?\nYes, Church Kit provides chords and lyrics of songs to be played in the church.\n
-11. What types of worship songs are available in Church Kit?\nChurch Kit provides a wide variety of worship songs, from classic hymns to modern songs.\n
-12. Can I send feedback or suggestions to the Church Kit developers?\nYes, you can send feedback and suggestions through the Church Kit support page.\n
-13. How can I report a problem or error in Church Kit?\nYou can report a problem or error through the Church Kit support page.\n
-14. Can I use Church Kit offline?\nYes, you can use Church Kit offline if you have previously downloaded the necessary resources.\n
-15. Can I change the Bible version in Church Kit?\nYes, you can change the Bible version in Church Kit.\n
-16. Can I change the font size in Church Kit?\nYes, you can change the font size in Church Kit.\n
-17. Can I change the app theme in Church Kit?\nYes, you can change the app theme in Church Kit.\n
-18. Is Church Kit available in multiple languages?\nCurrently, Church Kit is only available in English.\n
-19. Can I share a verse or song on social media from Church Kit?\nYes, you can share a verse or song on social media from Church Kit.\n
-20. Can I add my own notes to verses in Church Kit?\nYes, you can add your own notes to verses in Church Kit\n</string>
+    <string name="faq">1. <b>How do I download the Church Kit app?</b>\nYou can download the Church Kit app from your mobile device\'s app store.\n\n
+2. <b>Is Church Kit free?</b>\nYes, Church Kit is currently free.\n\n
+3. <b>Can I access different versions of the Bible in Church Kit?</b>\nYes, Church Kit allows access to different versions of the Bible.\n\n
+4. <b>Can I save my favorite verses in Church Kit?</b>\nYes, Church Kit allows you to save favorite verses.\n\n
+5. <b>Can I perform advanced searches in Church Kit?</b>\nYes, Church Kit allows for advanced searches in the Bible.\n\n
+6. <b>Can I read additional notes in Church Kit to better understand the biblical texts?</b>\nYes, Church Kit provides additional notes to help understand the biblical texts.\n\n
+7. <b>Can I access a wide variety of worship songs in Church Kit?</b>\nYes, Church Kit provides access to a wide variety of worship songs.\n\n
+8. <b>Can I add my favorite songs to a personalized playlist in Church Kit?</b>\nYes, Church Kit allows you to add favorite songs to a personalized playlist.\n\n
+9. <b>Can I find the chords and lyrics of songs in Church Kit?</b>\nYes, Church Kit provides chords and lyrics of songs.\n\n
+10. <b>Can I use Church Kit to play worship songs in my church?</b>\nYes, Church Kit provides chords and lyrics of songs to be played in the church.\n\n
+11. <b>What types of worship songs are available in Church Kit?</b>\nChurch Kit provides a wide variety of worship songs, from classic hymns to modern songs.\n\n
+12. <b>Can I send feedback or suggestions to the Church Kit developers?</b>\nYes, you can send feedback and suggestions through the Church Kit support page.\n\n
+13. <b>How can I report a problem or error in Church Kit?</b>\nYou can report a problem or error through the Church Kit support page.\n\n
+14. <b>Can I use Church Kit offline?</b>\nYes, you can use Church Kit offline if you have previously downloaded the necessary resources.\n\n
+15. <b>Can I change the Bible version in Church Kit?</b>\nYes, you can change the Bible version in Church Kit.\n\n
+16. <b>Can I change the font size in Church Kit?</b>\nYes, you can change the font size in Church Kit.\n\n
+17. <b>Can I change the app theme in Church Kit?</b>\nYes, you can change the app theme in Church Kit.\n\n
+18. <b>Is Church Kit available in multiple languages?</b>\nCurrently, Church Kit is only available in English.\n\n
+19. <b>Can I share a verse or song on social media from Church Kit?</b>\nYes, you can share a verse or song on social media from Church Kit.\n\n
+20. <b>Can I add my own notes to verses in Church Kit?</b>\nYes, you can add your own notes to verses in Church Kit\n\n</string>
     <string name="old_testament">Old Testament</string>
     <string name="new_testament">New Testament</string>
     <!-- Preference Titles -->
@@ -77,4 +77,8 @@ In summary, Church Kit is the ideal app for anyone looking to get closer to God 
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_main_activityefase">MainActivityefase</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 </resources>

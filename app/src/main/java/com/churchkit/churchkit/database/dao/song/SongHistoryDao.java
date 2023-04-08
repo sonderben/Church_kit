@@ -23,6 +23,8 @@ public interface SongHistoryDao extends BaseDao<SongHistory> {
      LiveData< Map<SongHistory, Song> > loadHistorySong();
 
 
+    @Query("Select COUNT(*) FROM song_history")
+    LiveData<Integer> getAmount();
 
 
     @Query("SELECT  * FROM song_history WHERE parent_id = :id")

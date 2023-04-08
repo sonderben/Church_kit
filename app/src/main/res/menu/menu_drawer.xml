@@ -9,11 +9,13 @@
                 <item
                     android:id="@+id/songHistory"
                     android:icon="@drawable/history_24"
+                    app:iconTint="#091045"
                     app:actionViewClass="android.widget.TextView"
                     android:title="@string/history" />
                 <item
                     android:id="@+id/songFavorite"
-                    app:iconTint="#f00"
+                    app:iconTint="#053731"
+                    app:actionViewClass="android.widget.TextView"
                     android:icon="@drawable/favorite_24"
                     android:title="@string/favorite" />
             </menu>
@@ -24,11 +26,13 @@
             <menu>
                 <item
                     android:id="@+id/bibleHistory"
+                    app:actionViewClass="android.widget.TextView"
                     android:icon="@drawable/history_24"
                     android:title="@string/history" />
                 <item
                     android:id="@+id/bibleFavorite"
-                    app:iconTint="#f00"
+                    app:iconTint="#6C0C0C"
+                    app:actionViewClass="android.widget.TextView"
                     android:icon="@drawable/favorite_24"
                     android:title="@string/favorite" />
             </menu>
