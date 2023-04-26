@@ -22,7 +22,7 @@ public class Util {
         System.out.println("position: "+position);
 
         switch (position){
-            case 1:return Color.BLUE;
+            case 1:return Color.CYAN;
             case 2:return Color.argb(210,  136,  190, 1);
             case 3:return Color.argb(110,166,90,1);
             case 4:return Color.argb( 131,  138,  112, 1);
@@ -33,6 +33,7 @@ public class Util {
             case 8:return Color.argb( 255,  212,  149, 1);
             case 9:return Color.argb( 255,  66,  110, 1);
             case 10:return Color.argb( 215,  233,  185, 1);
+            case 0:return Color.YELLOW;
             default:
                 return Color.WHITE;
         }

@@ -3,6 +3,7 @@ package com.churchkit.churchkit.ui.more;
 import static com.churchkit.churchkit.Util.setAppLanguage;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,8 +11,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -25,7 +32,10 @@ import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreferenceCompat;
 
 import com.churchkit.churchkit.CKPreferences;
+import com.churchkit.churchkit.DataActivity;
 import com.churchkit.churchkit.R;
+import com.churchkit.churchkit.database.entity.bible.BibleInfo;
+import com.churchkit.churchkit.database.entity.song.SongInfo;
 
 
 public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements View.OnClickListener*/{
@@ -45,6 +55,28 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
         switchPreferenceCompat  = (SwitchPreferenceCompat) findPreference("SONG_ABBR_COLOR");
         fontListPreference = findPreference("FONT");
         isFontBold = findPreference("BOLD");
+        biblePreference = findPreference("BIBLE");
+        songPreference = findPreference("SONG");
+
+        biblePreference.setSummary( BibleInfo.getBibleInfoNameById( ckPreferences.getBibleName() ));
+        songPreference.setSummary(SongInfo.getBibleInfoNameById( ckPreferences.getSongName() ));
+
+        ActivityResultLauncher<Intent> dataActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if (result.getResultCode() == Activity.RESULT_OK){
+
+                    Bundle bundle = result.getData().getExtras();
+                   String defaultBibleId = bundle.getString("DEFAULT_BIBLE_ID");
+
+                    if (defaultBibleId != null){
+                        //getActivity().finishAffinity();
+                        //System.exit(0);
+                    }
+                    //biblePreference.setSummary(defaultBibleId);
+                }
+            }
+        });
 
         seekBarPreference.setSummary(ckPreferences.getLetterSize()+" px");
 
@@ -58,41 +90,39 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
             return true;
         });
 
-        langListPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
-                String lang = (String) newValue;
-                setAppLanguage(getContext(),lang);
-                getActivity().recreate();
-                return true;
-            }
+        langListPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+            String lang = (String) newValue;
+            setAppLanguage(getContext(),lang);
+            getActivity().recreate();
+            return true;
         });
-        fontListPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
-                final int index =  Integer.parseInt((String) newValue);
-                isBoldVisibility(index);
-                return true;
-            }
+        fontListPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+            final int index =  Integer.parseInt((String) newValue);
+            isBoldVisibility(index);
+            return true;
         });
 
-        darKModeListPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
-                String lang = (String) newValue;
-                setAppLanguage(getContext(),lang);
-                AppCompatDelegate.setDefaultNightMode(Integer.parseInt(lang));
-                getActivity().recreate();
-                return true;
-            }
+        darKModeListPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+            String lang = (String) newValue;
+            setAppLanguage(getContext(),lang);
+            AppCompatDelegate.setDefaultNightMode(Integer.parseInt(lang));
+            getActivity().recreate();
+            return true;
         });
 
-        switchPreferenceCompat.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
+        switchPreferenceCompat.setOnPreferenceChangeListener((preference, newValue) -> true);
 
-                return true;
-            }
+        biblePreference.setOnPreferenceClickListener(preference -> {
+            Intent intent = new Intent(getActivity(), DataActivity.class);
+            intent.putExtra("FROM","BIBLE");
+            dataActivity.launch(intent);
+            return true;
+        });
+        songPreference.setOnPreferenceClickListener(preference -> {
+            Intent intent = new Intent(getActivity(), DataActivity.class);
+            intent.putExtra("FROM","SONG");
+            dataActivity.launch(intent);
+            return true;
         });
 
 
@@ -108,6 +138,7 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
     ListPreference darKModeListPreference,fontListPreference;
     CKPreferences ckPreferences;
     SwitchPreferenceCompat switchPreferenceCompat,isFontBold;
+    Preference biblePreference,songPreference;
 
     private void isBoldVisibility(int index){
         switch (index){
@@ -122,9 +153,24 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
         }
     }
 
-
-
-
-
+    @Override
+    public void onResume() {
+        TextView tv= getActivity().findViewById(R.id.bible);
+        if (!ckPreferences.isCurrentAndNextBibleEqual()  && !ckPreferences.isCurrentAndNextSongEqual() ){
+            tv.setText(getString(R.string.restart_2_use_new_)+" "+getString(R.string.bible)+" "+getString(R.string.and)+" "+getString(R.string.song) );
+           tv.setVisibility(View.VISIBLE);
+        }else if (!ckPreferences.isCurrentAndNextBibleEqual()){
+            tv.setText(getString(R.string.restart_2_use_new_)+" "+getString(R.string.bible) );
+            tv.setVisibility(View.VISIBLE);
+        }
+        else if (!ckPreferences.isCurrentAndNextSongEqual()){
+            tv.setText(getString(R.string.restart_2_use_new_)+" "+getString(R.string.song) );
+            tv.setText( tv.getText().toString().replace("nouvelle","nouveau") );
+            tv.setVisibility(View.VISIBLE);
+        }else {
+            tv.setVisibility(View.GONE);
+        }
+        super.onResume();
+    }
 }
 

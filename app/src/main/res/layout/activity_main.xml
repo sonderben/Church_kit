@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
-
+    android:background="@color/main_bg"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -29,7 +29,17 @@
 
     </com.google.android.material.appbar.MaterialToolbar>
 
-
+    <TextView
+        android:id="@+id/bible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#EF6C00"
+        android:textStyle="italic"
+        android:visibility="gone"
+        android:paddingTop ="@dimen/_4sdp"
+        android:layout_marginLeft="@dimen/_15sdp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:text="@string/restart_2_use_new_"/>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
@@ -38,7 +48,7 @@
         android:layout_height="0dp"
         app:defaultNavHost="true"
         app:layout_constraintBottom_toTopOf="@id/bottom_nav"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintTop_toBottomOf="@id/bible"
         app:navGraph="@navigation/nav_graph" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

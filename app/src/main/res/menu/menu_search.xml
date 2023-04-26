@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item android:title="Search by" >
+        <menu>
+            <item android:id="@+id/reference"
+                android:title="Reference"
+                android:icon="@drawable/song_24"
+                xmlns:android="http://schemas.android.com/apk/res/android" />
+
+            <item android:id="@+id/verse"
+                android:title="Verse"
+                android:icon="@drawable/bible_24"
+                xmlns:android="http://schemas.android.com/apk/res/android" />
+        </menu>
+    </item>
+
+
+</menu>
+

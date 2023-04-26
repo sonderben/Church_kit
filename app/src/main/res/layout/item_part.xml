@@ -22,7 +22,7 @@
                 android:gravity="center"
                 android:textStyle="bold"
                 android:textSize="@dimen/_14ssp"
-                android:inputType="textCapCharacters"
+                android:inputType="textCapCharacters|textNoSuggestions"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/title"
                 app:layout_constraintBottom_toBottomOf="@id/number_song"

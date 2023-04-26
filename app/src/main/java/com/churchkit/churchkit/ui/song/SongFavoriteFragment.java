@@ -11,7 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.churchkit.churchkit.R;
-import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.CKBibleDb;
+import com.churchkit.churchkit.database.CKSongDb;
 import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.database.entity.song.SongFavorite;
 
@@ -49,7 +50,7 @@ public class SongFavoriteFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        db = ChurchKitDb.getInstance(getContext());
+        db = CKSongDb.getInstance( getContext() );
 
     }
 
@@ -69,6 +70,6 @@ public class SongFavoriteFragment extends Fragment {
 
         return  view;
     }
-    ChurchKitDb db;
+    CKSongDb db;
     RecyclerView recyclerView;
 }

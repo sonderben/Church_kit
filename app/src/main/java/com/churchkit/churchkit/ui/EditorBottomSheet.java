@@ -15,16 +15,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.Spannable;
-import android.text.Spanned;
-import android.text.style.BackgroundColorSpan;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,13 +27,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.Util;
-import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.CKBibleDb;
+import com.churchkit.churchkit.database.CKSongDb;
 import com.churchkit.churchkit.database.entity.base.BaseBookMark;
 import com.churchkit.churchkit.database.entity.bible.BookMarkChapter;
 import com.churchkit.churchkit.database.entity.song.BookMarkSong;
@@ -54,7 +47,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -110,7 +102,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
         title = root.findViewById(R.id.title);
         description = root.findViewById(R.id.description);
 
-        churchKitDb = ChurchKitDb.getInstance(getContext());
+        ckSongDb = ckSongDb.getInstance( getContext() );
 
         //imageView.setOnTouchListener(new MyScaleGestures(getContext()));
 
@@ -380,7 +372,8 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
     private DrawerCitacion drawerCitacion = null;
     private int imageIndex = 0, colorIndex = 0;
     private int newColorIndex = 0;
-    private ChurchKitDb churchKitDb;
+    private CKSongDb ckSongDb;
+    private CKBibleDb ckBibleDb;
     private TextInputEditText title, description;
     private static BaseBookMark mBookMark;
     private static int mTYPE_BOOKMARK;
@@ -434,14 +427,14 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
             bookMark.setTitle( title.getText().toString() );
             bookMark.setDescription( description.getText().toString() );
 
-            churchKitDb.bookMarkSongDao().insert(bookMark);
+            ckSongDb.bookMarkSongDao().insert(bookMark);
 
         }else if (mBookMark instanceof BookMarkChapter){
             BookMarkChapter bookMark = (BookMarkChapter) mBookMark;
             bookMark.setColor(stringColor);
             bookMark.setTitle( title.getText().toString() );
             bookMark.setDescription( description.getText().toString() );
-            churchKitDb.bookMarkBibleDao().insert(bookMark);
+            ckBibleDb.bookMarkBibleDao().insert(bookMark);
 
         }else {
             ///insert
@@ -449,7 +442,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
             final int end =  mTextSelected.getSelectionEnd() ;
 
             if (SongDialogFragment.SONG_BOOKMARK == mTYPE_BOOKMARK){
-                churchKitDb.bookMarkSongDao().insert(
+                ckSongDb.bookMarkSongDao().insert(
                         new BookMarkSong(title.getText().toString(),
                                 description.getText().toString(),
                                 stringColor,
@@ -461,7 +454,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
 
 
 
-               churchKitDb.bookMarkBibleDao().insert(
+               ckBibleDb.bookMarkBibleDao().insert(
                        new BookMarkChapter(title.getText().toString(),
                                description.getText().toString(),
                                stringColor,
@@ -485,12 +478,12 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
                 if (SongDialogFragment.SONG_BOOKMARK == mTYPE_BOOKMARK){
                     BookMarkSong bookMarkSong = (BookMarkSong) mBookMark;
 
-                    churchKitDb.bookMarkSongDao().delete(bookMarkSong);
+                    ckSongDb.bookMarkSongDao().delete(bookMarkSong);
                 }
                 else if (ChapterDialogFragment.BIBLE_BOOKMARK == mTYPE_BOOKMARK){
                     BookMarkChapter bookMarkSong = (BookMarkChapter) mBookMark;
 
-                    churchKitDb.bookMarkBibleDao().insert(bookMarkSong);
+                    ckBibleDb.bookMarkBibleDao().insert(bookMarkSong);
                 }
 
         EditorBottomSheet.this.dismiss();

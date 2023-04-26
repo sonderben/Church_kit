@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,17 +15,15 @@ import android.widget.TextView;
 
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.Util;
-import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.CKBibleDb;
 import com.churchkit.churchkit.database.entity.bible.BibleChapter;
-import com.churchkit.churchkit.database.entity.bible.BibleChapterFavorite;
 import com.churchkit.churchkit.database.entity.bible.BibleChapterFavoriteWrapper;
-import com.churchkit.churchkit.database.entity.bible.BibleChapterHistory;
 import com.churchkit.churchkit.database.entity.bible.BibleChapterHistoryWrapper;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 
 
 public class ListChapterFragment extends Fragment {
@@ -48,6 +45,10 @@ public class ListChapterFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_list_chapter2, container, false);
         mRecyclerView = root.findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
+
+
+
+        db= CKBibleDb.getInstance( getContext() );
 
 
 
@@ -90,8 +91,15 @@ public class ListChapterFragment extends Fragment {
 
     RecyclerView mRecyclerView;
     Adapter adapter;
-    ChurchKitDb db= ChurchKitDb.getInstance(getContext());
+    CKBibleDb db/*= CKBibleDb.getInstance( getContext() )*/;
     static String bibleBookId;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottom_nav);
+        bottomNavigationView.getMenu().getItem(1).setChecked(true);
+    }
 
     static class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder>{
         FragmentManager fm;

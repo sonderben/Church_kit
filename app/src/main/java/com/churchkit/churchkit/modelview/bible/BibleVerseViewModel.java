@@ -6,13 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.CKBibleDb;
 import com.churchkit.churchkit.database.dao.bible.BibleVerseDao;
-import com.churchkit.churchkit.database.dao.song.VerseDao;
 import com.churchkit.churchkit.database.entity.bible.BibleVerse;
-import com.churchkit.churchkit.database.entity.repository.bible.BibleVerseRepository;
-import com.churchkit.churchkit.database.entity.repository.song.SongVerseRepository;
-import com.churchkit.churchkit.database.entity.song.Verse;
+import com.churchkit.churchkit.repository.bible.BibleVerseRepository;
 
 import java.util.List;
 
@@ -23,7 +20,7 @@ public class BibleVerseViewModel extends AndroidViewModel {
     BibleVerseRepository repository;
     public BibleVerseViewModel(@NonNull Application application) {
         super(application);
-        BibleVerseDao verseDao = ChurchKitDb.getInstance(application.getApplicationContext()).bibleVerseDao();
+        BibleVerseDao verseDao = CKBibleDb.getInstance( application.getApplicationContext() ).bibleVerseDao();
         repository = new BibleVerseRepository(verseDao);
     }
 

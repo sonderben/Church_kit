@@ -1,11 +1,9 @@
 package com.churchkit.churchkit.database.entity.song;
 
 import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
-import androidx.room.PrimaryKey;
 
 import com.churchkit.churchkit.database.entity.base.SongAndChapter;
 

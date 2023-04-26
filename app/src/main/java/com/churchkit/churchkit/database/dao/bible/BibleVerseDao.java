@@ -19,6 +19,11 @@ public interface BibleVerseDao extends BaseDao<BibleVerse> {
     @Query("SELECT * FROM bible_verse ")
     LiveData<List<BibleVerse>> getAllVerse();
 
+    @Query("Select * from bible_verse join bible_verse_fts on bible_verse.bibleVerseId = " +
+            "bible_verse_fts.bibleVerseId WHERE bible_verse_fts.verse_text match :textSearch " +
+            "order by bible_verse_fts.reference limit 50")
+    LiveData<List<BibleVerse>> search(String textSearch);
+
 
     @Insert
     List<Long> insertAll(List<BibleVerse> bibleVerseList);

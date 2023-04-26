@@ -15,16 +15,45 @@ public class CKPreferences {
     private final String FONT_SIZE= "FONT_SIZE";
     private final String TypeFace= "TypeFace";
     private static  SharedPreferences settingPreferences = null;
+    SharedPreferences preference;
 
 
 
 
     public CKPreferences(Context context){
         this.context = context;
-        //preference = context.getSharedPreferences(CK_PREFERENCES,Context.MODE_PRIVATE);
+        preference = context.getSharedPreferences(CK_PREFERENCES,Context.MODE_PRIVATE);
+        //SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
+
         settingPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
     }
+
+    public static final int CHAPTER_BIBLE_TYPE_SEARCH = 1;
+    public static final int VERSE_BIBLE_TYPE_SEARCH = 2;
+
+    public static final int CHAPTER_SONG_TYPE_SEARCH = 1;
+    public static final int VERSE_SONG_TYPE_SEARCH = 2;
+    public int getBibleTypeSearch(){
+        return preference.getInt("BIBLE_TYPE_SEARCH",CHAPTER_BIBLE_TYPE_SEARCH);
+    }
+    public void setBibleTypeSearch(int bibleType){
+        SharedPreferences.Editor editor = preference.edit();
+        editor.putInt("BIBLE_TYPE_SEARCH", bibleType);
+        editor.apply(); //commit the changes asynchronously
+
+    }
+
+    public int getSongTypeSearch(){
+        return preference.getInt("SONG_TYPE_SEARCH",CHAPTER_SONG_TYPE_SEARCH);
+    }
+    public void setSongTypeSearch(int songType){
+        SharedPreferences.Editor editor = preference.edit();
+        editor.putInt("SONG_TYPE_SEARCH", songType);
+        editor.apply(); //commit the changes asynchronously
+
+    }
+
     public static SharedPreferences getSettingPref(Context context){
         if (settingPreferences == null){
             settingPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -97,6 +126,54 @@ public class CKPreferences {
 
 
     }
+
+
+    public String getBibleName(){
+        return preference.getString("DEFAULT_BIBLE","null");
+    }
+
+    public boolean setBibleName(String bibleName){
+        SharedPreferences.Editor editor = preference.edit();
+        editor.putString("DEFAULT_BIBLE", bibleName);
+        return editor.commit(); //commit the changes asynchronously
+    }
+    public String getNextBibleName(){
+        return preference.getString("NEXT_DEFAULT_BIBLE","null");
+    }
+
+    public boolean setNextBibleName(String bibleName){
+        SharedPreferences.Editor editor = preference.edit();
+        editor.putString("NEXT_DEFAULT_BIBLE", bibleName);
+       return editor.commit(); //commit the changes synchronously
+    }
+
+    public boolean isCurrentAndNextBibleEqual(){
+        return getNextBibleName().equalsIgnoreCase(getBibleName());
+    }
+    ///////
+    public String getSongName(){
+        return preference.getString("DEFAULT_SONG","nil");
+    }
+
+    public boolean setSongName(String bibleName){
+        SharedPreferences.Editor editor = preference.edit();
+        editor.putString("DEFAULT_SONG", bibleName);
+        return editor.commit(); //commit the changes asynchronously
+    }
+    public String getNextSongName(){
+        return preference.getString("NEXT_DEFAULT_SONG","nil");
+    }
+
+    public boolean setNextSongName(String bibleName){
+        SharedPreferences.Editor editor = preference.edit();
+        editor.putString("NEXT_DEFAULT_SONG", bibleName);
+        return editor.commit(); //commit the changes synchronously
+    }
+
+    public boolean isCurrentAndNextSongEqual(){
+        return getNextSongName().equalsIgnoreCase(getSongName());
+    }
+
 
 }
 

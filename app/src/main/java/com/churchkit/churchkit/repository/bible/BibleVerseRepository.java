@@ -1,13 +1,10 @@
-package com.churchkit.churchkit.database.entity.repository.bible;
+package com.churchkit.churchkit.repository.bible;
 
 import androidx.lifecycle.LiveData;
-import androidx.room.Query;
 
 import com.churchkit.churchkit.database.dao.bible.BibleVerseDao;
-import com.churchkit.churchkit.database.dao.song.VerseDao;
 import com.churchkit.churchkit.database.entity.bible.BibleVerse;
-import com.churchkit.churchkit.database.entity.repository.song.BaseRepository;
-import com.churchkit.churchkit.database.entity.song.Verse;
+import com.churchkit.churchkit.repository.song.BaseRepository;
 
 import java.util.List;
 

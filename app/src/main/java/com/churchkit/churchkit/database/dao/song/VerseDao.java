@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
-import androidx.room.Transaction;
 
 import com.churchkit.churchkit.database.dao.BaseDao;
 import com.churchkit.churchkit.database.entity.song.Verse;
@@ -20,10 +19,10 @@ public interface VerseDao extends BaseDao<Verse> {
     @Query("SELECT * FROM verse  ORDER BY position")
     LiveData<List<Verse>> getAllVerses();
 
-    /*@Transaction
-    @Insert
-    long insert(Verse verse);*/
-   // @Transaction
+    @Query("Select * from verse join song_verse_fts on verse.verseId = " +
+            "song_verse_fts.verseId WHERE song_verse_fts.verse match :textSearch limit 50" /*+*/
+            /*"order by song_verse_fts.reference"*/)
+    LiveData<List<Verse>> search(String textSearch);
     @Insert
     List<Long> insertAll(List<Verse> verses);
 

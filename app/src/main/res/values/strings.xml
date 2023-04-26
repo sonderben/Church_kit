@@ -4,6 +4,8 @@
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="song">Song</string>
     <string name="bible">Bible</string>
+    <string name="old">Old</string>
+    <string name="testament">testament</string>
     <string name="more">Settings</string>
     <string name="about_app">Welcome to Church Kit, the perfect app to enhance your worship and connection with God. \nCreated by two computer systems students, Benderson and Ersen, Church Kit is a practical and useful tool for those looking to deepen their Christian faith.\n\n
 The app has two main sections: the Bible section and the songs section. The Bible section allows you to access different versions of the Bible, with all the features you need to study and analyze the Word of God. You can also save your favorite verses, perform advanced searches, and read additional notes to help you better understand the texts.\n\n
@@ -81,4 +83,7 @@ In summary, Church Kit is the ideal app for anyone looking to get closer to God 
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="exeple_search_verse_bible"> <b>2 Timothée 1:16</b> Le seigneur fasse misécorde à la famille d\'Onésiphore; car il m\'a souvent consolé, et il n\'a point eu honte de mes chaînes.</string>
+    <string name="and">and</string>
+    <string name="restart_2_use_new_">"Restart the app to use the new "</string>
 </resources>

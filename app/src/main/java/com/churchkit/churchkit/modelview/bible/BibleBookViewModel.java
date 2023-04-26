@@ -6,10 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.CKBibleDb;
 import com.churchkit.churchkit.database.dao.bible.BibleBookDao;
 import com.churchkit.churchkit.database.entity.bible.BibleBook;
-import com.churchkit.churchkit.database.entity.repository.bible.BibleBookRepository;
+import com.churchkit.churchkit.repository.bible.BibleBookRepository;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class BibleBookViewModel extends AndroidViewModel {
     BibleBookRepository repository;
     public BibleBookViewModel(@NonNull Application application) {
         super(application);
-        BibleBookDao dao = ChurchKitDb.getInstance(application.getApplicationContext()).bibleBookDao();
+        BibleBookDao dao = CKBibleDb.getInstance( application.getApplicationContext() ).bibleBookDao();
         repository = new BibleBookRepository(dao);
     }
 

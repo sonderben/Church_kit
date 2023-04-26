@@ -1,15 +1,11 @@
 package com.churchkit.churchkit.database.entity.bible;
 
-import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
-import androidx.room.PrimaryKey;
 
 import com.churchkit.churchkit.database.entity.base.BaseBookMark;
-import com.churchkit.churchkit.database.entity.song.BookMarkSong;
-import com.churchkit.churchkit.database.entity.song.Song;
 
 import java.util.Objects;
 

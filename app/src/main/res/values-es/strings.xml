@@ -25,4 +25,8 @@
     <string name="dark_mode">Modo oscuro</string>
     <string name="display">Visualización</string>
     <string name="history">historial</string>
+    <string name="old">Viejo</string>
+    <string name="and">y</string>
+    <string name="testament">testamento</string>
+    <string name="restart_2_use_new_">Reinicia la aplicación para usar la nueva</string>
 </resources>

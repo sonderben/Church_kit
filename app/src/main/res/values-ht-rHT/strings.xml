@@ -23,4 +23,8 @@
     <string name="switch_summary_btn_song_abrr_color">Bay yon koulè diferan a chak abrevyasyon pou chak chante.</string>
     <string name="dark_mode">Mòd nwa</string>
     <string name="display">Afichaj</string>
+    <string name="old">Ansyen</string>
+    <string name="and">e</string>
+    <string name="testament">testaman</string>
+    <string name="restart_2_use_new_">"Rekòmanse aplikasyon an pou itilize nouvo "</string>
 </resources>

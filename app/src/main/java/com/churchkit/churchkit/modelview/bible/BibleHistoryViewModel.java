@@ -6,14 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.churchkit.churchkit.database.ChurchKitDb;
-import com.churchkit.churchkit.database.dao.bible.BibleChapterHistoryDao;
+import com.churchkit.churchkit.database.CKBibleDb;
 import com.churchkit.churchkit.database.entity.bible.BibleChapter;
 import com.churchkit.churchkit.database.entity.bible.BibleChapterHistory;
-import com.churchkit.churchkit.database.entity.repository.bible.BibleHistoryRepository;
-import com.churchkit.churchkit.database.entity.repository.song.SongHistoryRepository;
-import com.churchkit.churchkit.database.entity.song.Song;
-import com.churchkit.churchkit.database.entity.song.SongHistory;
+import com.churchkit.churchkit.repository.bible.BibleHistoryRepository;
 
 import java.util.Map;
 
@@ -22,7 +18,7 @@ public class BibleHistoryViewModel extends AndroidViewModel {
     BibleHistoryRepository shr;
     public BibleHistoryViewModel(@NonNull Application application) {
         super(application);
-         shr = new BibleHistoryRepository( ChurchKitDb.getInstance(application.getApplicationContext()).bibleChapterHistoryDao() );
+         shr = new BibleHistoryRepository( CKBibleDb.getInstance( application.getApplicationContext() ).bibleChapterHistoryDao() );
 
         liveData = shr.loadHistoriesChapter();
     }

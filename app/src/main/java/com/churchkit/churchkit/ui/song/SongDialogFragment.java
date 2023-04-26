@@ -308,7 +308,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
 
 
     private void init(){
-    //churchKitDd = ChurchKitDb.getInstance(requireContext());
+    //churchKitDd = CKBibleDb.getInstance(requireContext());
     scrollToChorusTextView = root.findViewById(R.id.chorus);
     scrollView = root.findViewById(R.id.scrollView);
     tv  = root.findViewById(R.id.text);
@@ -411,7 +411,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
         if (startPosition == endPosition){
             a = startPosition<0?getString(R.string.chorus): String.valueOf(startPosition);
         }else {
-            a = startPosition<0?getString(R.string.chorus): startPosition + " to "+
+            a = startPosition<0?getString(R.string.chorus): startPosition + " à "+
                     (endPosition<0?getString(R.string.chorus): String.valueOf(endPosition));
         }
 
@@ -492,7 +492,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
     private static String mSongTitle;
     private static String mReference;
     private FloatingActionButton fab;
-    //private ChurchKitDb churchKitDd;
+    //private CKBibleDb churchKitDd;
     private ScrollView scrollView;
     private ImageView favorite,donate,more;
     private CKPreferences ckp ;

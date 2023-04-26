@@ -6,8 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.churchkit.churchkit.database.ChurchKitDb;
-import com.churchkit.churchkit.database.entity.repository.song.SongFavoriteRepository;
+import com.churchkit.churchkit.database.CKBibleDb;
+import com.churchkit.churchkit.database.CKSongDb;
+import com.churchkit.churchkit.repository.song.SongFavoriteRepository;
 import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.database.entity.song.SongFavorite;
 
@@ -18,7 +19,7 @@ public class SongFavoriteViewModel extends AndroidViewModel {
     SongFavoriteRepository shr ;
     public SongFavoriteViewModel(@NonNull Application application) {
         super(application);
-        shr = new SongFavoriteRepository( ChurchKitDb.getInstance(application.getApplicationContext()).songFavoriteDao() );
+        shr = new SongFavoriteRepository( CKSongDb.getInstance( application.getApplicationContext() ).songFavoriteDao() );
         songWithHistory = shr.loadUserAndBookNames();
     }
 

@@ -6,9 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.CKBibleDb;
+import com.churchkit.churchkit.database.CKSongDb;
 import com.churchkit.churchkit.database.dao.song.VerseDao;
-import com.churchkit.churchkit.database.entity.repository.song.SongVerseRepository;
+import com.churchkit.churchkit.repository.song.SongVerseRepository;
 import com.churchkit.churchkit.database.entity.song.Verse;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class SongVerseViewModel extends AndroidViewModel {
     SongVerseRepository repository;
     public SongVerseViewModel(@NonNull Application application) {
         super(application);
-        VerseDao verseDao = ChurchKitDb.getInstance(application.getApplicationContext()).verseDao();
+        VerseDao verseDao = CKSongDb.getInstance( application.getApplicationContext() ).verseDao();
         repository = new SongVerseRepository(verseDao);
     }
 
@@ -28,5 +29,8 @@ public class SongVerseViewModel extends AndroidViewModel {
     }
     public LiveData<List<Verse>> getAllVerseByIdSong(String idSong){
         return repository.getAllVerseByIdSong(idSong);
+    }
+    public LiveData<List<Verse>> search (String textSearch){
+        return repository.search(textSearch);
     }
 }

@@ -1,15 +1,11 @@
-package com.churchkit.churchkit.database.entity.repository.bible;
+package com.churchkit.churchkit.repository.bible;
 
 import androidx.lifecycle.LiveData;
-import androidx.room.Query;
 
 import com.churchkit.churchkit.database.dao.bible.BibleChapterFavoriteDao;
-import com.churchkit.churchkit.database.dao.song.SongFavoriteDao;
 import com.churchkit.churchkit.database.entity.bible.BibleChapter;
 import com.churchkit.churchkit.database.entity.bible.BibleChapterFavorite;
-import com.churchkit.churchkit.database.entity.repository.song.BaseRepository;
-import com.churchkit.churchkit.database.entity.song.Song;
-import com.churchkit.churchkit.database.entity.song.SongFavorite;
+import com.churchkit.churchkit.repository.song.BaseRepository;
 
 import java.util.Map;
 

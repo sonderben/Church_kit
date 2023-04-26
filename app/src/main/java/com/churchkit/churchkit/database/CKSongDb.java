@@ -8,6 +8,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.database.dao.bible.BibleBookDao;
 import com.churchkit.churchkit.database.dao.bible.BibleChapterDao;
 import com.churchkit.churchkit.database.dao.bible.BibleChapterFavoriteDao;
@@ -22,71 +23,86 @@ import com.churchkit.churchkit.database.dao.song.SongDaoGeneral4Insert;
 import com.churchkit.churchkit.database.dao.song.SongFavoriteDao;
 import com.churchkit.churchkit.database.dao.song.SongHistoryDao;
 import com.churchkit.churchkit.database.dao.song.VerseDao;
-import com.churchkit.churchkit.database.entity.base.BaseBookMark;
-import com.churchkit.churchkit.database.entity.bible.BookMarkChapter;
-import com.churchkit.churchkit.database.entity.song.BookMarkSong;
+import com.churchkit.churchkit.database.entity.base.FavHis;
 import com.churchkit.churchkit.database.entity.bible.BibleBook;
 import com.churchkit.churchkit.database.entity.bible.BibleChapter;
 import com.churchkit.churchkit.database.entity.bible.BibleChapterFavorite;
 import com.churchkit.churchkit.database.entity.bible.BibleChapterFts;
 import com.churchkit.churchkit.database.entity.bible.BibleChapterHistory;
 import com.churchkit.churchkit.database.entity.bible.BibleVerse;
+import com.churchkit.churchkit.database.entity.bible.BibleVerseFts;
+import com.churchkit.churchkit.database.entity.bible.BookMarkChapter;
+import com.churchkit.churchkit.database.entity.song.BookMarkSong;
 import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.database.entity.song.SongBook;
 import com.churchkit.churchkit.database.entity.song.SongFavorite;
 import com.churchkit.churchkit.database.entity.song.SongFts;
 import com.churchkit.churchkit.database.entity.song.SongHistory;
+import com.churchkit.churchkit.database.entity.song.SongVerseFts;
 import com.churchkit.churchkit.database.entity.song.Verse;
 
-//@TypeConverters({ChurchKitConverter.class})
-@Database(entities = {SongBook.class, Song.class, Verse.class, BibleBook.class, BibleChapter.class,
-        BibleVerse.class, SongFavorite.class,BibleChapterFavorite.class,
-        BibleChapterHistory.class,SongHistory.class, SongFts.class, BibleChapterFts.class,
-        BookMarkSong.class, BookMarkChapter.class/*, BaseBookMark.class*/},version = 1,exportSchema = false)
-public abstract class ChurchKitDb extends RoomDatabase {
-    public abstract SongBookDao songBookDao();
-    public abstract SongDao songDao();
-    public abstract VerseDao verseDao();
-    public abstract BibleBookDao bibleBookDao();
-    public abstract BibleChapterDao bibleChapterDao();
-    public abstract BibleVerseDao bibleVerseDao();
-    public abstract SongFavoriteDao songFavoriteDao();
-    public abstract SongHistoryDao songHistoryDao();
-    public abstract BibleChapterFavoriteDao bibleChapterFavoriteDao();
-    public abstract BibleChapterHistoryDao bibleChapterHistoryDao();
-    public abstract SongDaoGeneral4Insert songDaoGeneral4Insert();
-    public abstract BibleDaoGeneral4Insert bibleDaoGeneral4Insert();
 
-    public abstract BookMarkBibleDao bookMarkBibleDao();
+@Database(entities = {SongBook.class, Song.class, Verse.class, SongFavorite.class,
+         SongHistory.class, SongFts.class, SongVerseFts.class,BookMarkSong.class},
+        version = 1, exportSchema = false)
+public abstract class CKSongDb extends RoomDatabase {
+    public abstract SongBookDao songBookDao();
+
+    public abstract SongDao songDao();
+
+    public abstract VerseDao verseDao();
+
+    public abstract SongFavoriteDao songFavoriteDao();
+
+    public abstract SongHistoryDao songHistoryDao();
+
+    public abstract SongDaoGeneral4Insert songDaoGeneral4Insert();
+
     public abstract BookMarkSongDao bookMarkSongDao();
 
-
-    public static volatile ChurchKitDb instance;
-    //private static Context mContext;
+    //public abstract BookMarkSongDao bookMarkSongDao();
 
 
+    public static volatile CKSongDb instance;
+    public static CKSongDb instanceDownload;
 
-    public static synchronized ChurchKitDb getInstance(Context context){
-       // mContext = context;
-        if (instance == null){
+
+    private static CKPreferences preferences;
+
+
+    public static synchronized CKSongDb getInstance(Context context) {
+        preferences = new CKPreferences(context);
+        String defBible = preferences.getSongName();
+
+
+        if (instance == null) {
             instance = Room.databaseBuilder(context.getApplicationContext(),
-                    ChurchKitDb.class,"church.db").addCallback(new Callback() {
-                @Override
-                public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                    super.onCreate(db);
-
-                }
-
-                @Override
-                public void onOpen(@NonNull SupportSQLiteDatabase db) {
-                    super.onOpen(db);
-                }
-            })
-                    //.addTypeConverter(new ChurchKitConverter(mContext))
-                   // .allowMainThreadQueries()
+                            CKSongDb.class, defBible + ".db")
                     .build();
         }
         return instance;
+    }
+
+
+    public static synchronized CKSongDb getInstance4Insert(Context context, @NonNull String song) {
+
+
+        instanceDownload = Room.databaseBuilder(context.getApplicationContext(),
+                        CKSongDb.class, song + ".db").addCallback(new Callback() {
+                    @Override
+                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                        super.onCreate(db);
+
+                    }
+
+                    @Override
+                    public void onOpen(@NonNull SupportSQLiteDatabase db) {
+                        super.onOpen(db);
+                    }
+                })
+                .build();
+
+        return instanceDownload;
     }
 
 }

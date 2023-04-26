@@ -6,8 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.churchkit.churchkit.database.ChurchKitDb;
-import com.churchkit.churchkit.database.entity.repository.song.SongHistoryRepository;
+import com.churchkit.churchkit.database.CKBibleDb;
+import com.churchkit.churchkit.database.CKSongDb;
+import com.churchkit.churchkit.repository.song.SongHistoryRepository;
 import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.database.entity.song.SongHistory;
 
@@ -19,7 +20,7 @@ public class SongHistoryViewModel extends AndroidViewModel {
 
     public SongHistoryViewModel(@NonNull Application application) {
         super(application);
-        shr = new SongHistoryRepository( ChurchKitDb.getInstance(application.getApplicationContext()).songHistoryDao() );
+        shr = new SongHistoryRepository( CKSongDb.getInstance( application.getApplicationContext() ).songHistoryDao() );
         songWithHistory = shr.getAllHistory();
     }
 

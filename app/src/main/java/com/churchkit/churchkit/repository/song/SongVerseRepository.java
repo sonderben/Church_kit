@@ -1,4 +1,4 @@
-package com.churchkit.churchkit.database.entity.repository.song;
+package com.churchkit.churchkit.repository.song;
 
 import androidx.lifecycle.LiveData;
 
@@ -23,5 +23,9 @@ public class SongVerseRepository extends BaseRepository<VerseDao, Verse>{
     }
     public LiveData<List<Verse>> getAllVerseByIdSong(String idSong){
         return dao.getAllVerseByIdSong(idSong);
+    }
+
+    public LiveData<List<Verse>> search (String textSearch){
+        return dao.search(textSearch);
     }
 }

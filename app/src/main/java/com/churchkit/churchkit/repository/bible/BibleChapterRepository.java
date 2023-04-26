@@ -1,13 +1,10 @@
-package com.churchkit.churchkit.database.entity.repository.bible;
+package com.churchkit.churchkit.repository.bible;
 
 import androidx.lifecycle.LiveData;
-import androidx.room.Query;
 
 import com.churchkit.churchkit.database.dao.bible.BibleChapterDao;
-import com.churchkit.churchkit.database.dao.song.SongDao;
 import com.churchkit.churchkit.database.entity.bible.BibleChapter;
-import com.churchkit.churchkit.database.entity.repository.song.BaseRepository;
-import com.churchkit.churchkit.database.entity.song.Song;
+import com.churchkit.churchkit.repository.song.BaseRepository;
 
 import java.util.List;
 
@@ -28,6 +25,11 @@ public class BibleChapterRepository extends BaseRepository<BibleChapterDao, Bibl
     public LiveData< List<BibleChapter> > bibleChapterFullTextSearch(String query){
         return dao.bibleChapterFullTextSearch(query);
     }
+
+    public LiveData<BibleChapter> getChapterByVerseId(String verseId){
+        return dao.getChapterByVerseId(verseId);
+    }
+
 
 
 }

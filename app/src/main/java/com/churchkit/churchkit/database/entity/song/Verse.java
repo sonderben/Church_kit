@@ -21,22 +21,33 @@ public class Verse {
     private int position;
     @ColumnInfo(name = "song_id")
     private String SongId;
+    private String reference;
 
     public Verse(){}
-    public Verse(String verseId, String verse, int position, String songId) {
+    public Verse(String verseId, String verse,String reference, int position, String songId) {
         this.verseId = verseId;
         this.verse = verse;
         this.position = position;
+        this.reference = reference;
         SongId = songId;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 
     @Override
     public String toString() {
         return "Verse{" +
-                "verseId=" + verseId +
+                "verseId='" + verseId + '\'' +
                 ", verse='" + verse + '\'' +
-                ", num=" + position +
-                ", SongId=" + SongId +
+                ", position=" + position +
+                ", SongId='" + SongId + '\'' +
+                ", reference='" + reference + '\'' +
                 '}';
     }
 

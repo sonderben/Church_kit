@@ -11,6 +11,16 @@
         app:title="@string/language"
         android:defaultValue="1"
         app:useSimpleSummaryProvider="true" />
+    <Preference
+        android:title="Select Bible"
+        app:key="BIBLE"
+        app:icon="@drawable/bible_setting24"
+        android:summary="Select or download a bible"/>
+    <Preference
+        android:title="Select Song"
+        app:key="SONG"
+        app:icon="@drawable/song_setting_24"
+        android:summary="Select or download a song book"/>
 
     <PreferenceCategory app:title="@string/reading">
 

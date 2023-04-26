@@ -6,16 +6,11 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.churchkit.churchkit.database.ChurchKitDb;
+import com.churchkit.churchkit.database.CKBibleDb;
 import com.churchkit.churchkit.database.entity.bible.BibleChapter;
 import com.churchkit.churchkit.database.entity.bible.BibleChapterFavorite;
-import com.churchkit.churchkit.database.entity.repository.bible.BibleChapterRepository;
-import com.churchkit.churchkit.database.entity.repository.bible.BibleFavoriteRepository;
-import com.churchkit.churchkit.database.entity.repository.song.SongFavoriteRepository;
-import com.churchkit.churchkit.database.entity.song.Song;
-import com.churchkit.churchkit.database.entity.song.SongFavorite;
+import com.churchkit.churchkit.repository.bible.BibleFavoriteRepository;
 
-import java.util.List;
 import java.util.Map;
 
 public class BibleFavoriteViewModel extends AndroidViewModel {
@@ -23,7 +18,7 @@ public class BibleFavoriteViewModel extends AndroidViewModel {
     BibleFavoriteRepository shr ;
     public BibleFavoriteViewModel(@NonNull Application application) {
         super(application);
-        shr = new BibleFavoriteRepository( ChurchKitDb.getInstance(application.getApplicationContext()).bibleChapterFavoriteDao() );
+        shr = new BibleFavoriteRepository( CKBibleDb.getInstance( application.getApplicationContext() ).bibleChapterFavoriteDao() );
         songWithHistory = shr.loadFavoritesChapter();
     }
 

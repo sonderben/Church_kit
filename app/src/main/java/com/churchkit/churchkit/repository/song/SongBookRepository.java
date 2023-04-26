@@ -1,4 +1,4 @@
-package com.churchkit.churchkit.database.entity.repository.song;
+package com.churchkit.churchkit.repository.song;
 
 import androidx.lifecycle.LiveData;
 

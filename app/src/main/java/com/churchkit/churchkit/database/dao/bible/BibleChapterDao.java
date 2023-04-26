@@ -2,12 +2,10 @@ package com.churchkit.churchkit.database.dao.bible;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Insert;
 import androidx.room.Query;
 
 import com.churchkit.churchkit.database.dao.BaseDao;
 import com.churchkit.churchkit.database.entity.bible.BibleChapter;
-import com.churchkit.churchkit.database.entity.song.Song;
 
 import java.util.List;
 @Dao
@@ -22,8 +20,11 @@ public interface BibleChapterDao extends BaseDao<BibleChapter> {
     @Query("Select * from bible_chapter " +
             "join bible_chapter_fts on bible_chapter.position = bible_chapter_fts.position " +
             "and bible_chapter.book_abbreviation = bible_chapter_fts.book_abbreviation " +
-            "where bible_chapter_fts match :query ORDER by bible_chapter.position")
+            "where bible_chapter_fts match :query ORDER by bible_chapter.position limit 50")
     LiveData< List<BibleChapter> > bibleChapterFullTextSearch(String query);
+
+    @Query("SELECT * from bible_chapter WHERE id = :id")
+    LiveData<BibleChapter> getChapterByVerseId(String id);
 
 
 

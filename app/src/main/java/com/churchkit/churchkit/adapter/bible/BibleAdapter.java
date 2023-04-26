@@ -16,9 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.database.entity.bible.BibleBook;
-import com.churchkit.churchkit.ui.bible.BibleFragment;
-import com.churchkit.churchkit.ui.bible.ChapterDialogFragment;
-import com.churchkit.churchkit.ui.bible.ListChapterFragment;
 import com.churchkit.churchkit.ui.util.Util;
 import com.google.android.material.card.MaterialCardView;
 
@@ -37,11 +34,20 @@ public class BibleAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    public BibleAdapter(int typeView,FragmentManager fm,List<BibleBook> bibleBooks) {
+    /*public BibleAdapter(int typeView,FragmentManager fm,List<BibleBook> bibleBooks) {
         this.fm = fm;
         this.typeView = typeView;
         this.bibleBooks=bibleBooks;
+    }*/
+
+    public BibleAdapter(FragmentManager fm){
+        this.fm = fm;
     }
+    public void config(int typeView,List<BibleBook> bibleBooks){
+        this.typeView = typeView;
+        this.bibleBooks=bibleBooks;
+    }
+
     public BibleAdapter(FragmentManager fm,List<BibleBook> bibleBooks) {
         this.fm = fm;
         this.typeView = 1;
@@ -98,9 +104,14 @@ public class BibleAdapter extends RecyclerView.Adapter {
                 });
             }
         }else {
+            int tempPosition = holder.getAbsoluteAdapterPosition() + 1;
+            int posColor = tempPosition<11?tempPosition:tempPosition%10;
+            final int color = Util.getColorByPosition( posColor );
+
                 ((AllBookViewHolder) holder).title.setText(bibleBooks.get(position).getTitle());
                 ((AllBookViewHolder) holder).tileAcronym.setText(bibleBooks.get(position).getAbbreviation());
                 ((AllBookViewHolder) holder).number.setText( bibleBooks.get(position).getChildAmount()+" Chapters" );
+            ((AllBookViewHolder) holder).tileAcronym.setTextColor(color);
 
             ((AllBookViewHolder) holder).itemView.setOnClickListener(view -> {
                 BibleBook bibleBook = bibleBooks.get(position);

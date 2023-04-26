@@ -16,7 +16,6 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -41,21 +40,16 @@ import androidx.lifecycle.ViewModelProvider;
 import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.PhoneInfo;
 import com.churchkit.churchkit.R;
-import com.churchkit.churchkit.database.ChurchKitDb;
 import com.churchkit.churchkit.database.entity.bible.BibleChapter;
 import com.churchkit.churchkit.database.entity.bible.BibleChapterFavorite;
 import com.churchkit.churchkit.database.entity.bible.BibleChapterHistory;
 import com.churchkit.churchkit.database.entity.bible.BibleVerse;
 import com.churchkit.churchkit.database.entity.bible.BookMarkChapter;
-import com.churchkit.churchkit.database.entity.song.BookMarkSong;
-import com.churchkit.churchkit.database.entity.song.SongFavorite;
 import com.churchkit.churchkit.modelview.bible.BibleBookMarkViewModel;
-import com.churchkit.churchkit.modelview.bible.BibleChapterViewModel;
 import com.churchkit.churchkit.modelview.bible.BibleFavoriteViewModel;
 import com.churchkit.churchkit.modelview.bible.BibleHistoryViewModel;
 import com.churchkit.churchkit.modelview.bible.BibleVerseViewModel;
 import com.churchkit.churchkit.ui.EditorBottomSheet;
-import com.churchkit.churchkit.ui.song.SongDialogFragment;
 import com.churchkit.churchkit.ui.util.Util;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.razorpay.Checkout;
@@ -348,7 +342,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         if (startPosition == endPosition){
             a = startPosition<0?getString(R.string.chorus): String.valueOf(startPosition);
         }else {
-            a = startPosition<0?getString(R.string.chorus): startPosition + " to "+
+            a = startPosition<0?getString(R.string.chorus): startPosition + " à "+
                     (endPosition<0?getString(R.string.chorus): String.valueOf(endPosition));
         }
 
@@ -379,7 +373,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         return new Point(location[0], location[1]);
     }
 
-    //ChurchKitDb db= ChurchKitDb.getInstance(getContext());
+    //CKBibleDb db= CKBibleDb.getInstance(getContext());
     private String toUnicode( int position){
         final String zero = "\u2070";
         final String one = "\u00B9";
