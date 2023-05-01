@@ -27,4 +27,11 @@ public class BibleBookRepository extends BaseRepository<BibleBookDao, BibleBook>
     public LiveData<List<BibleBook>> getAllOldTestamentBibleBook(){
         return dao.getAllOldTestamentBibleBook();
     }
+
+    public LiveData<Integer>getAmountBookOldTestament()  {
+            return dao.getAmountBookOldTestament();
+    }
+    public LiveData<Integer>getAmountBookNewTestament()  {
+        return dao.getAmountBookNewTestament();
+    }
 }

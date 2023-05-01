@@ -165,7 +165,7 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
         }
         else if (!ckPreferences.isCurrentAndNextSongEqual()){
             tv.setText(getString(R.string.restart_2_use_new_)+" "+getString(R.string.song) );
-            tv.setText( tv.getText().toString().replace("nouvelle","nouveau") );
+            tv.setText( tv.getText().toString().replace("la nouvelle","le nouveau") );
             tv.setVisibility(View.VISIBLE);
         }else {
             tv.setVisibility(View.GONE);

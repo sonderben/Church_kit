@@ -12,12 +12,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.window.SplashScreen;
 
 import com.churchkit.churchkit.database.CKBibleDb;
 import com.churchkit.churchkit.database.CKSongDb;
@@ -89,6 +91,12 @@ public class DataActivity extends AppCompatActivity {
                     myAdapter.setBibleInfoList(new ArrayList<>(bibleInfoList));
             });
         }
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        return super.onOptionsItemSelected(item);
     }
 
     private RecyclerView recyclerView;
@@ -105,6 +113,8 @@ public class DataActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerview);
         info = findViewById(R.id.info);
         toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         myAdapter = new MyAdapter();
         ckPreferences = new CKPreferences(getApplicationContext());
         recyclerView.setAdapter(myAdapter);
@@ -147,7 +157,7 @@ public class DataActivity extends AppCompatActivity {
 
             holder.download.setVisibility(bibleInfo.isDownloaded() ? View.GONE : View.VISIBLE);
 
-            holder.testament.setText(getStringTestament(bibleInfo.getTestament()));
+            holder.testament.setText( origin.equalsIgnoreCase("BIBLE")?getStringTestament(bibleInfo.getTestament()):bibleInfo.getTestament()+""+getString(R.string.part) );
 
 
             holder.checkBox.setVisibility(!bibleInfo.isDownloaded() ? View.GONE : View.VISIBLE);

@@ -24,7 +24,7 @@ public class BibleInfo extends BaseInfo {
         if (infoList.size() == 0){
             infoList.add(new BibleInfo("FRNTLS","Français","1910 Louis Segond  (Tresorsonore recording)",2,"1"));
             //bibleInfoList.add(new BibleInfo("HATHCB","Kreyòl Ayisyen","Alliance Biblique Universelle","1"));
-            infoList.add(new BibleInfo("HATBIV","Kreyòl Ayisyen","Alliance Biblique Universelle",1,"1"));
+            //infoList.add(new BibleInfo("HATBIV","Kreyòl Ayisyen","Alliance Biblique Universelle",1,"1"));
             infoList.add(new BibleInfo("ENGESV","English","English Standard Version® - Hear the Word Audio Bible",2,""));
         }
         return infoList;

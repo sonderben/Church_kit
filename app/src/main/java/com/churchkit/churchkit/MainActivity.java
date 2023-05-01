@@ -5,15 +5,18 @@ import static com.churchkit.churchkit.ui.aboutapp.Payment.startPayment;
 import android.app.ActivityManager;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -36,8 +39,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PaymentResultListener {
 
@@ -64,25 +65,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         ////
         Util.setAppLanguage(MainActivity.this,ckPreferences.getLanguage());
-
-
-        bibleFavoriteViewModel = ViewModelProvider.AndroidViewModelFactory.
-                getInstance(getApplication()).create(BibleFavoriteViewModel.class);
-        bibleHistoryViewModel = ViewModelProvider.AndroidViewModelFactory.
-                getInstance(getApplication()).create(BibleHistoryViewModel.class);
-
-        songFavoriteViewModel = ViewModelProvider.AndroidViewModelFactory.
-                getInstance(getApplication()).create(SongFavoriteViewModel.class);
-        songHistoryViewModel = ViewModelProvider.AndroidViewModelFactory.
-                getInstance(getApplication()).create(SongHistoryViewModel.class);
+        //AppCompatDelegate.setDefaultNightMode( ckPreferences.getDarkMode() );
 
 
 
+        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
+
+
+        super.onCreate(savedInstanceState);
+        ActivityMainBinding activityMainBinding=ActivityMainBinding.inflate(getLayoutInflater());
+
+
+        setContentView(activityMainBinding.getRoot());
+
+        init(activityMainBinding);
 
 
 
-        BibleInfoViewModel bibleInfoViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(BibleInfoViewModel.class);
-        SongInfoViewModel songInfoViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(SongInfoViewModel.class);
+        splashScreen.setKeepOnScreenCondition(new SplashScreen.KeepOnScreenCondition() {
+            @Override
+            public boolean shouldKeepOnScreen() {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }
+        });
+
+
+
+
 
         bibleInfoViewModel.getAllBibleInfo().observe(this, bibleInfoList -> {
             if (bibleInfoList.size()==0){
@@ -90,43 +104,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        songInfoViewModel.getAllBibleInfo().observe(this, new Observer<List<SongInfo>>() {
-            @Override
-            public void onChanged(List<SongInfo> songInfos) {
-                if (songInfos.size() == 0){
-                    songInfoViewModel.insert( SongInfo.getAllBibleInfo() );
-                }
+        songInfoViewModel.getAllBibleInfo().observe(this, songInfos -> {
+            if (songInfos.size() == 0){
+                songInfoViewModel.insert( SongInfo.getAllBibleInfo() );
             }
         });
 
+        info = findViewById(R.id.bible);
 
-
-        //
-
-        super.onCreate(savedInstanceState);
-        ActivityMainBinding activityMainBinding=ActivityMainBinding.inflate(getLayoutInflater());
-
-
-        AppCompatDelegate.setDefaultNightMode( ckPreferences.getDarkMode() );
-
-        setContentView(activityMainBinding.getRoot());
-
-        bible = findViewById(R.id.bible);
-
-
-
-        bible.setOnClickListener(v -> {
+        info.setOnClickListener(v -> {
             finish();
-            finishAndRemoveTask();
             System.exit(0);
-            recreate();
         });
-        //bible.setText( ckPreferences.getBibleName() );
 
 
 
 
-        init(activityMainBinding);
+
+        badgeCountDrawerLayout();
 
 
         navView.setNavigationItemSelectedListener(this::onNavigationItemSelected);
@@ -138,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void init(ActivityMainBinding activityMainBinding){
         toolbar=activityMainBinding.toolbar;
+        setSupportActionBar(toolbar);
         bottomNavigationView = activityMainBinding.bottomNav;
         drawerLayout = activityMainBinding.drawerLayout;
         navView = activityMainBinding.navView;
@@ -154,37 +150,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationUI.setupWithNavController(navView, mNavController); // drawer
         NavigationUI.setupWithNavController(toolbar, mNavController, appBarConfiguration); // toolbar
 
-        badgeCountDrawerLayout();
+        bibleFavoriteViewModel = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getApplication()).create(BibleFavoriteViewModel.class);
+        bibleHistoryViewModel = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getApplication()).create(BibleHistoryViewModel.class);
+
+        songFavoriteViewModel = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getApplication()).create(SongFavoriteViewModel.class);
+        songHistoryViewModel = ViewModelProvider.AndroidViewModelFactory.
+                getInstance(getApplication()).create(SongHistoryViewModel.class);
 
 
-        /*mNavController.addOnDestinationChangedListener((navController1, navDestination, bundle) -> {
-            if ( isBottomFragment(navController1) ){
-                toolbar.setNavigationIcon(R.drawable.menu_24);
-            }else
-                toolbar.setNavigationIcon(R.drawable.arrow_back_24);
-        });*/
+        bibleInfoViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(BibleInfoViewModel.class);
+        songInfoViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(SongInfoViewModel.class);
 
-        setSupportActionBar(toolbar);
-
-
-
-
-        /*toolbar.setNavigationOnClickListener(v -> {
-            if (*//*!drawerLayout.isOpen() &&*//* isBottomFragment(mNavController) ){
-                drawerLayout.open();
-            }
-            else
-                onBackPressed();
-        });*/
 
 
     }
 
+    BibleInfoViewModel bibleInfoViewModel;
+    SongInfoViewModel songInfoViewModel;
 
 
-    private boolean isBottomFragment(@NonNull NavController navController) {
-        return   navController.getCurrentDestination().getLabel().equals(getResources().getString(R.string.app_name));
-    }
 
     public void badgeCountDrawerLayout(){
         TextView songHistory,songFavorite,bibleHistory,bibleFavorite;
@@ -315,6 +302,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SongFavoriteViewModel songFavoriteViewModel;
     private SongHistoryViewModel songHistoryViewModel;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_SETTINGS = 12432;
-    TextView bible;
+    TextView info;
 
 }

@@ -29,6 +29,16 @@ public class BibleAdapter extends RecyclerView.Adapter {
     FragmentManager fm;
     List<BibleBook> bibleBooks;
 
+    int amountOldTestament = 0;
+    int amountNewTestament = 0;
+
+    public void setAmountOldTestament(int testament){
+        this.amountOldTestament = testament;
+    }
+    public void setAmountNewTestament(int testament){
+        this.amountNewTestament = testament;
+    }
+
     public void setTypeView(int typeView) {
         this.typeView = typeView;
         notifyDataSetChanged();
@@ -77,7 +87,7 @@ public class BibleAdapter extends RecyclerView.Adapter {
             if(position == 0) {
                 ((GroupByTestamentViewHolder) holder).textView.setText(R.string.old_testament);
                 ( (GroupByTestamentViewHolder) holder ).img.setImageResource(R.mipmap.ot);
-                ( (GroupByTestamentViewHolder) holder ).bookNumber.setText("39 Books");
+                ( (GroupByTestamentViewHolder) holder ).bookNumber.setText(amountOldTestament+" Books");
                 bundle.putInt("TESTAMENT",-2);
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -93,7 +103,7 @@ public class BibleAdapter extends RecyclerView.Adapter {
                 bundle.putInt("TESTAMENT",2);
                 ((GroupByTestamentViewHolder) holder).textView.setText(R.string.new_testament);
                 ( (GroupByTestamentViewHolder) holder ).img.setImageResource(R.mipmap.nt);
-                ( (GroupByTestamentViewHolder) holder ).bookNumber.setText("27 Books");
+                ( (GroupByTestamentViewHolder) holder ).bookNumber.setText(amountNewTestament+" Books");
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

@@ -1,5 +1,6 @@
 package com.churchkit.churchkit.ui.song;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
@@ -36,6 +38,7 @@ import com.churchkit.churchkit.modelview.song.SongBookViewModel;
 import com.churchkit.churchkit.modelview.song.SongVerseViewModel;
 import com.churchkit.churchkit.modelview.song.SongViewModel;
 import com.churchkit.churchkit.ui.util.GridSpacingItemDecoration;
+import com.churchkit.churchkit.ui.util.OptionSearchView;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
 import java.util.List;
@@ -43,12 +46,15 @@ import java.util.List;
 public class SongHopeFragment extends Fragment {
 
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         FragmentSongHopeBinding songBinding = FragmentSongHopeBinding.inflate(getLayoutInflater());
-        View root= songBinding.getRoot();
+        View root = songBinding.getRoot();
+
+        layInfo = songBinding.layInfo;
 
         songBookViewModel = ViewModelProvider.AndroidViewModelFactory.
                 getInstance(getActivity().getApplication()).create(SongBookViewModel.class);
@@ -61,28 +67,28 @@ public class SongHopeFragment extends Fragment {
 
         autoCompleteTextView = songBinding.search;
         mRecyclerView = songBinding.recyclerview;
-        gridLayoutManager = new GridLayoutManager(getContext(),1);
+        gridLayoutManager = new GridLayoutManager(getContext(), 1);
         mRecyclerView.addItemDecoration(listGridItemDeco);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         /*DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
         mRecyclerView.addItemDecoration(dividerItemDecoration);*/
 
 
+         ckPreferences = new CKPreferences(getContext());
 
-        CKPreferences ckPreferences = new CKPreferences(getContext());
 
 
-        if(sharedPreferences.getInt(LIST_GRID,LIST)==GRID) {
+
+
+
+        if (sharedPreferences.getInt(LIST_GRID, LIST) == GRID) {
             gridLayoutManager.setSpanCount(GRID);
+        } else {
+            gridLayoutManager.setSpanCount(sharedPreferences.getInt(LIST_GRID, LIST));
         }
-        else {
-            gridLayoutManager.setSpanCount(sharedPreferences.getInt(LIST_GRID,LIST));
-        }
 
 
-
-
-        AutoCompleteTextViewAdapter autoCompleteAdapter = new AutoCompleteTextViewAdapter(getContext(),SongHopeFragment.class);
+        AutoCompleteTextViewAdapter autoCompleteAdapter = new AutoCompleteTextViewAdapter(getContext(), SongHopeFragment.class);
 
 
         autoCompleteTextView.addTextChangedListener(new TextWatcher() {
@@ -93,27 +99,27 @@ public class SongHopeFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                 if (ckPreferences.getSongTypeSearch() == CKPreferences.CHAPTER_SONG_TYPE_SEARCH){
-                     songViewModel.songFullTextSearch("*"+s.toString()+"*").observe(getViewLifecycleOwner(), new Observer<List<Song>>() {
-                         @Override
-                         public void onChanged(List<Song> songs) {
-                             if ( s.length() >1 ){
-                                 autoCompleteAdapter.setSongs(songs);
-                                 autoCompleteTextView.setAdapter(autoCompleteAdapter);
-                             }
-                         }
-                     });
-                 }else {
-                     songVerseViewModel.search("*"+s.toString()+"*").observe(getViewLifecycleOwner(), new Observer<List<Verse>>() {
-                         @Override
-                         public void onChanged(List<Verse> verses) {
-                             if ( s.length() >1 ){
-                                 autoCompleteAdapter.setSongs(verses);
-                                 autoCompleteTextView.setAdapter(autoCompleteAdapter);
-                             }
-                         }
-                     });
-                 }
+                if (ckPreferences.getSongTypeSearch() == CKPreferences.CHAPTER_SONG_TYPE_SEARCH) {
+                    songViewModel.songFullTextSearch("*" + s.toString() + "*").observe(getViewLifecycleOwner(), new Observer<List<Song>>() {
+                        @Override
+                        public void onChanged(List<Song> songs) {
+                            if (s.length() > 1) {
+                                autoCompleteAdapter.setSongs(songs);
+                                autoCompleteTextView.setAdapter(autoCompleteAdapter);
+                            }
+                        }
+                    });
+                } else {
+                    songVerseViewModel.search("*" + s.toString() + "*").observe(getViewLifecycleOwner(), new Observer<List<Verse>>() {
+                        @Override
+                        public void onChanged(List<Verse> verses) {
+                            if (s.length() > 1) {
+                                autoCompleteAdapter.setSongs(verses);
+                                autoCompleteTextView.setAdapter(autoCompleteAdapter);
+                            }
+                        }
+                    });
+                }
             }
 
             @Override
@@ -121,60 +127,46 @@ public class SongHopeFragment extends Fragment {
 
             }
         });
-        final PopupMenu popupMenu = new PopupMenu(getContext(),autoCompleteTextView);
-        popupMenu.setGravity(Gravity.RIGHT);
-        Menu menu = popupMenu.getMenu();
-        menu.add(0,1000,0,"Search by chapter");
-        menu.add(0,1111,1,"Search by verse");
-        popupMenu.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()){
-                case 1000:ckPreferences.setSongTypeSearch(CKPreferences.CHAPTER_SONG_TYPE_SEARCH);
-                    break;
-                case 1111:ckPreferences.setSongTypeSearch(CKPreferences.VERSE_SONG_TYPE_SEARCH);
-            }
-            return true;
-        });
 
-        autoCompleteTextView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getRawX() >= (autoCompleteTextView.getRight() - autoCompleteTextView.getCompoundDrawables()[2].getBounds().width())) {
-                    popupMenu.show();
+
+        autoCompleteTextView.setOnTouchListener((v, event) -> {
+
+            if (MotionEvent.ACTION_UP == event.getAction()) {
+                if (event.getRawX() >= (autoCompleteTextView.getRight() - autoCompleteTextView.getCompoundDrawables()[2].getBounds().width())) {
+
+                    final OptionSearchView osv = new OptionSearchView(autoCompleteTextView, SongHopeFragment.class);
+                    osv.showDialog();
                     return true;
-                }
-                return false;
-            }
 
+                }
+            }
+            return false;
         });
 
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (ckPreferences.getSongTypeSearch()==CKPreferences.CHAPTER_SONG_TYPE_SEARCH){
+                if (ckPreferences.getSongTypeSearch() == CKPreferences.CHAPTER_SONG_TYPE_SEARCH) {
                     Song song = (Song) autoCompleteAdapter.getItem(position);
                     SongDialogFragment songDialogFragment = SongDialogFragment.newInstance(
                             song);
-                    songDialogFragment.show(getChildFragmentManager(),"");
-                }else {
+                    songDialogFragment.show(getChildFragmentManager(), "");
+                } else {
                     Verse verse = (Verse) autoCompleteAdapter.getItem(position);
-                    songViewModel.getSongById(verse.getSongId() ).observe(SongHopeFragment.this.getViewLifecycleOwner(), song -> {
+                    songViewModel.getSongById(verse.getSongId()).observe(SongHopeFragment.this.getViewLifecycleOwner(), song -> {
                         SongDialogFragment songDialogFragment = SongDialogFragment.newInstance(
                                 song);
-                        songDialogFragment.show(getChildFragmentManager(),"");
+                        songDialogFragment.show(getChildFragmentManager(), "");
                     });
                 }
             }
         });
 
 
-
-
-
-
         songBookViewModel.getAllSongBook().observe(requireActivity(), songBooks -> {
-            if(songBooks!=null){
+            if (songBooks != null) {
                 homeAdapter = new SongHopeAdapter(
-                        getTypeView(),songBooks,getActivity().getSupportFragmentManager()
+                        getTypeView(), songBooks, getActivity().getSupportFragmentManager()
                 );
 
                 mRecyclerView.setAdapter(homeAdapter);
@@ -182,16 +174,14 @@ public class SongHopeFragment extends Fragment {
         });
 
 
-
         onCreateMenu();
-
 
 
         return root;
     }
 
-    private int getTypeView(){
-        return  sharedPreferences.getInt(LIST_GRID,LIST);
+    private int getTypeView() {
+        return sharedPreferences.getInt(LIST_GRID, LIST);
     }
 
 
@@ -209,46 +199,51 @@ public class SongHopeFragment extends Fragment {
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                if(menuItem.getItemId() == R.id.recyclerview_style){
-                    if ( sharedPreferences.getInt(LIST_GRID,LIST) == LIST ) {
+                if (menuItem.getItemId() == R.id.recyclerview_style) {
+                    if (sharedPreferences.getInt(LIST_GRID, LIST) == LIST) {
                         gridLayoutManager.setSpanCount(GRID);
 
-                        editor.putInt(LIST_GRID,GRID);
+                        editor.putInt(LIST_GRID, GRID);
                         editor.apply();
-                        homeAdapter.setTypeView(GRID,LIST);
-                    }else {
+                        homeAdapter.setTypeView(GRID, LIST);
+                    } else {
                         gridLayoutManager.setSpanCount(LIST);
-                        editor.putInt(LIST_GRID,LIST);
-                        homeAdapter.setTypeView(LIST,GRID);
+                        editor.putInt(LIST_GRID, LIST);
+                        homeAdapter.setTypeView(LIST, GRID);
                         editor.apply();
                     }
-                    setIconListOrGrid( menuItem);
+                    setIconListOrGrid(menuItem);
                     return true;
                 }
                 return false;
             }
-        },getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
     }
 
-    private void setIconListOrGrid(MenuItem menuItem){
+    private void setIconListOrGrid(MenuItem menuItem) {
 
-        if (sharedPreferences.getInt(LIST_GRID,LIST) == 1) menuItem.setIcon(R.drawable.grid_view_24);
+        if (sharedPreferences.getInt(LIST_GRID, LIST) == 1)
+            menuItem.setIcon(R.drawable.grid_view_24);
         else menuItem.setIcon(R.drawable.list_view_24);
     }
 
-
-
     @Override
     public void onResume() {
+        autoCompleteTextView.setHint( ckPreferences.isSongTypeSearchIsVerse()?
+                getString(R.string.search_by_verse):getString(R.string.search_by_ref) );
+        if (ckPreferences.isZeroSongDownloaded()  ){
+            layInfo.setVisibility(View.VISIBLE);
+        }else {
+            layInfo.setVisibility(View.GONE);
+        }
         super.onResume();
-       /* autoCompleteTextView.getLayoutParams().width = (int) ( Util.getScreenDisplayMetrics(
-                getContext()
-        ).widthPixels * 0.80f );*/
     }
 
     private final int LIST = 1;
     private final int GRID = 2;
     private final String LIST_GRID = "LIST_GRID";
+    CKPreferences ckPreferences;
+    LinearLayout layInfo;
     MaterialAutoCompleteTextView autoCompleteTextView;
     RecyclerView mRecyclerView;
     SongHopeAdapter homeAdapter;
@@ -258,12 +253,7 @@ public class SongHopeFragment extends Fragment {
     private SongVerseViewModel songVerseViewModel;
     private SongBookViewModel songBookViewModel;
 
-    GridSpacingItemDecoration listGridItemDeco = new GridSpacingItemDecoration(2,32,false);
-
-
-
-
-
+    GridSpacingItemDecoration listGridItemDeco = new GridSpacingItemDecoration(2, 32, false);
 
 
 }

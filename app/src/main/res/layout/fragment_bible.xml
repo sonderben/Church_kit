@@ -16,12 +16,63 @@
         android:background="@drawable/bg_edittext"
         android:paddingLeft="12dp"
         android:inputType="textCapWords"
-        android:hint="Ex: Mt 5"
         android:textColorHint="#D9D9D9"
         android:drawableRight="@drawable/search_option_24"
         android:drawableTint="@color/color_primary"
         android:layout_marginTop="@dimen/_20sdp"
         app:layout_constraintTop_toTopOf="parent"/>
+
+    <LinearLayout
+        android:id="@+id/lay_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginHorizontal="@dimen/_14sdp"
+        app:layout_constraintTop_toBottomOf="@id/search">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintHorizontal_bias="0"
+            android:layout_marginRight="@dimen/_2sdp"
+            android:text="@string/go_to"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FF8F00"
+            app:layout_constraintHorizontal_bias="0"
+            android:layout_marginRight="@dimen/_2sdp"
+            android:text="@string/more"/>
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/setting_24"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintHorizontal_bias="0"
+            android:text=" >> "/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FF8F00"
+            app:layout_constraintHorizontal_bias="0"
+            android:layout_marginRight="@dimen/_2sdp"
+            android:text="Select Bible"/>
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginRight="@dimen/_2sdp"
+            android:src="@drawable/bible_setting24"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintHorizontal_bias="0"
+            android:text="@string/to_download_a_song_book"/>
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
@@ -29,7 +80,7 @@
         android:layout_height="0dp"
         android:layout_margin="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search"/>
+        app:layout_constraintTop_toBottomOf="@id/lay_info"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

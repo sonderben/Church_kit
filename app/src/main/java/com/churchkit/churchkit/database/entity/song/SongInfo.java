@@ -21,7 +21,7 @@ public class SongInfo extends BaseInfo {
 
     public static List<SongInfo>getAllBibleInfo(){
         if (infoList.size() == 0){
-            infoList.add(new SongInfo("songbook","Français,Kreyòl","Chant d'esperance",2,"1"));
+            infoList.add(new SongInfo("songbook","Français, Kreyòl","Chant d'esperance",8,"1"));
 
         }
         return  infoList;

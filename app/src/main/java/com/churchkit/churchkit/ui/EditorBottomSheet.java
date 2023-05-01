@@ -124,7 +124,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
                 com.churchkit.churchkit.ui.util.Util.getColorByPosition(2),
                 com.churchkit.churchkit.ui.util.Util.getColorByPosition(3),
                 //com.churchkit.churchkit.ui.util.Util.getColorByPosition(4),
-                Color.WHITE,
+                Color.WHITE,Color.BLACK,
                 com.churchkit.churchkit.ui.util.Util.getColorByPosition(5),
                 com.churchkit.churchkit.ui.util.Util.getColorByPosition(6),
                 com.churchkit.churchkit.ui.util.Util.getColorByPosition(1),

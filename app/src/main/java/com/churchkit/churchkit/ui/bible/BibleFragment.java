@@ -1,5 +1,6 @@
 package com.churchkit.churchkit.ui.bible;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Switch;
 
@@ -37,13 +39,16 @@ import com.churchkit.churchkit.databinding.FragmentBibleBinding;
 import com.churchkit.churchkit.modelview.bible.BibleBookViewModel;
 import com.churchkit.churchkit.modelview.bible.BibleChapterViewModel;
 import com.churchkit.churchkit.modelview.bible.BibleVerseViewModel;
+import com.churchkit.churchkit.ui.song.SongHopeFragment;
 import com.churchkit.churchkit.ui.util.GridSpacingIDeco;
+import com.churchkit.churchkit.ui.util.OptionSearchView;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
 import java.util.List;
 
 public class BibleFragment extends Fragment {
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -60,8 +65,12 @@ public class BibleFragment extends Fragment {
         bibleVerseViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().
                 getApplication()).create(BibleVerseViewModel.class);
 
+         layInfo = bookmarkBinding.layInfo;
+
 
         sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+
+
 
         mAdapter = new BibleAdapter(getActivity().getSupportFragmentManager());
         bibleBookViewModel.getAllBibleBook().observe(requireActivity(), bibleBooks -> {
@@ -70,6 +79,24 @@ public class BibleFragment extends Fragment {
             mAdapter.notifyDataSetChanged();
 
         });
+
+
+            bibleBookViewModel.getAmountBookOldTestament().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+                @Override
+                public void onChanged(Integer integer) {
+                    mAdapter.setAmountOldTestament(integer);
+                    mAdapter.notifyItemChanged(0);
+                }
+            });
+
+            bibleBookViewModel.getAmountBookNewTestament().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+                @Override
+                public void onChanged(Integer integer) {
+                    mAdapter.setAmountNewTestament(integer);
+                    mAdapter.notifyItemChanged(1);
+                }
+            });
+
 
 
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
@@ -110,27 +137,16 @@ public class BibleFragment extends Fragment {
 
             }
         });
-        final PopupMenu popupMenu = new PopupMenu(getContext(), autoCompleteTextView);
-        popupMenu.setGravity(Gravity.RIGHT);
 
-        popupMenu.getMenuInflater().inflate(R.menu.menu_search, popupMenu.getMenu());
-
-        popupMenu.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.reference:
-                    ckPreferences.setBibleTypeSearch(CKPreferences.CHAPTER_BIBLE_TYPE_SEARCH);
-                    break;
-                case R.id.verse:
-                    ckPreferences.setBibleTypeSearch(CKPreferences.VERSE_BIBLE_TYPE_SEARCH);
-            }
-            return true;
-        });
 
         autoCompleteTextView.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 if (event.getRawX() >= (autoCompleteTextView.getRight() - autoCompleteTextView.getCompoundDrawables()[2].getBounds().width())) {
-                    popupMenu.show();
-                    return true;
+                    if (MotionEvent.ACTION_UP == event.getAction()) {
+                        final OptionSearchView osv = new OptionSearchView( autoCompleteTextView, BibleFragment.class );
+                        osv.showDialog();
+                        return true;
+                    }
                 }
             }
             return false;
@@ -198,8 +214,24 @@ public class BibleFragment extends Fragment {
         }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
     }
 
+    @Override
+    public void onResume() {
+
+        super.onResume();
+        autoCompleteTextView.setHint( ckPreferences.isBibleTypeSearchIsVerse()?
+                getString(R.string.search_by_verse):getString(R.string.search_by_ref) );
+
+
+        if (ckPreferences.isZeroBibleDownloaded()  ){
+            layInfo.setVisibility(View.VISIBLE);
+        }else {
+            layInfo.setVisibility(View.GONE);
+        }
+    }
+
     RecyclerView mRecyclerView;
     BibleAdapter mAdapter;
+    LinearLayout layInfo;
     MaterialAutoCompleteTextView autoCompleteTextView;
     private final String IS_GROUP_BY_TESTAMENT = "IS_GROUP_BY_TESTAMENT";
     SharedPreferences sharedPreferences;

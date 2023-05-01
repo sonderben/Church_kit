@@ -7,10 +7,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
 public class CKPreferences {
-    //private static final String USE_DIF_COLOR = "USE_DIF_COLOR";
-    //private static final String BUTTON_CHORUS = "BUTTON_CHORUS";
+
     Context context;
-    //SharedPreferences preference;
     private final String CK_PREFERENCES= "CK_PREFERENCES";
     private final String FONT_SIZE= "FONT_SIZE";
     private final String TypeFace= "TypeFace";
@@ -23,8 +21,6 @@ public class CKPreferences {
     public CKPreferences(Context context){
         this.context = context;
         preference = context.getSharedPreferences(CK_PREFERENCES,Context.MODE_PRIVATE);
-        //SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
-
         settingPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
     }
@@ -52,6 +48,12 @@ public class CKPreferences {
         editor.putInt("SONG_TYPE_SEARCH", songType);
         editor.apply(); //commit the changes asynchronously
 
+    }
+    public boolean isSongTypeSearchIsVerse(){
+        return getSongTypeSearch() == VERSE_SONG_TYPE_SEARCH;
+    }
+    public boolean isBibleTypeSearchIsVerse(){
+        return getBibleTypeSearch() == VERSE_BIBLE_TYPE_SEARCH;
     }
 
     public static SharedPreferences getSettingPref(Context context){
@@ -150,6 +152,10 @@ public class CKPreferences {
     public boolean isCurrentAndNextBibleEqual(){
         return getNextBibleName().equalsIgnoreCase(getBibleName());
     }
+    public boolean isZeroBibleDownloaded(){
+        return isCurrentAndNextBibleEqual() &&
+                getBibleName().equalsIgnoreCase("null");
+    }
     ///////
     public String getSongName(){
         return preference.getString("DEFAULT_SONG","nil");
@@ -172,6 +178,12 @@ public class CKPreferences {
 
     public boolean isCurrentAndNextSongEqual(){
         return getNextSongName().equalsIgnoreCase(getSongName());
+    }
+    public boolean isZeroSongDownloaded(){
+        System.out.println("isZeroSongDownloaded: "+isCurrentAndNextSongEqual());
+        System.out.println("isZeroSongDownloaded: "+getSongName().equalsIgnoreCase("nil") );
+        return isCurrentAndNextSongEqual() &&
+                getSongName().equalsIgnoreCase("nil");
     }
 
 

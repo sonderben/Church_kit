@@ -19,6 +19,9 @@ public interface BibleBookDao extends BaseDao<BibleBook> {
     @Query("SELECT * FROM BIBLE_BOOK WHERE testament  < 0 ORDER BY position")
     LiveData<List<BibleBook>> getAllOldTestamentBibleBook();
 
-    /*@Insert
-     long insertBibleBook(BibleBook bibleBook);*/
+   @Query("Select Count(*) from bible_book Where testament <0")
+    LiveData<Integer>getAmountBookOldTestament();
+
+    @Query("Select Count(*) from bible_book Where testament >0")
+    LiveData<Integer>getAmountBookNewTestament();
 }

@@ -12,23 +12,17 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ChurchKit"
+        android:theme="@style/Theme.App.Starting"
         tools:targetApi="31">
         <activity
             android:name=".DataActivity"
+            android:theme="@style/Theme.ChurchKit"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <activity
-            android:name=".MainActivityefase"
-            android:exported="false"
-            android:label="@string/title_activity_main_activityefase">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -43,6 +37,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
+
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
