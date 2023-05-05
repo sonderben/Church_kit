@@ -26,4 +26,10 @@ public class BibleBookMarkViewModel extends AndroidViewModel {
     public LiveData<List<BookMarkChapter>> getAllBookMark(String chapterId){
         return repository.getAllBookMark(chapterId);
     }
+    public void insert(BookMarkChapter bookMarkChapter){
+        repository.insert( bookMarkChapter );
+    }
+    public void delete (BookMarkChapter bookMarkChapter){
+        repository.delete( bookMarkChapter );
+    }
 }

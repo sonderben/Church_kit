@@ -370,18 +370,30 @@ public class DataActivity extends AppCompatActivity {
                         JSONObject jsonObject = new JSONObject(jsonStr);
                         JSONArray dataArray = jsonObject.getJSONArray("data");
                         for (int i = 0; i < dataArray.length(); i++) {
+                            System.out.println("genial: "+i);
                             JSONObject songBookJson = dataArray.getJSONObject(i);
 
                             SongBook songBook = gson.fromJson(songBookJson.toString(),SongBook.class);
                             songBook.setId( songBookJson.getString("id") );
-                            songBook.setChildAmount(songBookJson.getInt("songAmount"));
+                            songBook.setChildAmount( songBookJson.getInt("songAmount") );
                             songBook.setTitle( songBookJson.getString("name") );
+
+                            //System.out.println("name: "+songBookJson.getString("name"));
+
+
 
 
 
                             JSONArray songArrayJson = songBookJson.getJSONArray("songList");
+
+                            /*if (songArrayJson.length()==0){
+                                continue;
+                            }*/
+
                             List<Song>songList = new ArrayList<>();
+
                             for (int j = 0; j < songArrayJson.length(); j++) {
+
 
                                 JSONObject songObj = songArrayJson.getJSONObject(j);
                                 Song song = gson.fromJson(songObj.toString(),Song.class);
@@ -396,6 +408,7 @@ public class DataActivity extends AppCompatActivity {
 
                                 JSONArray verseArray = songObj.getJSONArray("verseList");
                                 List<Verse>verseList = new ArrayList<>();
+
                                 for (int k = 0; k < verseArray.length(); k++) {
                                     JSONObject verseObj = verseArray.getJSONObject(k);
                                     Verse verse = gson.fromJson(verseObj.toString(),Verse.class);
@@ -403,11 +416,17 @@ public class DataActivity extends AppCompatActivity {
                                     verse.setSongId( songObj.getString("id") );
                                     verse.setReference(song.getPosition()+" "+ songBook.getAbbreviation()+" "+verseObj.getInt("position") );
                                     verseList.add( verse );
+
+
+
+
                                 }
+                                System.out.println("afiche: "+song.getTitle()+" pos: "+song.getPosition());
 
                                 bibleDaoGeneral4Insert.insertSongBook(songBook);
                                 bibleDaoGeneral4Insert.insertSong(new ArrayList<>(songList));
                                 bibleDaoGeneral4Insert.insertSongVerses(verseList);
+
 
 
                             }

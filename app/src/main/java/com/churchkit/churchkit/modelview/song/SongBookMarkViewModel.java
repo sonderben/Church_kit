@@ -28,4 +28,11 @@ public class SongBookMarkViewModel extends AndroidViewModel {
     public LiveData<List<BookMarkSong>> getAllBookMark(String songId){
         return dao.getAllBookMark(songId);
     }
+
+    public void insert(BookMarkSong bookMarkSong){
+        repository.insert(bookMarkSong);
+    }
+    public void delete(BookMarkSong bookMarkSong){
+        repository.delete(bookMarkSong);
+    }
 }

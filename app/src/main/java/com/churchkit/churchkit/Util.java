@@ -128,13 +128,44 @@ public class Util {
         context.getResources().updateConfiguration(config, context.getResources().getDisplayMetrics());
     }
 
-    public static String formatNumberToString(int number){
-        if(number >99)
-            return number+" ";
-        if (number>9)
-            return "0"+number+" ";
+    public static String formatNumberToString(float number){
+        String []strin = String.valueOf(number).split("\\.");
+        if ( Integer.valueOf(strin[1]) == 0){
+            if(  number >99){
+                return (int) number+" ";
+            }
 
-        return "00"+number+" ";
+            if (number>9){
+                return "0"+(int) number+" ";
+            }
+            else
+            return "00"+(int) number+" ";
+        }
+        else if ( Integer.valueOf(strin[1]) == 1){
+            if(  number >99){
+                return (int) number+" "+"a";
+            }
+
+            if (number>9){
+                return "0"+(int) number+" "+"a";
+            }
+            else
+                return "00"+(int) number+" "+"a";
+        }
+        else if ( Integer.valueOf(strin[1]) == 2){
+            if(  number >99){
+                return (int) number+" "+"b";
+            }
+
+            if (number>9){
+                return "0"+(int) number+" "+"b";
+            }
+            else
+                return "00"+(int) number+" "+"b";
+        }else {
+            return  number+" ";
+        }
+
 
     }
 

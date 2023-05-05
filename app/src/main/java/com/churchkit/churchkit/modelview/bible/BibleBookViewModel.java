@@ -53,4 +53,6 @@ public class BibleBookViewModel extends AndroidViewModel {
     public int getAmountBookNewTest()  {
         return amountBookNewTestament.getValue();
     }
+
+
 }

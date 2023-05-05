@@ -12,13 +12,13 @@ public abstract class SongAndChapter {
     protected String id;
     @ColumnInfo(name = "book_title")
     protected String bookTitle;
-    protected int position;
+    protected float position;
     @ColumnInfo(name = "book_id")
     protected String bookId;
     @ColumnInfo(name = "book_abbreviation")
     protected String bookAbbreviation;
 
-    public SongAndChapter(@NonNull String id, String bookTitle, int position, String bookId,
+    public SongAndChapter(@NonNull String id, String bookTitle, float position, String bookId,
                           String bookAbbreviation) {
         this.id = id;
         this.bookTitle = bookTitle;
@@ -55,7 +55,7 @@ public abstract class SongAndChapter {
         this.bookTitle = bookTitle;
     }
 
-    public int getPosition() {
+    public float getPosition() {
         return position;
     }
 

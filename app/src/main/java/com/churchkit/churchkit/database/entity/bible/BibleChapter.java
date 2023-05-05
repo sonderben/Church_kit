@@ -11,7 +11,7 @@ import com.churchkit.churchkit.database.entity.base.SongAndChapter;
         foreignKeys = @ForeignKey(entity = BibleBook.class,
                 parentColumns = {"id"}, childColumns = {"book_id"}),indices = {@Index("book_id")})
 public class BibleChapter extends SongAndChapter {
-    public BibleChapter(@NonNull String id, String bookTitle, int position, String bookId, String bookAbbreviation) {
+    public BibleChapter(@NonNull String id, String bookTitle, float position, String bookId, String bookAbbreviation) {
         super(id, bookTitle, position, bookId, bookAbbreviation);
     }
 

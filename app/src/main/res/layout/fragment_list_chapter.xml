@@ -24,6 +24,7 @@
             android:padding="@dimen/_1sdp"
             android:layout_marginEnd="@dimen/_7sdp"
             app:tint="#00695C"
+            android:visibility="gone"
             android:src="@drawable/donate_24"
             app:layout_constraintEnd_toStartOf="@id/favorite" />
         <ImageView
@@ -146,19 +147,23 @@
     </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_clos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/fab_clos"
-        app:fabSize="auto"
-        android:contentDescription="close dialog"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:src="@android:drawable/ic_menu_close_clear_cancel"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="@dimen/_10sdp"
         android:background="@color/teal_700"
         android:backgroundTint="#FFA5A5A5"
+
+        style="@style/Theme.ChurchKit"
+        android:contentDescription="close dialog"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
         app:backgroundTint="@android:color/transparent"
-        android:layout_marginBottom="@dimen/_10sdp"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:fabSize="auto"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
 
 

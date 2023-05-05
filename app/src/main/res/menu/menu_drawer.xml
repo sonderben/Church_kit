@@ -51,6 +51,7 @@
                 <item
                     android:id="@+id/donateFragment"
                     app:iconTint="#00695C"
+                    android:visible="false"
                     android:icon="@drawable/donate_24"
                     android:title="@string/donate" />
             </menu>
