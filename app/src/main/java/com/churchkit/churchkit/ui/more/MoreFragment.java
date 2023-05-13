@@ -2,29 +2,18 @@ package com.churchkit.churchkit.ui.more;
 
 import static com.churchkit.churchkit.Util.setAppLanguage;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -33,6 +22,7 @@ import androidx.preference.SwitchPreferenceCompat;
 
 import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.DataActivity;
+import com.churchkit.churchkit.EditNoteActivity;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.database.entity.bible.BibleInfo;
 import com.churchkit.churchkit.database.entity.song.SongInfo;
@@ -48,11 +38,11 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
     @Override
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
-        ckPreferences = new CKPreferences(getContext());
-        langListPreference =(ListPreference) findPreference("LANGUAGE");
-        seekBarPreference = (SeekBarPreference) findPreference("LETTER_SIZE");
+        ckPreferences = new CKPreferences(requireActivity().getApplicationContext());
+        langListPreference = findPreference("LANGUAGE");
+        seekBarPreference = findPreference("LETTER_SIZE");
         darKModeListPreference = findPreference("DARK_MODE");
-        switchPreferenceCompat  = (SwitchPreferenceCompat) findPreference("SONG_ABBR_COLOR");
+        switchPreferenceCompat  = findPreference("SONG_ABBR_COLOR");
         fontListPreference = findPreference("FONT");
         isFontBold = findPreference("BOLD");
         biblePreference = findPreference("BIBLE");

@@ -5,10 +5,10 @@
         android:color="@android:color/darker_gray" />
     <solid android:color="@color/bg_list_item" />
     <corners
-        android:topLeftRadius="@dimen/_5sdp"
-        android:topRightRadius="@dimen/_5sdp"
-        android:bottomLeftRadius="@dimen/_5sdp"
-        android:bottomRightRadius="@dimen/_5sdp"
+        android:topLeftRadius="@dimen/_35sdp"
+        android:topRightRadius="@dimen/_35sdp"
+        android:bottomLeftRadius="@dimen/_35sdp"
+        android:bottomRightRadius="@dimen/_35sdp"
         />
     <padding
         android:left="10dp"

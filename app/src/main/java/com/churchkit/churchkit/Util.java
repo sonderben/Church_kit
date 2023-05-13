@@ -7,6 +7,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,7 +17,13 @@ import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.churchkit.churchkit.database.entity.bible.BibleBook;
 import com.churchkit.churchkit.database.entity.bible.BibleChapter;
+import com.churchkit.churchkit.database.entity.bible.BibleChapterFavorite;
+import com.churchkit.churchkit.database.entity.bible.BibleChapterFavoriteWrapper;
 import com.churchkit.churchkit.database.entity.bible.BibleVerse;
+import com.churchkit.churchkit.database.entity.note.BaseNoteEntity;
+import com.churchkit.churchkit.database.entity.note.DirectoryWithNote;
+import com.churchkit.churchkit.database.entity.note.NoteDirectoryEntity;
+import com.churchkit.churchkit.database.entity.note.NoteEntity;
 import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.database.entity.song.SongBook;
 import com.churchkit.churchkit.database.entity.song.Verse;
@@ -42,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class Util {
     public final static String FROM_SONG_FAVORITE= "FROM_SONG_FAVORITE";
@@ -131,13 +139,15 @@ public class Util {
     public static String formatNumberToString(float number){
         String []strin = String.valueOf(number).split("\\.");
         if ( Integer.valueOf(strin[1]) == 0){
+
+
             if(  number >99){
                 return (int) number+" ";
-            }
-
+            }else
             if (number>9){
                 return "0"+(int) number+" ";
             }
+
             else
             return "00"+(int) number+" ";
         }
@@ -334,5 +344,47 @@ public class Util {
     }
     private static SongViewModelGeneral4Insert songViewModelGeneral4Insert;
     private static BibleViewModelGeneral4Insert bibleViewModelGeneral4Insert;
+
+    public static List<BaseNoteEntity> mapToBaseNoteEntity(Map<NoteDirectoryEntity, List<NoteEntity> > songFavoriteSongMap){
+        List<BaseNoteEntity> baseNoteEntityList = new ArrayList<>();
+
+
+        for (Map.Entry<NoteDirectoryEntity, List<NoteEntity>> entry : songFavoriteSongMap.entrySet()) {
+
+            if (entry.getValue()!=null) {
+                for (int i = 0; i < entry.getValue().size(); i++) {
+                    baseNoteEntityList.add(entry.getValue().get(i));
+                }
+
+            }
+            System.out.printf("directory2: "+entry.getKey());
+            Log.i("directory2","directory2: "+entry.getKey());
+
+            baseNoteEntityList.add( entry.getKey() );
+        }
+
+        return baseNoteEntityList;
+    }
+    public static <T extends BaseNoteEntity> List<T> convertToBaseNoteEntityList (List<DirectoryWithNote> directoryWithNoteList){
+        List<T> baseNoteEntityList = new ArrayList<>(10);
+
+        if (directoryWithNoteList != null){
+            for (int i = 0; i < directoryWithNoteList.size(); i++) {
+                DirectoryWithNote temp = directoryWithNoteList.get(i);
+
+                if (temp.noteDirectory.getId()==1){
+                    for (int j = 0; j < temp.noteEntities.size(); j++) {
+                        baseNoteEntityList.add((T) temp.noteEntities.get(j));
+                    }
+                }else {
+                    baseNoteEntityList.add( 0,(T) temp.noteDirectory );
+                }
+
+            }
+        }
+
+        return baseNoteEntityList;
+    }
+
 
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/undo"
+        android:icon="@drawable/undo_24"
+        android:iconTint="@color/white"
+        android:visible="false"
+        app:showAsAction="ifRoom"
+        android:title="Column" />
+    <item
+        android:id="@+id/redo"
+        android:title="Switch"
+        android:visible="false"
+        android:iconTint="@color/white"
+        android:icon="@drawable/redo_24"
+        app:showAsAction="always"
+         />
+    <item
+        android:id="@+id/title"
+        app:iconTint="#091045"
+        app:actionViewClass="android.widget.EditText"
+        app:showAsAction="always"
+        android:title="@string/history" />
+
+    <item
+        android:id="@+id/save"
+        android:title="Switch"
+        android:iconTint="@color/white"
+        android:icon="@drawable/ic_check_24"
+        app:showAsAction="always"
+        />
+</menu>

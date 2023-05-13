@@ -13,5 +13,9 @@
     <color name="primary_text">#374151</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="colorPrimaryDark">#121C64</color>
+    <color name="colorEditorItemToolbar">#5A5959</color>
+    <color name="colorPrimary">#121C64</color>
     <!--F0FDF4-->
 </resources>

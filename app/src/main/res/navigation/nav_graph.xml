@@ -113,5 +113,38 @@
         android:name="com.churchkit.churchkit.ui.aboutapp.FaqFragment"
         android:label="fragment_faq"
         tools:layout="@layout/fragment_faq" />
+    <fragment
+        android:id="@+id/noteFragment"
+        android:name="com.churchkit.churchkit.ui.note.NoteFragment"
+        android:label="Note"
+        tools:layout="@layout/fragment_note" >
+        <action
+            android:id="@+id/action_noteFragment_to_listNoteFragment"
+            app:destination="@id/listNoteFragment" />
+        <action
+            android:id="@+id/action_noteFragment_to_editerNoteFragment"
+            app:destination="@id/editerNoteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/listNoteFragment"
+        android:name="com.churchkit.churchkit.ui.note.ListNoteFragment"
+        android:label="Note"
+        tools:layout="@layout/fragment_list_note" >
+        <argument
+            android:name="DIRECTORY"
+            app:argType="com.churchkit.churchkit.database.entity.note.NoteDirectoryEntity" />
+        <action
+            android:id="@+id/action_listNoteFragment_to_editerNoteFragment"
+            app:destination="@id/editerNoteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editerNoteFragment"
+        android:name="com.churchkit.churchkit.ui.note.EditerNoteFragment"
+        android:label="fragment_editer_note"
+        tools:layout="@layout/fragment_editer_note" >
+        <argument
+            android:name="DIRECTORY"
+            app:argType="com.churchkit.churchkit.database.entity.note.NoteDirectoryEntity" />
+    </fragment>
 
 </navigation>

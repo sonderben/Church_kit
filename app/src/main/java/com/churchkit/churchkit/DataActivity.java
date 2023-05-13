@@ -70,6 +70,7 @@ public class DataActivity extends AppCompatActivity {
         setContentView(R.layout.activity_data);
 
         origin = getIntent().getStringExtra("FROM");
+        //activity_edit_note
 
         init();
 
@@ -96,6 +97,7 @@ public class DataActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        onBackPressed();
         return super.onOptionsItemSelected(item);
     }
 
@@ -261,7 +263,7 @@ public class DataActivity extends AppCompatActivity {
 
     public void prepopulateBibleFromJSonFile(String jsonStr, MyAdapter.MyViewHolder myViewHolder, BaseInfo bibleInfo) {
 
-        BibleDaoGeneral4Insert bibleDaoGeneral4Insert = CKBibleDb.getInstance4Insert(getBaseContext(), bibleInfo.getId()).bibleDaoGeneral4Insert();
+        BibleDaoGeneral4Insert bibleDaoGeneral4Insert = CKBibleDb.getInstance4Insert(getApplicationContext(), bibleInfo.getId()).bibleDaoGeneral4Insert();
         Flowable.fromAction(() -> {
                     try {
 
@@ -362,7 +364,7 @@ public class DataActivity extends AppCompatActivity {
 
     public void prepopulateSongFromJSonFile(String jsonStr, MyAdapter.MyViewHolder myViewHolder, BaseInfo bibleInfo) {
 
-        SongDaoGeneral4Insert bibleDaoGeneral4Insert = CKSongDb.getInstance4Insert(getBaseContext(), bibleInfo.getId()).songDaoGeneral4Insert();
+        SongDaoGeneral4Insert bibleDaoGeneral4Insert = CKSongDb.getInstance4Insert(getApplicationContext(), bibleInfo.getId()).songDaoGeneral4Insert();
         Flowable.fromAction(() -> {
                     try {
                         Gson gson = new Gson();

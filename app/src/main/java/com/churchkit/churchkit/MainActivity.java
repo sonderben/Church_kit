@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-        splashScreen.setKeepOnScreenCondition(new SplashScreen.KeepOnScreenCondition() {
+        /*splashScreen.setKeepOnScreenCondition(new SplashScreen.KeepOnScreenCondition() {
             @Override
             public boolean shouldKeepOnScreen() {
                 try {
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 return false;
             }
-        });
+        });*/
 
 
 
@@ -304,4 +304,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int MY_PERMISSIONS_REQUEST_WRITE_SETTINGS = 12432;
     TextView info;
 
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+    }
 }
