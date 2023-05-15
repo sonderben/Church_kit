@@ -218,7 +218,9 @@ public class Util {
                                 songBookJson.getString("name"),
                                 songBookJson.getInt("position"),
                                 testament,
-                                songBookJson.getInt("amountChapter"));
+                                songBookJson.getInt("amountChapter"),
+                                songBookJson.getString("color"),
+                                songBookJson.getString("image"));
 
                         JSONArray bibleChapterList =songBookJson.getJSONArray("bibleChapterList");
                         List<BibleChapter> bibleChapters = new ArrayList<>(50);

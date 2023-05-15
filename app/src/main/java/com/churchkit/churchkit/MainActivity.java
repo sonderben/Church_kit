@@ -2,6 +2,7 @@ package com.churchkit.churchkit;
 
 import static com.churchkit.churchkit.ui.aboutapp.Payment.startPayment;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.churchkit.churchkit.api.Pexels;
 import com.churchkit.churchkit.database.entity.bible.BibleInfo;
 import com.churchkit.churchkit.database.entity.song.SongInfo;
 import com.churchkit.churchkit.databinding.ActivityMainBinding;
@@ -40,6 +42,11 @@ import com.google.android.material.navigation.NavigationView;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 
+import java.io.IOException;
+
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.functions.Action;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PaymentResultListener {
 
 
@@ -53,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onBackPressed();
     }
 
+    @SuppressLint("CheckResult")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -125,6 +133,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         navView.setNavigationItemSelectedListener(this::onNavigationItemSelected);
+
+        Flowable.fromAction(() -> {
+            try {
+                Pexels pexels=new Pexels();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
 
     }

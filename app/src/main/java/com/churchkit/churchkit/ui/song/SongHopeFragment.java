@@ -190,10 +190,10 @@ public class SongHopeFragment extends Fragment {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
                 menu.clear();
-
+/*
                 menuInflater.inflate(R.menu.menu_song_hope, menu);
                 setIconListOrGrid(menu.findItem(R.id.recyclerview_style));
-                menu.findItem(R.id.app_bar_switch).getActionView().findViewById(R.id.switch1).setVisibility(View.GONE);
+                menu.findItem(R.id.app_bar_switch).getActionView().findViewById(R.id.switch1).setVisibility(View.GONE);*/
             }
 
             @Override

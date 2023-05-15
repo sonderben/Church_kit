@@ -274,6 +274,15 @@ public class DataActivity extends AppCompatActivity {
                             JSONObject songBookJson = data.getJSONObject(a);
 
                             int testament = songBookJson.getString("testament").equalsIgnoreCase("OT") ? -1 : 1;
+                            String color;
+                            String image;
+                            try {
+                                color= songBookJson.getString("color");
+                                image= songBookJson.getString("image");
+                            }catch (JSONException e){
+                                color = null;
+                                image = null;
+                            }
 
                             BibleBook bibleBook = new BibleBook(
                                     songBookJson.getString("name") + songBookJson.getInt("position"),
@@ -281,7 +290,9 @@ public class DataActivity extends AppCompatActivity {
                                     songBookJson.getString("name"),
                                     songBookJson.getInt("position"),
                                     testament,
-                                    songBookJson.getInt("amountChapter"));
+                                    songBookJson.getInt("amountChapter"),
+                                    color,
+                                    image);
 
                             JSONArray bibleChapterList = songBookJson.getJSONArray("bibleChapterList");
                             List<BibleChapter> bibleChapters = new ArrayList<>(50);

@@ -18,12 +18,33 @@ public abstract class Book {
     protected int position;
     protected int childAmount;
 
-    public Book(@NonNull String id, String abbreviation, String title, int position, int childAmount) {
+    protected String color;
+    public String image;
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public Book(@NonNull String id, String abbreviation, String title, int position, int childAmount,String color,String image) {
         this.id = id;
         this.abbreviation = abbreviation;
         this.title = title;
         this.position = position;
         this.childAmount = childAmount;
+        this.color = color;
+        this.image = image;
     }
 
     @Override
@@ -52,6 +73,8 @@ public abstract class Book {
                 ", title='" + title + '\'' +
                 ", position=" + position +
                 ", childAmount=" + childAmount +
+                ", color='" + color + '\'' +
+                ", image='" + image + '\'' +
                 '}';
     }
 

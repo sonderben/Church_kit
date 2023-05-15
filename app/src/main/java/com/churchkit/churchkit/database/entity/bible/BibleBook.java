@@ -11,8 +11,8 @@ public class BibleBook extends Book {
     private int testament;
 
 
-    public BibleBook(@NonNull String id, String abbreviation, String title, int position,int testament, int childAmount) {
-        super(id, abbreviation, title, position, childAmount);
+    public BibleBook(@NonNull String id, String abbreviation, String title, int position,int testament, int childAmount,String color,String image) {
+        super(id, abbreviation, title, position, childAmount,color,image);
         this.testament = testament;
     }
 

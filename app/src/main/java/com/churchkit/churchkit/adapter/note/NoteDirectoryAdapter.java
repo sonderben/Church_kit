@@ -2,6 +2,7 @@ package com.churchkit.churchkit.adapter.note;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +22,10 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.request.RequestOptions;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.database.entity.note.BaseNoteEntity;
 import com.churchkit.churchkit.database.entity.note.NoteDirectoryEntity;
@@ -189,6 +195,10 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private void newDirectoryDialog(NavController navController,Bundle bundle,NoteDirectoryEntity noteDirectory) {
 
+        Drawable drawableSelected = activity.getResources().getDrawable(R.drawable.bg_point_circle_selected);
+        Drawable drawableUnSelected = activity.getResources().getDrawable(R.drawable.bg_point_circle_unselected);
+        //view.setBackground(drawable);
+
         AlertDialog dialog;
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
@@ -197,9 +207,12 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         LayoutInflater layoutInflater = activity.getLayoutInflater();
         final View view = layoutInflater.inflate(R.layout.password_dialog, null);
         GridLayout gridLayout = view.findViewById(R.id.keypad_lay);
+        LinearLayout linearLayout = view.findViewById(R.id.preview_code);
         ImageView icon = view.findViewById(R.id.icon);
         builder.setView(view);
         dialog = builder.create();
+        Button cancelButton = view.findViewById(R.id.cancel);
+
         for (int i = 0; i < gridLayout.getChildCount(); i++) {
             int finalI = i;
 
@@ -217,19 +230,54 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                             navController.navigate(R.id.action_noteFragment_to_listNoteFragment,bundle);
                             dialog.dismiss();
                         }else {
-                            passwordString.delete(0, passwordString.length());
                             shake(icon,activity);
+                            changePreviewPassword(null,linearLayout,drawableSelected,drawableUnSelected);
+                            passwordString.delete(0, passwordString.length());
+
+
                         }
                     }
                     //Toast.makeText(v.getContext(),""+passwordString.toString(),Toast.LENGTH_SHORT).show();
+                    changePreviewPassword(passwordString,linearLayout,drawableSelected,drawableUnSelected);
+                   /* switch (passwordString.length()){
+                        *//*case 6:
+                            linearLayout.getChildAt(5).setBackground(drawableSelected);*//*
+                        case 5:
+                            linearLayout.getChildAt(4).setBackground(drawableSelected);
+                        case 4:
+                            linearLayout.getChildAt(3).setBackground(drawableSelected);
+                        case 3:
+                            linearLayout.getChildAt(2).setBackground(drawableSelected);
+                        case 2:
+                            linearLayout.getChildAt(1).setBackground(drawableSelected);
+                        case 1:
+                            linearLayout.getChildAt(0).setBackground(drawableSelected);
+                            break;
+                        default:
+                            for (int j = 0; j < 6; j++) {
+                                linearLayout.getChildAt(j).setBackground(drawableUnSelected);
+                            }
+                    }*/
+                    cancelButton.setText(passwordString.toString().length()==0?"Cancelar":"Eliminar");
                 }
             });
+
+
         }
 
         view.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
+                cancelButton.setText(passwordString.toString().length()==1?"Cancelar":"Eliminar");
+                if (passwordString.toString().length() == 0)
+                    dialog.dismiss();
+                else {
+                    if (passwordString.length() > 0) {
+                        passwordString.deleteCharAt(passwordString.length() - 1);
+                        Toast.makeText(dialog.getContext(), ""+passwordString.length(),Toast.LENGTH_SHORT).show();
+                        changePreviewPassword(passwordString,linearLayout,drawableSelected,drawableUnSelected);
+                    }
+                }
             }
         });
 
@@ -243,6 +291,16 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
 
         Animation shakeAnimation = AnimationUtils.loadAnimation(activity.getApplicationContext(), R.anim.shake_animation);
+
+
+
+
+
+
+
+
+
+
 
 
         shakeAnimation.setAnimationListener(new Animation.AnimationListener() {
@@ -263,5 +321,40 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         viewToShake.startAnimation(shakeAnimation);
 
     }
+
+    private void changePreviewPassword(StringBuilder passwordString,LinearLayout linearLayout, Drawable drawableSelected,Drawable drawableUnSelected){
+
+
+       if (passwordString == null){
+           unSelectAll(linearLayout, drawableUnSelected);
+           return;
+       }
+        unSelectAll(linearLayout, drawableUnSelected);
+        switch (  passwordString.length()  ){
+                        /*case 6:
+                            linearLayout.getChildAt(5).setBackground(drawableSelected);*/
+            case 5:
+                linearLayout.getChildAt(4).setBackground(drawableSelected);
+            case 4:
+                linearLayout.getChildAt(3).setBackground(drawableSelected);
+            case 3:
+                linearLayout.getChildAt(2).setBackground(drawableSelected);
+            case 2:
+                linearLayout.getChildAt(1).setBackground(drawableSelected);
+            case 1:
+                linearLayout.getChildAt(0).setBackground(drawableSelected);
+                break;
+            default:
+                for (int j = 0; j < 6; j++) {
+                    linearLayout.getChildAt(j).setBackground(drawableUnSelected);
+                }
+        }
+    }
+    private  void unSelectAll(LinearLayout linearLayout,Drawable drawableUnSelected){
+        for (int j = 0; j < 6; j++) {
+            linearLayout.getChildAt(j).setBackground(drawableUnSelected);
+        }
+    }
+
 
 }

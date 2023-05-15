@@ -10,8 +10,8 @@ import com.churchkit.churchkit.database.entity.base.Book;
 public class SongBook extends Book {
 
 
-    public SongBook(@NonNull String id, String abbreviation, String title, int position, int childAmount) {
-        super(id, abbreviation, title, position, childAmount);
+    public SongBook(@NonNull String id, String abbreviation, String title, int position, int childAmount,String color,String image) {
+        super(id, abbreviation, title, position, childAmount,color,image);
     }
 
 

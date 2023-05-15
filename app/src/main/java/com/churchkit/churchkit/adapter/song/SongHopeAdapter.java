@@ -1,5 +1,6 @@
 package com.churchkit.churchkit.adapter.song;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.Util;
@@ -67,7 +69,8 @@ public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPa
 
         if (ckPreferences.getabbrColor()) {
             final int color = com.churchkit.churchkit.ui.util.Util.getColorByPosition(holder.getAbsoluteAdapterPosition() + 1);
-            holder.tileAcronym.setTextColor(color);
+            //holder.tileAcronym.setTextColor(color);
+            holder.tileAcronym.setTextColor(Color.parseColor("#"+ songBooks.get(holder.getAbsoluteAdapterPosition()).getColor() ) );
            /* if (typeView == 2)
                 holder.tileAcronym.setTextColor(color);
             else
@@ -76,8 +79,13 @@ public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPa
 
 
         holder.number.setText(songBooks.get(position).getChildAmount()+" chants");
-        if (holder.img != null)
-            holder.img.setImageResource( abbrToMipmapRessource( songBooks.get(holder.getAbsoluteAdapterPosition()).getAbbreviation() ) );
+        if (holder.img != null){
+            Glide.with(holder.img)
+                    .load("https://images.pexels.com/photos/2325729/pexels-photo-2325729.jpeg")
+                    .override(300, 200)
+                    .into(holder.img);
+            //holder.img.setImageResource( abbrToMipmapRessource( songBooks.get(holder.getAbsoluteAdapterPosition()).getAbbreviation() ) );
+        }
 
        holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override

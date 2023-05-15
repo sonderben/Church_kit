@@ -190,7 +190,7 @@ public class EditerNoteFragment extends Fragment {
 
                         directoryViewModel.incrementAmountDefaultDirectory( noteDirectory!=null? noteDirectory.getId() : 1  );
                     }else {
-                        directoryViewModel.incrementAmountDefaultDirectory(  noteDirectory.getId() );
+                        //directoryViewModel.incrementAmountDefaultDirectory(  noteDirectory.getId() );
                     }
                     note.setNoteText( arEditText.getHtml() );
                     noteViewModel.insert(note);
