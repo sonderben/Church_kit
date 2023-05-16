@@ -1,4 +1,4 @@
-package com.churchkit.churchkit.adapter.song;
+package com.churchkit.churchkit.ui.adapter.song;
 
 import static com.churchkit.churchkit.Util.formatNumberToString;
 

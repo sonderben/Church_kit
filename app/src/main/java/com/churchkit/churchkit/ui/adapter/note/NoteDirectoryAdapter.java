@@ -1,7 +1,6 @@
-package com.churchkit.churchkit.adapter.note;
+package com.churchkit.churchkit.ui.adapter.note;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,21 +21,15 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.request.RequestOptions;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.database.entity.note.BaseNoteEntity;
 import com.churchkit.churchkit.database.entity.note.NoteDirectoryEntity;
 import com.churchkit.churchkit.database.entity.note.NoteEntity;
 import com.churchkit.churchkit.ui.note.ListNoteFragment;
 import com.churchkit.churchkit.ui.note.NoteFragment;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{

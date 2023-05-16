@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.R;
-import com.churchkit.churchkit.adapter.bible.BibleAdapter;
+import com.churchkit.churchkit.ui.adapter.bible.BibleAdapter;
 import com.churchkit.churchkit.database.CKBibleDb;
 import com.churchkit.churchkit.ui.util.GridSpacingIDeco;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

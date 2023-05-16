@@ -186,6 +186,15 @@ public class CKPreferences {
                 getSongName().equalsIgnoreCase("nil");
     }
 
+    public boolean existPhotoInDb(){
+        return preference.getBoolean("EXIST_PHOTO",false);
+    }
+    public boolean setExistPhotoInDb(boolean isExist){
+        SharedPreferences.Editor editor = preference.edit();
+        editor.putBoolean("EXIST_PHOTO", isExist);
+        return editor.commit(); //commit the changes synchronously
+    }
+
 
 }
 

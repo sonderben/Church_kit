@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.Util;
-import com.churchkit.churchkit.adapter.song.ListSongsAdapter;
+import com.churchkit.churchkit.ui.adapter.song.ListSongsAdapter;
 import com.churchkit.churchkit.database.CKSongDb;
 import com.churchkit.churchkit.database.entity.song.SongFavoriteWrapper;
 import com.churchkit.churchkit.database.entity.song.SongHistoryWrapper;

@@ -2,6 +2,7 @@ package com.churchkit.churchkit.ui;
 
 import static com.churchkit.churchkit.Util.BOOK_MARK;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -28,12 +29,22 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.Util;
+import com.churchkit.churchkit.api.PexelsRepository;
 import com.churchkit.churchkit.database.CKBibleDb;
 import com.churchkit.churchkit.database.CKSongDb;
+import com.churchkit.churchkit.database.MyDataDb;
+import com.churchkit.churchkit.database.entity.PexelsPhoto;
 import com.churchkit.churchkit.database.entity.base.BaseBookMark;
 import com.churchkit.churchkit.database.entity.bible.BookMarkChapter;
 import com.churchkit.churchkit.database.entity.song.BookMarkSong;
@@ -51,9 +62,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 
 public class EditorBottomSheet extends BottomSheetDialogFragment implements View.OnClickListener, ColorPicker.OnClicked {
     private int fontIndex = 0;
@@ -92,6 +106,9 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
         randomColor = root.findViewById(R.id.random_color);
         randomImage = root.findViewById(R.id.random_img);
         textFont = root.findViewById(R.id.text_font);
+        recyclerViewListImg = root.findViewById(R.id.recycler_view_pexels);
+
+        ckPreferences = new CKPreferences(getContext());
 
         fontSize = root.findViewById(R.id.font_size);
         decreaseTextSize = root.findViewById(R.id.decrease);
@@ -107,6 +124,11 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
 
         title = root.findViewById(R.id.title);
         description = root.findViewById(R.id.description);
+
+        recyclerViewListImg.setLayoutManager( new GridLayoutManager(getContext(),3));
+         adapterListImage = new AdapterListImage();
+        recyclerViewListImg.setAdapter( adapterListImage );
+        updateAdapter();
 
         //ckSongDb = ckSongDb.getInstance( getContext() );
 
@@ -385,10 +407,15 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
     private TextInputEditText title, description;
     private static BaseBookMark mBookMark;
     private static int mTYPE_BOOKMARK;
+    private CKPreferences ckPreferences;
 
 
     private ImageView imageView;
     private Bitmap bitmapToSave;
+
+    private  RecyclerView recyclerViewListImg;
+    AdapterListImage adapterListImage;
+
 
     @Override
     public void onDestroy() {
@@ -519,6 +546,126 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
         }
 
         EditorBottomSheet.this.dismiss();
+
+    }
+
+    private class AdapterListImage extends RecyclerView.Adapter<AdapterListImage.ViewHolderImg>{
+        List<PexelsPhoto> pexelsPhotoList = new ArrayList<>();
+
+
+
+        public void setPexelsPhotoList(List<PexelsPhoto> pexelsPhotoList) {
+            this.pexelsPhotoList = pexelsPhotoList;
+        }
+
+        @SuppressLint("CheckResult")
+        public AdapterListImage() {
+
+        }
+
+        @NonNull
+        @Override
+        public ViewHolderImg onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_photo_pexels,parent,false);
+            return new ViewHolderImg(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolderImg holder, int position) {
+
+            PexelsPhoto pexelsPhoto = pexelsPhotoList.get(holder.getAbsoluteAdapterPosition() );
+
+            holder.photographer.setText( "By "+pexelsPhoto.getPhotographer() );
+            Glide.with(holder.itemView.getContext())
+                    .load(pexelsPhoto.getUrlPortrait())
+                    //.centerCrop()
+                    .into(new CustomTarget<Drawable>() {
+
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                            holder.img.setImageDrawable(resource);
+
+                            holder.itemView.setOnClickListener(v -> {
+                                Toast.makeText(getContext(),pexelsPhoto.getPhotographer(),Toast.LENGTH_SHORT).show();
+
+
+                                //Drawable drawable = getContext().getDrawable(imgId.get(imageIndex));
+                                imageIndex += 1;
+                                Bitmap bitmap = ((BitmapDrawable) resource).getBitmap(); //
+                                Bitmap bit = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                                bitmapToSave = drawerCitacion.getCitationWithBgColor(bit);
+                                imageView.setImageBitmap(bitmapToSave);
+
+
+
+                            });
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                            holder.img.setImageDrawable(getActivity().getDrawable(R.drawable.img3));
+                        }
+                    });
+
+
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return pexelsPhotoList.size();
+        }
+
+        private class ViewHolderImg extends RecyclerView.ViewHolder {
+            ImageView img;
+            TextView photographer;
+            public ViewHolderImg(@NonNull View itemView) {
+                super(itemView);
+                img = itemView.findViewById(R.id.img);
+                photographer = itemView.findViewById(R.id.photographer);
+
+            }
+        }
+    }
+
+
+    @SuppressLint("CheckResult")
+    public void updateAdapter(){
+        //MyDataDb db=MyDataDb.getInstance( getActivity().getApplicationContext() );
+        PexelsRepository repo = new PexelsRepository( MyDataDb.getInstance( getActivity().getApplicationContext() ).photoPexelsDao() );
+
+
+        if (!ckPreferences.existPhotoInDb()){
+            repo.makeJ("btoaaaq")
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(photoList2 -> {
+                        System.out.println("btoaaaq suscribe: "+photoList2);
+
+                        repo.insertAll(photoList2);
+                        ckPreferences.setExistPhotoInDb(true);
+
+                        adapterListImage.setPexelsPhotoList(photoList2);
+                        adapterListImage.notifyDataSetChanged();
+
+                    },error->{
+                        System.out.println("btoaaaq error2: "+error);
+                        ckPreferences.setExistPhotoInDb(false);
+                    });
+        }else {
+            repo.getAllPexelsPhoto().observe(getViewLifecycleOwner(), new Observer<List<PexelsPhoto>>() {
+
+                @Override
+                public void onChanged(List<PexelsPhoto> photoList) {
+                    if (photoList != null && photoList.size() != 0){
+                        System.out.println("btoaaaq observe livedata: "+photoList);
+                        adapterListImage.setPexelsPhotoList(photoList);
+                        adapterListImage.notifyDataSetChanged();
+                    }
+                }
+            });
+        }
+
+
 
     }
 }

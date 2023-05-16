@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.MenuProvider;
@@ -29,8 +27,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.R;
-import com.churchkit.churchkit.adapter.AutoCompleteTextViewAdapter;
-import com.churchkit.churchkit.adapter.song.SongHopeAdapter;
+import com.churchkit.churchkit.ui.adapter.AutoCompleteTextViewAdapter;
+import com.churchkit.churchkit.ui.adapter.song.SongHopeAdapter;
 import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.database.entity.song.Verse;
 import com.churchkit.churchkit.databinding.FragmentSongHopeBinding;

@@ -24,6 +24,6 @@ public interface VerseDao extends BaseDao<Verse> {
             /*"order by song_verse_fts.reference"*/)
     LiveData<List<Verse>> search(String textSearch);
     @Insert
-    List<Long> insertAll(List<Verse> verses);
+    void insertAll(List<Verse> verses);
 
 }

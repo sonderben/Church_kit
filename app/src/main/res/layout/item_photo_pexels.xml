@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        app:cardUseCompatPadding="true"
+        android:layout_height="wrap_content">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/img"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/img_bg_creole"
+                app:layout_constraintDimensionRatio="9:16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/photographer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="by Jean Gardy Bien-aimé"
+                android:textColor="@color/white"
+                android:shadowColor="@color/colorPrimary"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:shadowDx="5"
+                android:shadowDy="5"
+                app:layout_constraintStart_toStartOf="@id/img"
+                android:textSize="@dimen/_8ssp"
+                android:shadowRadius="3"
+                app:layout_constraintEnd_toEndOf="@id/img"
+                android:layout_margin="8dp"
+                app:layout_constraintBottom_toBottomOf="@id/img"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</FrameLayout>

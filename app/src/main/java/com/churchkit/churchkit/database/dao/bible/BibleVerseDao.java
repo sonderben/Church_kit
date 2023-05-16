@@ -26,5 +26,5 @@ public interface BibleVerseDao extends BaseDao<BibleVerse> {
 
 
     @Insert
-    List<Long> insertAll(List<BibleVerse> bibleVerseList);
+    public void insertAll(List<BibleVerse> bibleVerseList);
 }

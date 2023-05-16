@@ -1,6 +1,7 @@
-package com.churchkit.churchkit.adapter.bible;
+package com.churchkit.churchkit.ui.adapter.bible;
 
 import android.annotation.SuppressLint;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,12 +10,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.database.entity.bible.BibleBook;
 import com.churchkit.churchkit.ui.util.Util;
@@ -113,9 +117,13 @@ public class BibleAdapter extends RecyclerView.Adapter {
                 ( (GroupByTestamentViewHolder) holder ).bookNumber.setText(amountNewTestament+" Books");
 
                 Glide.with(( (GroupByTestamentViewHolder) holder ).img)
+                        .asBitmap()
                         .load("https://images.pexels.com/photos/8814959/pexels-photo-8814959.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")
                         .error(R.mipmap.nt)
                         .into( ( (GroupByTestamentViewHolder) holder ).img );
+
+
+
 
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {

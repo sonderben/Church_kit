@@ -6,27 +6,23 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.splashscreen.SplashScreen;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.churchkit.churchkit.api.Pexels;
+import com.churchkit.churchkit.api.PexelsRepository;
 import com.churchkit.churchkit.database.entity.bible.BibleInfo;
 import com.churchkit.churchkit.database.entity.song.SongInfo;
 import com.churchkit.churchkit.databinding.ActivityMainBinding;
@@ -44,8 +40,8 @@ import com.razorpay.PaymentResultListener;
 
 import java.io.IOException;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.functions.Action;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PaymentResultListener {
 
@@ -102,7 +98,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });*/
 
-
+        /*PexelsRepository repo = new PexelsRepository();
+        repo.makeJ("btoaaaq")
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(jsonObject -> {
+                    System.out.println("afiche error: "+jsonObject);
+                },error->{
+                    System.out.println("afiche error: "+error);
+                });*/
 
 
 
@@ -134,13 +137,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navView.setNavigationItemSelectedListener(this::onNavigationItemSelected);
 
-        Flowable.fromAction(() -> {
+        /*Flowable.fromAction(() -> {
             try {
-                Pexels pexels=new Pexels();
+                PexelsRepository pexelsRepository =new PexelsRepository();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        });
+        });*/
 
 
     }

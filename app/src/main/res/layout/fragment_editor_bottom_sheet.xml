@@ -177,6 +177,10 @@
                 android:drawableLeft="@drawable/open_gallery"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_pexels"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
 

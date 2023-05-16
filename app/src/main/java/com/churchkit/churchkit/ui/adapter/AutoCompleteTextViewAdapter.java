@@ -1,4 +1,4 @@
-package com.churchkit.churchkit.adapter;
+package com.churchkit.churchkit.ui.adapter;
 /*
 public class AutoCompleteTextViewAdapter {
 }*/

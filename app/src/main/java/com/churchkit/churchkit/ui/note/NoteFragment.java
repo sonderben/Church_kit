@@ -22,11 +22,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Toast;
 
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.Util;
-import com.churchkit.churchkit.adapter.note.NoteDirectoryAdapter;
+import com.churchkit.churchkit.ui.adapter.note.NoteDirectoryAdapter;
 import com.churchkit.churchkit.database.MyDataDb;
 import com.churchkit.churchkit.database.entity.note.BaseNoteEntity;
 import com.churchkit.churchkit.database.entity.note.DirectoryWithNote;

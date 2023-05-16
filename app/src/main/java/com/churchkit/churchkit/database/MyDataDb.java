@@ -12,8 +12,10 @@ import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.churchkit.churchkit.CKPreferences;
+import com.churchkit.churchkit.database.dao.Pexel.PhotoPexelsDao;
 import com.churchkit.churchkit.database.dao.note.NoteDao;
 import com.churchkit.churchkit.database.dao.note.NoteDirectoryDao;
+import com.churchkit.churchkit.database.entity.PexelsPhoto;
 import com.churchkit.churchkit.database.entity.note.NoteDirectoryEntity;
 import com.churchkit.churchkit.database.entity.note.NoteEntity;
 import com.churchkit.churchkit.util.Converter;
@@ -21,10 +23,11 @@ import com.churchkit.churchkit.util.Converter;
 import java.util.Calendar;
 
 @TypeConverters(Converter.class)
-@Database(entities = {NoteDirectoryEntity.class, NoteEntity.class},version = 1)
+@Database(entities = {NoteDirectoryEntity.class, NoteEntity.class, PexelsPhoto.class},version = 1)
 public abstract class MyDataDb extends RoomDatabase {
     public abstract NoteDao noteDao();
     public abstract NoteDirectoryDao noteDirectoryDao();
+    public abstract PhotoPexelsDao photoPexelsDao();
 
     private static MyDataDb instance;
 

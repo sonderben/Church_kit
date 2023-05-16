@@ -1,7 +1,5 @@
 package com.churchkit.churchkit.ui.note;
 
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,21 +12,16 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 
-import com.churchkit.churchkit.EditNoteActivity;
 import com.churchkit.churchkit.R;
-import com.churchkit.churchkit.adapter.note.NoteDirectoryAdapter;
+import com.churchkit.churchkit.ui.adapter.note.NoteDirectoryAdapter;
 import com.churchkit.churchkit.database.MyDataDb;
 import com.churchkit.churchkit.database.entity.note.BaseNoteEntity;
 import com.churchkit.churchkit.database.entity.note.NoteDirectoryEntity;
