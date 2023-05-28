@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/white"
-        android:background="@color/white"
         android:layout_margin="@dimen/_5sdp"
-
         app:cardCornerRadius="@dimen/_10sdp"
         app:cardElevation="@dimen/_10sdp"
         android:padding="@dimen/_5sdp">
@@ -24,7 +21,6 @@
                 android:layout_height="@dimen/_110sdp"
                 android:scaleType="centerCrop"
                 android:maxHeight="@dimen/_200sdp"
-                android:src="@mipmap/img_bg_creole"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 />

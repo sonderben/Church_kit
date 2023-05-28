@@ -111,11 +111,12 @@ public class PexelsRepository extends BaseRepository<PhotoPexelsDao,PexelsPhoto>
                 String urlTiny = urlImgObjects.getString("tiny");
                 String urlPortrait = urlImgObjects.getString("portrait");
                 String urlLandscape = urlImgObjects.getString("landscape");
+                String urlSmall = urlImgObjects.getString("small");
 
                 photoList.add(
                         new PexelsPhoto(
                                 id,width,height,url,photographer,
-                                avgColor,urlOriginal,urlMedium,urlTiny,
+                                avgColor,urlOriginal,urlMedium,urlSmall,urlTiny,
                                 urlPortrait,urlLandscape,alt
                         )
                 );

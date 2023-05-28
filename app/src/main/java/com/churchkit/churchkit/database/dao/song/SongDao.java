@@ -19,6 +19,9 @@ public interface SongDao extends BaseDao<Song> {
     @Query("SELECT * FROM song where song.book_id = :songBookId ORDER BY position")
     LiveData< List<Song> > getAllSongWithVerseById(String songBookId);
 
+    @Query("SELECT * FROM song  ORDER BY position")
+    LiveData< List<Song> > getAllSong();
+
     @Query("SELECT * FROM song WHERE id =:id")
     LiveData<Song> getSongById(String id);
 

@@ -14,6 +14,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -21,8 +23,6 @@ import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreferenceCompat;
 
 import com.churchkit.churchkit.CKPreferences;
-import com.churchkit.churchkit.DataActivity;
-import com.churchkit.churchkit.EditNoteActivity;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.database.entity.bible.BibleInfo;
 import com.churchkit.churchkit.database.entity.song.SongInfo;
@@ -103,15 +103,21 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
         switchPreferenceCompat.setOnPreferenceChangeListener((preference, newValue) -> true);
 
         biblePreference.setOnPreferenceClickListener(preference -> {
-            Intent intent = new Intent(getActivity(), DataActivity.class);
-            intent.putExtra("FROM","BIBLE");
-            dataActivity.launch(intent);
+            NavController navController = Navigation.findNavController(requireView());
+            navController.getGraph().findNode(R.id.dataFragment).setLabel("Download a bible");
+            Bundle bundle = new Bundle();
+            bundle.putString("FROM","BIBLE");
+            navController.navigate(R.id.action_historyFragment_to_dataFragment,bundle);
+
+
             return true;
         });
         songPreference.setOnPreferenceClickListener(preference -> {
-            Intent intent = new Intent(getActivity(), DataActivity.class);
-            intent.putExtra("FROM","SONG");
-            dataActivity.launch(intent);
+            Bundle bundle = new Bundle();
+            bundle.putString("FROM","SONG");
+            NavController navController = Navigation.findNavController(requireView());
+            navController.getGraph().findNode(R.id.dataFragment).setLabel("Download a song");
+            navController.navigate(R.id.action_historyFragment_to_dataFragment,bundle);
             return true;
         });
 

@@ -1,5 +1,6 @@
 package com.churchkit.churchkit.ui.adapter.song;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,106 +19,127 @@ import com.bumptech.glide.Glide;
 import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.Util;
+import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.database.entity.song.SongBook;
+import com.churchkit.churchkit.ui.song.SongDialogFragment;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
 
-public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPartViewHolder> {
+public class SongHopeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
-    int typeView;
+    private static final int SONG_BOOK_TYPE = 1;
+    private static final int SONG_TYPE = 2;
     FragmentManager fm;
     List<SongBook> songBooks;
+    List<Song> songs;
     CKPreferences ckPreferences;
 
 
-    public void setTypeView(int newTypeViewHolder,int oldTypeViewHolder) {
-        if (newTypeViewHolder == oldTypeViewHolder) // LIST==LIST || GRID==GRID || GROUP==GROUP => Just For security
-            return;
-        else {
-            this.typeView = newTypeViewHolder;
-            notifyItemRangeChanged(0, getItemCount());
-        }
+
+
+    public SongHopeAdapter( Context context,FragmentManager fm) {
+        ckPreferences = new CKPreferences(context);
+        this.fm = fm;
     }
 
-    public SongHopeAdapter(int typeView,List<SongBook> songBooks, FragmentManager fm) {
-        this.fm = fm;
+    public void setSongs(List<Song> songs) {
+        this.songs = songs;
+        songBooks = null;
+        notifyDataSetChanged();
+    }
+
+    public void setSongBooks(List<SongBook> songBooks) {
         this.songBooks = songBooks;
-        this.typeView = typeView;
-        ckPreferences = new CKPreferences(fm.getPrimaryNavigationFragment().getContext());
+        songs = null;
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public ListPartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if(viewType == 2) {
-           View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_part2,parent,false);
-           return new ListPartViewHolder(view);
-       }
-       else {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == SONG_TYPE){
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_song_one_part,parent,false);
+            return new ListSongViewHolder(view);
+        }
            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_part,parent,false);
            return new ListPartViewHolder(view);
-       }
+
     }
 
 
+
+
     @Override
-    public void onBindViewHolder(@NonNull ListPartViewHolder holder,  int position) {
-        holder.title.setText(songBooks.get(position).getTitle());
-        holder.tileAcronym.setText(songBooks.get(position).getAbbreviation().toUpperCase());
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder,  int position) {
 
-        if (ckPreferences.getabbrColor()) {
-            final int color = com.churchkit.churchkit.ui.util.Util.getColorByPosition(holder.getAbsoluteAdapterPosition() + 1);
-            //holder.tileAcronym.setTextColor(color);
-            holder.tileAcronym.setTextColor(Color.parseColor("#"+ songBooks.get(holder.getAbsoluteAdapterPosition()).getColor() ) );
-           /* if (typeView == 2)
-                holder.tileAcronym.setTextColor(color);
-            else
-                holder.tileAcronym.setTextColor(Color.WHITE);*/
-        }
+        if ( songBooks != null){
+            ListPartViewHolder tempVh = (ListPartViewHolder) holder;
 
-
-        holder.number.setText(songBooks.get(position).getChildAmount()+" chants");
-        if (holder.img != null){
-            Glide.with(holder.img)
-                    .load("https://images.pexels.com/photos/2325729/pexels-photo-2325729.jpeg")
-                    .override(300, 200)
-                    .into(holder.img);
-            //holder.img.setImageResource( abbrToMipmapRessource( songBooks.get(holder.getAbsoluteAdapterPosition()).getAbbreviation() ) );
-        }
-
-       holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SongBook songBook = songBooks.get(holder.getAbsoluteAdapterPosition());
-
-
-
-                Bundle bundle = new Bundle();
-                bundle.putString("ID", songBook.getId());
-                bundle.putString("songBookName", songBook.getTitle());
-                bundle.putString("FROM", Util.FROM_SONG_HOPE);
-                NavController navController = Navigation.findNavController(view);
-                navController.getGraph().findNode(R.id.listSongsFragment).setLabel(songBook.getTitle()+" ");
-                navController.navigate(R.id.action_homeFragment_to_listSongsFragment2,bundle);
-
-
-
+            tempVh.title.setText(songBooks.get(position).getTitle());
+            tempVh.tileAcronym.setText(songBooks.get(position).getAbbreviation().toUpperCase());
+            if (ckPreferences.getabbrColor()) {
+                tempVh.tileAcronym.setTextColor(Color.parseColor("#"+ songBooks.get(holder.getAbsoluteAdapterPosition()).getColor() ) );
             }
-        });
+
+            tempVh.number.setText(songBooks.get(position).getChildAmount()+" chants");
+
+            tempVh.cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SongBook songBook = songBooks.get(holder.getAbsoluteAdapterPosition());
+                    Bundle bundle = new Bundle();
+                    bundle.putString("ID", songBook.getId());
+                    bundle.putString("songBookName", songBook.getTitle());
+                    bundle.putString("FROM", Util.FROM_SONG_HOPE);
+                    NavController navController = Navigation.findNavController(view);
+                    navController.getGraph().findNode(R.id.listSongsFragment).setLabel(songBook.getTitle()+" ");
+                    navController.navigate(R.id.action_homeFragment_to_listSongsFragment2,bundle);
+                }
+            });
+        }
+        else {
+            ListSongViewHolder tempvh = (ListSongViewHolder) holder;
+            float pos =  songs.get( tempvh.getAbsoluteAdapterPosition() ).getPosition();
+            String title = Util.formatNumberToString(pos) +songs.get( tempvh.getAbsoluteAdapterPosition() ).getTitle();
+            tempvh.title.setText(title);
+
+            tempvh.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SongDialogFragment songDialogFragment = SongDialogFragment.newInstance(
+                            songs.get( tempvh.getAbsoluteAdapterPosition() ));
+
+                    songDialogFragment.show(fm, "");
+                }
+            });
+        }
+
+
+
     }
 
 
 
     @Override
     public int getItemCount() {
-        return songBooks.size();
+
+        if (songs != null)
+            return songs.size();
+        else if (songBooks != null)
+            return songBooks.size();
+
+        return 0;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return typeView;
+        if (songs != null)
+            return SONG_TYPE;
+        else {
+            return SONG_BOOK_TYPE;
+        }
     }
 
 
@@ -138,18 +160,18 @@ public class SongHopeAdapter extends RecyclerView.Adapter<SongHopeAdapter.ListPa
 
         }
     }
+    class ListSongViewHolder extends RecyclerView.ViewHolder{
+        public TextView title;
 
-    private int abbrToMipmapRessource(String abbr){
-        switch (abbr.toUpperCase()){
-            case "CE": return R.mipmap.ce;
-            case "MJ": return R.mipmap.mj;
-            case "RN": return R.mipmap.rn;
-            case "VR": return R.mipmap.ot;
-            //case "EE": return R.mipmap.img_bg_creole;
-            case "OR": return R.mipmap.img_bg_french;
-            //case "HC": return R.drawable.img3;
-            default:return R.mipmap.nt;
+        public ListSongViewHolder(@NonNull View itemView) {
+            super(itemView);
+            title = itemView.findViewById(R.id.title);
+
+
+
         }
     }
+
+
 
 }

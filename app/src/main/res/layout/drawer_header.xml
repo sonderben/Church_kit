@@ -8,23 +8,16 @@
 <ImageView
     android:id="@+id/icon_app"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_80sdp"
-    android:src="@drawable/logo_header"
+    android:layout_height="0dp"
+    app:layout_constraintDimensionRatio="16:9"
+    android:src="@drawable/church_kit_logo"
     android:paddingTop="@dimen/_5sdp"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"/>
-    <TextView
-        android:id="@+id/developer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=" By \nBenderson &amp; John"
-        android:textAlignment="center"
 
-        android:padding="5dp"
-        app:layout_constraintTop_toBottomOf="@id/icon_app"/>
     <View
         android:layout_width="match_parent"
-        app:layout_constraintTop_toBottomOf="@id/developer"
+        app:layout_constraintTop_toBottomOf="@id/icon_app"
         android:background="#fff"
         android:layout_height="1dp"/>
 

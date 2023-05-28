@@ -3,6 +3,7 @@ package com.churchkit.churchkit.ui.adapter.note;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,26 +112,41 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 dvh.amountNote.setVisibility(View.GONE);
             }
 
-            dvh.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("DIRECTORY",directory);
-                    NavController navController = Navigation.findNavController(v);
-                   // navController.getGraph().findNode(R.id.listChapterByTestamentFragment).setLabel(holder.itemView.getContext().getString( R.string.old_testament ));
-                    if (directory.isLock()){
-                        newDirectoryDialog(navController,bundle,directory);
-                    }else
-                        navController.navigate(R.id.action_noteFragment_to_listNoteFragment,bundle);
-                }
+            dvh.itemView.setOnClickListener(v -> {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("DIRECTORY",directory);
+                NavController navController = Navigation.findNavController(v);
+               // navController.getGraph().findNode(R.id.listChapterByTestamentFragment).setLabel(holder.itemView.getContext().getString( R.string.old_testament ));
+                if (directory.isLock()){
+                    newDirectoryDialog(navController,bundle,directory);
+                }else
+                    navController.navigate(R.id.action_noteFragment_to_listNoteFragment,bundle);
+            });
+            dvh.itemView.setOnLongClickListener(v -> {
+                Toast.makeText(dvh.itemView.getContext(), baseNoteEntityList.get(position).getTitle(),Toast.LENGTH_SHORT).show();
+                return true;
             });
 
         }else {
             NoteViewHolder nvh = ((NoteViewHolder)holder);
             NoteEntity note = (NoteEntity) baseNoteEntityList.get( holder.getAbsoluteAdapterPosition() );
             nvh.title.setText( note.getTitle() );
-            nvh.description.setText( removeHtmlTags( note.getNoteText() ).trim() );
+            nvh.description.setText(/* removeHtmlTags(*/ note.getNoteText() /*).trim()*/ );
             nvh.date.setText( dateFormat.format(note.getDate().getTime()) );
+            nvh.img.setVisibility(View.GONE);
+
+            String hashtag = "";
+            if (note.getHashtag() != null){
+                String [] hashtags = note.getHashtag().split(",");
+
+                for (int i = 0; i < hashtags.length; i++) {
+                    hashtag+=hashtags[i];
+
+                    if (i <hashtags.length-1)
+                        hashtag+=" &#x2022; ";
+                }
+            }
+            nvh.hashtag.setText(Html.fromHtml(hashtag));
             nvh.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -151,6 +167,14 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 }
             });
 
+            nvh.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Toast.makeText(nvh.itemView.getContext(), baseNoteEntityList.get(position).getTitle(),Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
+
         }
 
     }
@@ -168,12 +192,14 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
     public class NoteViewHolder extends RecyclerView.ViewHolder{
-        TextView title, description,date;
+        TextView title, description,date,hashtag;ImageView img;
         public NoteViewHolder(@NonNull View itemView) {
             super(itemView);
             title  = itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
             date = itemView.findViewById(R.id.date);
+            img = itemView.findViewById(R.id.img);
+            hashtag = itemView.findViewById(R.id.hashtag);
 
         }
     }

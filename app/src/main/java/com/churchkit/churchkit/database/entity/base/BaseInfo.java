@@ -27,18 +27,28 @@ public abstract class BaseInfo {
     protected String audioDate;
     protected String textDate;
     protected String url;
+    protected String size;
     protected boolean isDownloaded=false;
     protected int testament;
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
 
     @Ignore
 
 
-    public BaseInfo(String id, String language, String name, int testament, String url){
+    public BaseInfo(String id, String language, String name, int testament, String url,String size){
         this.id = id;
         this.language = language;
         this.name = name;
         this.testament = testament;
         this.url = url;
+        this.size = size;
     }
 
 

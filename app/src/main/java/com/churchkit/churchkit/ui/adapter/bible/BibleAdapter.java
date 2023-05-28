@@ -95,7 +95,7 @@ public class BibleAdapter extends RecyclerView.Adapter {
 
                 Glide.with(( (GroupByTestamentViewHolder) holder ).img)
                         .load("https://images.pexels.com/photos/5986493/pexels-photo-5986493.jpeg?cs=srgb&dl=pexels-cottonbro-studio-5986493.jpg&fm=jpg&_gl=1*1x83rz0*_ga*MTA1MjM4NDYwNy4xNjgzMDk0MzY1*_ga_8JE65Q40S6*MTY4NDE2MzU0Ny43LjEuMTY4NDE2NDExMi4wLjAuMA..")
-                        .error(R.mipmap.ot)
+                        .placeholder(R.mipmap.img_bg_creole)
                         .into( ( (GroupByTestamentViewHolder) holder ).img );
 
                 ( (GroupByTestamentViewHolder) holder ).bookNumber.setText(amountOldTestament+" Books");

@@ -7,11 +7,13 @@
     <string name="old_testament">Ansyen Testamant</string>
     <string name="new_testament">Nouvo Testaman</string>
     <string name="song_hope">Chante espwa</string>
-    <string name="version_app">Vèsion: 1.0.0</string>
+    <string name="version_app">"Vèsyon: "</string>
+    <string name="about">Apwopo</string>
     <string name="donate">Bay yon Donasyon</string>
+    <string name="history">Istorik</string>
     <string name="favorite">Saw renmen</string>
     <string name="chorus">-Refren-</string>
-    <string name="scroll_to_chorus">Ale nan refren a</string>
+    <string name="scroll_to_chorus">Ale nan refren an</string>
     <string name="language">Lanng</string>
     <string name="reading">Lekti</string>
     <string name="letter_size_title">Gwosè lèt</string>
@@ -24,8 +26,16 @@
     <string name="dark_mode">Mòd nwa</string>
     <string name="display">Afichaj</string>
     <string name="old">Ansyen</string>
+    <string name="search_by_verse">Chèche pa vèsè</string>
+    <string name="search_by_ref">Rechèch pa tit oswa referans</string>
     <string name="and">e</string>
     <string name="testament">testaman</string>
     <string name="restart_2_use_new_">"Rekòmanse aplikasyon an pou itilize nouvo "</string>
     <string name="part">pati</string>
+    <string name="go_to">Ale nan</string>
+    <string name="to_download_a_bible">pou telechaje yon bib</string>
+    <string name="to_download_a_song_book">pou telechaje yon liv chante</string>
+    <string name="select_bible">Chwazi yon Bib</string>
+    <string name="search_by">Chèche pa</string>
+    <string name="note">Nòt</string>
 </resources>

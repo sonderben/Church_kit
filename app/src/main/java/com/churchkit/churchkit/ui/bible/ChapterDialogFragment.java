@@ -62,6 +62,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
     public static final int BIBLE_BOOKMARK = 2;
     private String allVersets="";
     private int mTextViewColor;
+    LiveData< List<BibleVerse> > bibleVerseLiveData;
 
     public ChapterDialogFragment(){
 
@@ -167,7 +168,8 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         }
 
     });
-        /*db.bibleVerseDao()*/bibleVerseViewModel.getAllVerse(mId).observe(requireActivity(), bibleVerseList -> {
+         bibleVerseLiveData = bibleVerseViewModel.getAllVerse(mId);
+         bibleVerseLiveData.observe(requireActivity(), bibleVerseList -> {
             allVersets = listVerseToString(bibleVerseList);
             versets.setText( allVersets );
             setVerseTitle( bibleVerseList);
@@ -251,16 +253,14 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
 
 
 
-         liveDataBookMark = bibleBookMarkViewModel.getAllBookMark(mId); //db.bookMarkBibleDao().getAllBookMark(mId);
-
-
+         liveDataBookMark = bibleBookMarkViewModel.getAllBookMark(mId);
 
 
         return root;
     }
 
     private void setChapterHistory() {
-        /*db.bibleChapterHistoryDao()*/bibleChapterViewModel.insert(
+        bibleChapterViewModel.insert(
                 new BibleChapterHistory(mId, Calendar.getInstance().getTimeInMillis(), mReference)
         );
 
@@ -350,21 +350,21 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         return mReference+": " +a;
     }
 
-    LiveData< List<BookMarkChapter> > liveDataBookMark;
-    ImageView donate, endingFavoriteImageView,more;
-    TextView versets,bookReference,chapTitle;
-    static String mId;
-    static String mReference, mChapterhapter;
-    static int mVerseAmount;
-    List<Util.VersePosition> versePositionList = new ArrayList<>();
-    FloatingActionButton fab;
-    ConstraintLayout headerLayout;
-    LiveData<BibleChapterFavorite> bibleFavoriteLiveData;
-    BibleHistoryViewModel bibleChapterViewModel;
-    BibleVerseViewModel bibleVerseViewModel;
-    BibleFavoriteViewModel bibleFavoriteViewModel;
-    BibleHistoryViewModel bibleHistoryViewModel;
-    BibleBookMarkViewModel bibleBookMarkViewModel;
+    private LiveData< List<BookMarkChapter> > liveDataBookMark;
+    private ImageView donate, endingFavoriteImageView,more;
+    private TextView versets,bookReference,chapTitle;
+    private static String mId;
+    private static String mReference, mChapterhapter;
+    private static int mVerseAmount;
+    private List<Util.VersePosition> versePositionList = new ArrayList<>();
+    private FloatingActionButton fab;
+    private ConstraintLayout headerLayout;
+    private LiveData<BibleChapterFavorite> bibleFavoriteLiveData;
+    private BibleHistoryViewModel bibleChapterViewModel;
+    private BibleVerseViewModel bibleVerseViewModel;
+    private BibleFavoriteViewModel bibleFavoriteViewModel;
+    private BibleHistoryViewModel bibleHistoryViewModel;
+    private BibleBookMarkViewModel bibleBookMarkViewModel;
 
     public  Point getLocationOnScreen(View view) {
         int[] location = new int[2];

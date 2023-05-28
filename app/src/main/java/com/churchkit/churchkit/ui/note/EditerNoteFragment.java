@@ -1,7 +1,10 @@
 package com.churchkit.churchkit.ui.note;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
@@ -19,9 +23,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-import com.chinalwb.are.AREditText;
+/*import com.chinalwb.are.AREditText;
 import com.chinalwb.are.styles.toolbar.ARE_ToolbarDefault;
 import com.chinalwb.are.styles.toolitems.ARE_ToolItem_AlignmentCenter;
 import com.chinalwb.are.styles.toolitems.ARE_ToolItem_AlignmentLeft;
@@ -35,13 +40,14 @@ import com.chinalwb.are.styles.toolitems.ARE_ToolItem_Image;
 import com.chinalwb.are.styles.toolitems.ARE_ToolItem_Italic;
 import com.chinalwb.are.styles.toolitems.ARE_ToolItem_Link;
 import com.chinalwb.are.styles.toolitems.ARE_ToolItem_Underline;
-import com.chinalwb.are.styles.toolitems.IARE_ToolItem;
+import com.chinalwb.are.styles.toolitems.IARE_ToolItem;*/
 import com.churchkit.churchkit.R;
-import com.churchkit.churchkit.are.CK_ToolItem_Reference;
+//import com.churchkit.churchkit.are.CK_ToolItem_Reference;
+import com.churchkit.churchkit.Util;
 import com.churchkit.churchkit.database.MyDataDb;
 import com.churchkit.churchkit.database.entity.note.NoteDirectoryEntity;
 import com.churchkit.churchkit.database.entity.note.NoteEntity;
-import com.churchkit.churchkit.databinding.ActivityEditNoteBinding;
+
 import com.churchkit.churchkit.modelview.note.NoteDirectoryViewModel;
 import com.churchkit.churchkit.modelview.note.NoteViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -66,11 +72,13 @@ public class EditerNoteFragment extends Fragment {
 
          view = inflater.inflate(R.layout.fragment_editer_note, container, false);
 
-
+        init();
         if (getArguments()!=null){
             noteDirectory = (NoteDirectoryEntity) getArguments().getSerializable("DIRECTORY");
 
             note = (NoteEntity) getArguments().getSerializable("NOTE");
+            if (note!=null)
+                arEditText.setText( note.getNoteText() );
         }
 
 
@@ -78,29 +86,32 @@ public class EditerNoteFragment extends Fragment {
 
 
 
-        init();
+
         onCreateMenu();
         return view;
     }
     public void init(){
-       // toolbar = binding.toolbar;
+
         arEditText = view.findViewById(R.id.areditor);
+
+
 
         arEditText.setMovementMethod(LinkMovementMethod.getInstance());
 
         noteViewModel = new NoteViewModel(MyDataDb.getInstance(getActivity().getApplicationContext()).noteDao());
         directoryViewModel = new NoteDirectoryViewModel( MyDataDb.getInstance( getActivity().getApplicationContext() ).noteDirectoryDao() );
 
-        ARE_ToolbarDefault toolbarDefault = view.findViewById(R.id.areToolbar);
+
+        /*ARE_ToolbarDefault toolbarDefault = view.findViewById(R.id.areToolbar);
         IARE_ToolItem bold = new ARE_ToolItem_Bold();
-        IARE_ToolItem italic = new ARE_ToolItem_Italic();
+        //IARE_ToolItem italic = new ARE_ToolItem_Italic();
         IARE_ToolItem al = new ARE_ToolItem_AlignmentLeft();
-        IARE_ToolItem img = new ARE_ToolItem_Image();
+        //IARE_ToolItem img = new ARE_ToolItem_Image();
         IARE_ToolItem ar = new ARE_ToolItem_AlignmentRight();
         IARE_ToolItem ac = new ARE_ToolItem_AlignmentCenter();
         IARE_ToolItem fontSize = new ARE_ToolItem_FontSize();
         IARE_ToolItem link = new ARE_ToolItem_Link();
-        IARE_ToolItem underline = new ARE_ToolItem_Underline();
+       // IARE_ToolItem underline = new ARE_ToolItem_Underline();
         IARE_ToolItem at = new ARE_ToolItem_At();
 
         IARE_ToolItem fc = new ARE_ToolItem_FontColor();
@@ -112,17 +123,17 @@ public class EditerNoteFragment extends Fragment {
 
         toolbarDefault.addToolbarItem(bc);
         toolbarDefault.addToolbarItem(fc);
-        toolbarDefault.addToolbarItem(img);
+        //toolbarDefault.addToolbarItem(img);
 
         toolbarDefault.addToolbarItem(bold);
 
-        toolbarDefault.addToolbarItem(italic);
+        //toolbarDefault.addToolbarItem(italic);
         toolbarDefault.addToolbarItem(al);
         toolbarDefault.addToolbarItem(ac);
         toolbarDefault.addToolbarItem(ar);
         toolbarDefault.addToolbarItem(fontSize);
         toolbarDefault.addToolbarItem(link);
-        toolbarDefault.addToolbarItem(underline);
+        //toolbarDefault.addToolbarItem(underline);
         toolbarDefault.addToolbarItem(at);
         toolbarDefault.addToolbarItem(ref);
 
@@ -131,7 +142,7 @@ public class EditerNoteFragment extends Fragment {
         arEditText.setToolbar( toolbarDefault );
 
         if (note!=null)
-            arEditText.fromHtml( note.getNoteText() );
+            arEditText.fromHtml( note.getNoteText() );*/
         //setHtml();
 
     }
@@ -156,8 +167,7 @@ public class EditerNoteFragment extends Fragment {
                 editText.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                        if (note != null)
-                            note.setTitle( s.toString() );
+
                     }
 
                     @Override
@@ -167,7 +177,8 @@ public class EditerNoteFragment extends Fragment {
 
                     @Override
                     public void afterTextChanged(Editable s) {
-
+                        if (note != null)
+                            note.setTitle( s.toString() );
                     }
                 });
 
@@ -181,6 +192,14 @@ public class EditerNoteFragment extends Fragment {
                     getActivity().onBackPressed();
                     return true;
                 } else if (item.getItemId() == R.id.save) {
+                    //EditText editText = findViewById(R.id.editText);
+                    arEditText.clearFocus();
+
+                    InputMethodManager imm = (InputMethodManager) EditerNoteFragment.this.activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+
+
+
                     if (note == null) {
                         note = new NoteEntity(editText.getText().toString());
 
@@ -192,7 +211,8 @@ public class EditerNoteFragment extends Fragment {
                     }else {
                         //directoryViewModel.incrementAmountDefaultDirectory(  noteDirectory.getId() );
                     }
-                    note.setNoteText( arEditText.getHtml() );
+                    note.setNoteText( arEditText.getText().toString() );
+                    note.setHashtag(Util.extractHashtags( arEditText.getText().toString() ));
                     noteViewModel.insert(note);
                     activity.onBackPressed();
 
@@ -202,25 +222,21 @@ public class EditerNoteFragment extends Fragment {
             }
         }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
     }
-    /*@Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-
-        return super.onOptionsItemSelected(item);
-    }*/
 
     @Override
     public void onResume() {
         super.onResume();
         BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottom_nav);
         bottomNavigationView.getMenu().getItem(2).setChecked(true);
+        int a = InputType.TYPE_CLASS_TEXT;
     }
 
-    //MaterialToolbar toolbar;
+
     View view;
     Activity activity;
-    AREditText arEditText;
-    ActivityEditNoteBinding binding;
+    EditText arEditText;
+
     NoteEntity note;
     NoteViewModel noteViewModel;
     NoteDirectoryViewModel directoryViewModel;

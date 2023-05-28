@@ -4,11 +4,19 @@ import static com.churchkit.churchkit.ui.aboutapp.Payment.startPayment;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +30,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.churchkit.churchkit.api.PexelsRepository;
 import com.churchkit.churchkit.database.entity.bible.BibleInfo;
 import com.churchkit.churchkit.database.entity.song.SongInfo;
 import com.churchkit.churchkit.databinding.ActivityMainBinding;
@@ -37,11 +44,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
-
-import java.io.IOException;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Flowable;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PaymentResultListener {
 
@@ -86,17 +88,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-        /*splashScreen.setKeepOnScreenCondition(new SplashScreen.KeepOnScreenCondition() {
+        splashScreen.setKeepOnScreenCondition(new SplashScreen.KeepOnScreenCondition() {
             @Override
             public boolean shouldKeepOnScreen() {
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 return false;
             }
-        });*/
+        });
 
         /*PexelsRepository repo = new PexelsRepository();
         repo.makeJ("btoaaaq")
@@ -115,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        songInfoViewModel.getAllBibleInfo().observe(this, songInfos -> {
+        songInfoViewModel.getAllSongInfo().observe(this, songInfos -> {
             if (songInfos.size() == 0){
                 songInfoViewModel.insert( SongInfo.getAllBibleInfo() );
             }
@@ -127,6 +129,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             finish();
             System.exit(0);
         });
+
+
+        View headerView = navView.getHeaderView(0);
+
+
 
 
 
@@ -207,11 +214,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         bibleFavorite= (TextView) navView.getMenu().findItem(R.id.bibleFavorite).getActionView();
         bibleFavorite.setGravity(Gravity.CENTER);
 
+        TextView developer = (TextView) navView.getMenu().findItem(R.id.developer).getActionView();
+        developer.setGravity(Gravity.CENTER);
+
+        TextView version = (TextView) navView.getMenu().findItem(R.id.version).getActionView();
+        version.setGravity(Gravity.CENTER);
+        version.setText("1.0.0");
+
         songHistoryViewModel.getAmount().observe(this, integer -> songHistory.setText(integer>0? "+"+integer:"" ));
         songFavoriteViewModel.getAmount().observe(this, integer -> songFavorite.setText(integer>0? "+"+integer:"" ));
 
         bibleHistoryViewModel.getAmount().observe(this, integer -> bibleHistory.setText(integer>0? "+"+integer:"" ));
         bibleFavoriteViewModel.getAmount().observe(this, integer -> bibleFavorite.setText(integer>0? "+"+integer:"" ));
+
+        developer.setText( Html.fromHtml(
+                " By <br> <a a href=\"https://www.instagram.com/sonderben/\">Bennderson</a>  and <a href=\"https://johnyoute.com/\">John Ersen</a>")
+        );
+        developer.setMovementMethod(LinkMovementMethod.getInstance());
+
+
     }
 
     @Override

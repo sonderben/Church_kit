@@ -65,9 +65,11 @@ public class SongHopeFragment extends Fragment {
 
         autoCompleteTextView = songBinding.search;
         mRecyclerView = songBinding.recyclerview;
+        homeAdapter = new SongHopeAdapter( getActivity().getApplicationContext() ,getChildFragmentManager());
         gridLayoutManager = new GridLayoutManager(getContext(), 1);
         mRecyclerView.addItemDecoration(listGridItemDeco);
         mRecyclerView.setLayoutManager(gridLayoutManager);
+        mRecyclerView.setAdapter(homeAdapter);
         /*DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
         mRecyclerView.addItemDecoration(dividerItemDecoration);*/
 
@@ -162,12 +164,15 @@ public class SongHopeFragment extends Fragment {
 
 
         songBookViewModel.getAllSongBook().observe(requireActivity(), songBooks -> {
-            if (songBooks != null) {
-                homeAdapter = new SongHopeAdapter(
-                        getTypeView(), songBooks, getActivity().getSupportFragmentManager()
-                );
-
-                mRecyclerView.setAdapter(homeAdapter);
+            if (songBooks != null && songBooks.size() > 1) {
+                homeAdapter.setSongBooks(songBooks);
+            }else if (songBooks != null && songBooks.size() == 1 ){
+                songViewModel.getAllSongWithVerseById( songBooks.get(0).getId() ).observe(getViewLifecycleOwner(), new Observer<List<Song>>() {
+                    @Override
+                    public void onChanged(List<Song> songs) {
+                        homeAdapter.setSongs( songs );
+                    }
+                });
             }
         });
 
@@ -188,42 +193,16 @@ public class SongHopeFragment extends Fragment {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
                 menu.clear();
-/*
-                menuInflater.inflate(R.menu.menu_song_hope, menu);
-                setIconListOrGrid(menu.findItem(R.id.recyclerview_style));
-                menu.findItem(R.id.app_bar_switch).getActionView().findViewById(R.id.switch1).setVisibility(View.GONE);*/
             }
 
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                if (menuItem.getItemId() == R.id.recyclerview_style) {
-                    if (sharedPreferences.getInt(LIST_GRID, LIST) == LIST) {
-                        gridLayoutManager.setSpanCount(GRID);
 
-                        editor.putInt(LIST_GRID, GRID);
-                        editor.apply();
-                        homeAdapter.setTypeView(GRID, LIST);
-                    } else {
-                        gridLayoutManager.setSpanCount(LIST);
-                        editor.putInt(LIST_GRID, LIST);
-                        homeAdapter.setTypeView(LIST, GRID);
-                        editor.apply();
-                    }
-                    setIconListOrGrid(menuItem);
-                    return true;
-                }
                 return false;
             }
         }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
     }
 
-    private void setIconListOrGrid(MenuItem menuItem) {
-
-        if (sharedPreferences.getInt(LIST_GRID, LIST) == 1)
-            menuItem.setIcon(R.drawable.grid_view_24);
-        else menuItem.setIcon(R.drawable.list_view_24);
-    }
 
     @Override
     public void onResume() {

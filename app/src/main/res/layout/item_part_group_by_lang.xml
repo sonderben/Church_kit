@@ -27,7 +27,7 @@
                 android:adjustViewBounds="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:src="@mipmap/img_bg_french" />
+                />
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/book_number"
                 android:layout_width="match_parent"

@@ -11,7 +11,7 @@
     <string name="donate">Faire une donation</string>
     <string name="favorite">Favoris</string>
     <string name="history">Historiques</string>
-    <string name="version_app">Version: 1.0.0</string>
+    <string name="version_app">"Version: "</string>
     <string name="chorus">-Refrain-</string>
     <string name="scroll_to_chorus">Défiler jusqu\'au refrain</string>
     <string name="language">Language</string>
@@ -26,8 +26,16 @@
     <string name="letter_size_title">Taille des lettres</string>
     <string name="display">Affichage</string>
     <string name="old">Ancien</string>
+    <string name="search_by_verse">Recherche par verset</string>
+    <string name="search_by_ref">Recherche par titre ou référence</string>
     <string name="and">et</string>
     <string name="testament">testament</string>
     <string name="restart_2_use_new_">Redémarrez l\'application pour utiliser la nouvelle</string>
     <string name="part">parties</string>
+    <string name="go_to">Aller à</string>
+    <string name="to_download_a_bible">pour télécharger une bible</string>
+    <string name="to_download_a_song_book">pour télécharger un recueil de chansons</string>
+    <string name="select_bible">Sélectionnez une Bible</string>
+    <string name="search_by">Recherché par</string>
+    <string name="note">Note</string>
 </resources>

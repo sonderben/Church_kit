@@ -18,7 +18,8 @@ import io.reactivex.rxjava3.annotations.NonNull;
                 childColumns = "note_directory_id"))
 public class NoteEntity extends BaseNoteEntity implements Serializable {
     String noteText="";
-    String hashTag;
+
+    String hashtag;
     @ColumnInfo(name = "note_directory_id")
     @NonNull
     int noteDirectoryEntityId=1;//default
@@ -67,15 +68,12 @@ public class NoteEntity extends BaseNoteEntity implements Serializable {
     }
 
 
-
-
-
-    public String getHashTag() {
-        return hashTag;
+    public String getHashtag() {
+        return hashtag;
     }
 
-    public void setHashTag(String hashTag) {
-        this.hashTag = hashTag;
+    public void setHashtag(String hashtag) {
+        this.hashtag = hashtag;
     }
 
     public NoteEntity(@NonNull String title) {

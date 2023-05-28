@@ -50,6 +50,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Util {
     public final static String FROM_SONG_FAVORITE= "FROM_SONG_FAVORITE";
@@ -134,6 +136,25 @@ public class Util {
         config.locale = locale;
 
         context.getResources().updateConfiguration(config, context.getResources().getDisplayMetrics());
+    }
+
+    public static String extractHashtags(String text) {
+        List<String> hashtags = new ArrayList<>();
+
+        // Regular expression to match hashtags
+        Pattern pattern = Pattern.compile("#\\w+");
+
+        // Find all matches in the text
+        Matcher matcher = pattern.matcher(text);
+        while (matcher.find()) {
+            String hashtag = matcher.group();
+            hashtags.add(hashtag);
+        }
+
+        // Join the hashtags with commas
+        String hashtagString = String.join(", ", hashtags);
+
+        return hashtagString;
     }
 
     public static String formatNumberToString(float number){

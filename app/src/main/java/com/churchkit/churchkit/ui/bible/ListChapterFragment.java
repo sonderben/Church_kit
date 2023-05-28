@@ -145,7 +145,7 @@ public class ListChapterFragment extends Fragment {
 
                 holder.date.setVisibility(View.GONE);
 
-                holder.chapter.setText(bibleChapter.getPosition()+"");
+                holder.chapter.setText( Util.formatNumberToString( bibleChapter.getPosition() ) );
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

@@ -7,9 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.churchkit.churchkit.database.ListDataDownloaded;
-import com.churchkit.churchkit.database.entity.bible.BibleInfo;
 import com.churchkit.churchkit.database.entity.song.SongInfo;
-import com.churchkit.churchkit.repository.bible.BibleInfoRepository;
 import com.churchkit.churchkit.repository.song.SongInfoRepository;
 
 import java.util.List;
@@ -31,7 +29,7 @@ public class SongInfoViewModel extends AndroidViewModel {
         songInfoRepository.insert(bibleInfo);
     }
 
-    public LiveData<List<SongInfo>> getAllBibleInfo(){
+    public LiveData<List<SongInfo>> getAllSongInfo(){
         return songInfoRepository.getAllSongInfo();
     }
 }

@@ -7,6 +7,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
+    <View
+        android:id="@+id/point2"
+        android:layout_width="@dimen/_7sdp"
+        android:layout_height="@dimen/_7sdp"
+        app:layout_constraintStart_toEndOf="@id/testament"
+        app:layout_constraintTop_toTopOf="@id/language"
+        app:layout_constraintBottom_toBottomOf="@id/language"
+        android:background="@drawable/bg_point_circle"
+        android:layout_marginLeft="@dimen/_10sdp"
+        />
+
+    <TextView
+        android:id="@+id/size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:min="0"
+        android:max="100"
+        app:layout_constraintStart_toEndOf="@id/point2"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:text="1.5 KB"/>
+
     <RadioButton
         android:id="@+id/checkbox"
         android:layout_width="@dimen/_24sdp"
@@ -61,7 +85,7 @@
         android:layout_width="@dimen/_7sdp"
         android:layout_height="@dimen/_7sdp"
         app:layout_constraintStart_toEndOf="@id/language"
-       app:layout_constraintTop_toTopOf="@id/language"
+        app:layout_constraintTop_toTopOf="@id/language"
         app:layout_constraintBottom_toBottomOf="@id/language"
         android:background="@drawable/bg_point_circle"
         android:layout_marginLeft="@dimen/_10sdp"

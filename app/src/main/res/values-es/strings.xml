@@ -7,7 +7,7 @@
     <string name="bible">Biblia</string>
     <string name="song">Canción</string>
     <string name="song_hope">Canción de esperanza</string>
-    <string name="version_app">Versión: 1.0.0</string>
+    <string name="version_app">"Versión: "</string>
     <string name="donate">Haz una Donación</string>
     <string name="about">Acerca</string>
     <string name="favorite">Favoritos</string>
@@ -26,8 +26,16 @@
     <string name="display">Visualización</string>
     <string name="history">historial</string>
     <string name="old">Viejo</string>
+    <string name="search_by_verse">Buscar por verso</string>
+    <string name="search_by_ref">Buscar por título o referencia</string>
     <string name="and">y</string>
     <string name="testament">testamento</string>
     <string name="restart_2_use_new_">Reinicia la aplicación para usar la nueva</string>
     <string name="part">partes</string>
+    <string name="go_to">Ir a</string>
+    <string name="to_download_a_bible">para descargar una biblia</string>
+    <string name="to_download_a_song_book">para descargar un libro de canciones</string>
+    <string name="select_bible">Seleccionar una Biblia</string>
+    <string name="search_by">Búsqueda por</string>
+    <string name="note">Nota</string>
 </resources>

@@ -4,6 +4,7 @@ import static com.churchkit.churchkit.Util.BOOK_MARK;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,6 +29,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -35,6 +37,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.churchkit.churchkit.CKPreferences;
@@ -55,6 +58,8 @@ import com.churchkit.churchkit.ui.bible.ChapterDialogFragment;
 import com.churchkit.churchkit.ui.song.SongDialogFragment;
 import com.churchkit.churchkit.ui.util.ColorPicker;
 import com.churchkit.churchkit.ui.util.DrawerCitacion;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -97,14 +102,26 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_editor_bottom_sheet, container, false);
+
+        getDialog().setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                BottomSheetDialog d = (BottomSheetDialog) dialog;
+                View bottomSheetInternal = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+                BottomSheetBehavior.from(bottomSheetInternal).setState(BottomSheetBehavior.STATE_EXPANDED);
+
+            }
+        });
+
+
+        CoordinatorLayout root = (CoordinatorLayout) inflater.inflate(R.layout.fragment_editor_bottom_sheet, container, false);
 
         bookMarkLayout = root.findViewById(R.id.linear_layout_color_picker);
         imageView = root.findViewById(R.id.my_image_view);
         layoutPhoto = root.findViewById(R.id.layout_photo);
         action = root.findViewById(R.id.action);
         randomColor = root.findViewById(R.id.random_color);
-        randomImage = root.findViewById(R.id.random_img);
+        //randomImage = root.findViewById(R.id.random_img);
         textFont = root.findViewById(R.id.text_font);
         recyclerViewListImg = root.findViewById(R.id.recycler_view_pexels);
 
@@ -125,14 +142,17 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
         title = root.findViewById(R.id.title);
         description = root.findViewById(R.id.description);
 
-        recyclerViewListImg.setLayoutManager( new GridLayoutManager(getContext(),3));
+        recyclerViewListImg.setLayoutManager( new GridLayoutManager(getContext(),4));
          adapterListImage = new AdapterListImage();
         recyclerViewListImg.setAdapter( adapterListImage );
         updateAdapter();
 
-        //ckSongDb = ckSongDb.getInstance( getContext() );
 
-        //imageView.setOnTouchListener(new MyScaleGestures(getContext()));
+
+
+
+
+
 
         List<Integer> imgId = Arrays.asList(
                 R.drawable.img1,
@@ -207,7 +227,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
 
             }
         });
-        randomImage.setOnClickListener(new View.OnClickListener() {
+        /*randomImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Drawable drawable = getContext().getDrawable(imgId.get(imageIndex));
@@ -219,7 +239,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
                 if (imgId.size() - 1 == imageIndex)
                     imageIndex = 0;
             }
-        });
+        });*/
         textFont.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -281,6 +301,12 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
 
         return root;
 
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        return super.onCreateDialog(savedInstanceState);
     }
 
     private void initEditorBookMark() {
@@ -396,7 +422,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
     private static String mId;
     private static String mRef;
     private LinearLayout action, layoutPhoto;
-    private TextView randomColor, randomImage, textFont;
+    private TextView randomColor, textFont;
     private DrawerCitacion drawerCitacion = null;
     private int imageIndex = 0, colorIndex = 0;
     private int newColorIndex = 0;
@@ -577,7 +603,8 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
 
             holder.photographer.setText( "By "+pexelsPhoto.getPhotographer() );
             Glide.with(holder.itemView.getContext())
-                    .load(pexelsPhoto.getUrlPortrait())
+                    .load(pexelsPhoto.getUrlSmall())
+                    //.apply(new RequestOptions().override(720,900))
                     //.centerCrop()
                     .into(new CustomTarget<Drawable>() {
 
@@ -586,15 +613,34 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
                             holder.img.setImageDrawable(resource);
 
                             holder.itemView.setOnClickListener(v -> {
-                                Toast.makeText(getContext(),pexelsPhoto.getPhotographer(),Toast.LENGTH_SHORT).show();
 
 
-                                //Drawable drawable = getContext().getDrawable(imgId.get(imageIndex));
-                                imageIndex += 1;
-                                Bitmap bitmap = ((BitmapDrawable) resource).getBitmap(); //
-                                Bitmap bit = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-                                bitmapToSave = drawerCitacion.getCitationWithBgColor(bit);
-                                imageView.setImageBitmap(bitmapToSave);
+
+                                //imageView.setImageBitmap(bitmapToSave);
+
+
+
+
+
+
+                                Glide.with(getContext())
+                                        .asBitmap()
+                                        .load(pexelsPhoto.getUrlPortrait())
+                                        .apply(new RequestOptions().override(1024,1820))
+                                        .into(new CustomTarget<Bitmap>() {
+                                            @Override
+                                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                                //final Bitmap bitmap = resource; //
+                                                bitmapToSave = drawerCitacion.getCitationWithBgColor(resource);
+                                                imageView.setImageBitmap(bitmapToSave);
+                                            }
+
+                                            @Override
+                                            public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                                            }
+                                        });
+
 
 
 

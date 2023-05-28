@@ -26,4 +26,8 @@ public class SongRepository extends BaseRepository<SongDao, Song>{
         return dao.getSongById(id);
     }
 
+    public LiveData<List<Song>> getAllSong(){
+        return dao.getAllSong();
+    }
+
 }

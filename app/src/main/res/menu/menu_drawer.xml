@@ -49,6 +49,11 @@
                     android:icon="@drawable/faq_24"
                     android:title="FAQ" />
                 <item
+                    android:id="@+id/version"
+                    android:icon="@drawable/song_24"
+                    app:actionViewClass="android.widget.TextView"
+                    android:title="@string/version_app" />
+                <item
                     android:id="@+id/donateFragment"
                     app:iconTint="#00695C"
                     android:visible="false"
@@ -56,12 +61,21 @@
                     android:title="@string/donate" />
             </menu>
         </item>
-        <item
-            android:icon="@drawable/song_24"
-            android:title="@string/version_app" />
+
 
 
 
 
     </group>
+    <group
+        android:id="@+id/nav_footer">
+
+
+        <item
+            android:id="@+id/developer"
+            android:checkable="false"
+            app:actionViewClass="android.widget.TextView"
+            />
+    </group>
+
 </menu>

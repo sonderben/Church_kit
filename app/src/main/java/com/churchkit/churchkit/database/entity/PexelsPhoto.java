@@ -16,16 +16,18 @@ public class PexelsPhoto {
     private String avgColor;
     private String urlOriginal;
     private String urlMedium;
+    private String urlSmall;
     private String urlTiny;
     private String urlPortrait;
     private String  urlLandscape;
     private String alt;
 
-    public PexelsPhoto(long id,int width, int height, String url, String photographer, String avgColor, String urlOriginal, String urlMedium, String urlTiny, String urlPortrait, String urlLandscape, String alt) {
+    public PexelsPhoto(long id,int width, int height, String url, String photographer, String avgColor, String urlOriginal, String urlMedium, String urlSmall, String urlTiny, String urlPortrait, String urlLandscape, String alt) {
         this.id = id;
         this.width = width;
         this.height = height;
         this.url = url;
+        this.urlSmall = urlSmall;
         this.photographer = photographer;
         this.avgColor = avgColor;
         this.urlOriginal = urlOriginal;
@@ -75,6 +77,7 @@ public class PexelsPhoto {
                 ", photographer='" + photographer + '\'' +
                 ", urlOriginal='" + urlOriginal + '\'' +
                 ", urlMedium='" + urlMedium + '\'' +
+                ", urlSmall='" + urlSmall + '\'' +
                 ", urlPortrait='" + urlPortrait + '\'' +
                 ", urlLandscape='" + urlLandscape + '\'' +
                 '}';
@@ -86,6 +89,10 @@ public class PexelsPhoto {
 
     public String getUrlTiny() {
         return urlTiny;
+    }
+
+    public String getUrlSmall() {
+        return urlSmall;
     }
 
     public String getUrlPortrait() {

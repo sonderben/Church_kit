@@ -31,7 +31,11 @@
         android:id="@+id/historyFragment"
         android:name="com.churchkit.churchkit.ui.more.MoreFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/more_history" />
+        tools:layout="@layout/more_history" >
+        <action
+            android:id="@+id/action_historyFragment_to_dataFragment"
+            app:destination="@id/dataFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/listSongsFragment"
@@ -140,11 +144,20 @@
     <fragment
         android:id="@+id/editerNoteFragment"
         android:name="com.churchkit.churchkit.ui.note.EditerNoteFragment"
-        android:label="fragment_editer_note"
+        android:label="@string/note"
         tools:layout="@layout/fragment_editer_note" >
         <argument
             android:name="DIRECTORY"
             app:argType="com.churchkit.churchkit.database.entity.note.NoteDirectoryEntity" />
+    </fragment>
+    <fragment
+        android:id="@+id/dataFragment"
+        android:name="com.churchkit.churchkit.ui.data.DataFragment"
+        android:label="fragment_data"
+        tools:layout="@layout/fragment_data" >
+        <argument
+            android:name="FROM"
+            app:argType="string" />
     </fragment>
 
 </navigation>

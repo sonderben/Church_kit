@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -28,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.R;
+import com.churchkit.churchkit.database.entity.bible.BibleBook;
 import com.churchkit.churchkit.ui.adapter.AutoCompleteTextViewAdapter;
 import com.churchkit.churchkit.ui.adapter.bible.BibleAdapter;
 import com.churchkit.churchkit.database.CKBibleDb;
@@ -50,7 +52,7 @@ public class BibleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        FragmentBibleBinding bookmarkBinding = FragmentBibleBinding.inflate(getLayoutInflater());
+         bookmarkBinding = FragmentBibleBinding.inflate(getLayoutInflater());
         mRecyclerView = bookmarkBinding.recyclerview;
         autoCompleteTextView = bookmarkBinding.search;
 
@@ -70,28 +72,26 @@ public class BibleFragment extends Fragment {
 
 
         mAdapter = new BibleAdapter(getActivity().getSupportFragmentManager());
-        bibleBookViewModel.getAllBibleBook().observe(requireActivity(), bibleBooks -> {
-            mAdapter.config(sharedPreferences.getBoolean(IS_GROUP_BY_TESTAMENT, true) ? 0 : 1,bibleBooks);
+        bibleBooksLiveData =bibleBookViewModel.getAllBibleBook();
+
+        bibleBooksLiveData.observe(requireActivity(), bibleBooks -> {
+            mAdapter.config(sharedPreferences.getBoolean(IS_GROUP_BY_TESTAMENT, false) ? 0 : 1,bibleBooks);
             mRecyclerView.setAdapter(mAdapter);
             mAdapter.notifyDataSetChanged();
 
         });
 
 
-            bibleBookViewModel.getAmountBookOldTestament().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-                @Override
-                public void onChanged(Integer integer) {
-                    mAdapter.setAmountOldTestament(integer);
-                    mAdapter.notifyItemChanged(0);
-                }
-            });
+        amountBookOldTestamentLiveData = bibleBookViewModel.getAmountBookOldTestament();
+        amountBookOldTestamentLiveData.observe(getViewLifecycleOwner(), integer -> {
+            mAdapter.setAmountOldTestament(integer);
+            mAdapter.notifyItemChanged(0);
+        });
 
-            bibleBookViewModel.getAmountBookNewTestament().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-                @Override
-                public void onChanged(Integer integer) {
-                    mAdapter.setAmountNewTestament(integer);
-                    mAdapter.notifyItemChanged(1);
-                }
+        amountBookNewTestamentLiveData = bibleBookViewModel.getAmountBookNewTestament();
+        amountBookNewTestamentLiveData.observe(getViewLifecycleOwner(), integer -> {
+                mAdapter.setAmountNewTestament(integer);
+                mAdapter.notifyItemChanged(1);
             });
 
 
@@ -114,19 +114,23 @@ public class BibleFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                if (ckPreferences.getBibleTypeSearch() == CKPreferences.CHAPTER_BIBLE_TYPE_SEARCH)
-                    bibleChapterViewModel.bibleChapterFullTextSearch("*" + s.toString() + "*").observe(getViewLifecycleOwner(), bibleChapters -> {
+                if (ckPreferences.getBibleTypeSearch() == CKPreferences.CHAPTER_BIBLE_TYPE_SEARCH) {
+                    searchBibleChapterLiveData = bibleChapterViewModel.bibleChapterFullTextSearch("*" + s.toString() + "*");
+                    searchBibleChapterLiveData.observe(getViewLifecycleOwner(), bibleChapters -> {
                         autoCompleteAdapter.setSongs(bibleChapters);
                         autoCompleteTextView.setAdapter(autoCompleteAdapter);
                     });
-                else
-                    CKBibleDb.getInstance( BibleFragment.this.getContext() ).bibleVerseDao().search("*" + s.toString() + "*").observe(getViewLifecycleOwner(), new Observer<List<BibleVerse>>() {
+                }
+                else {
+                    searchBibleVerseLiveData = CKBibleDb.getInstance(BibleFragment.this.getContext()).bibleVerseDao().search("*" + s.toString() + "*");
+                    searchBibleVerseLiveData.observe(getViewLifecycleOwner(), new Observer<List<BibleVerse>>() {
                         @Override
                         public void onChanged(List<BibleVerse> bibleVerses) {
                             autoCompleteAdapter.setSongs(bibleVerses);
                             autoCompleteTextView.setAdapter(autoCompleteAdapter);
                         }
                     });
+                }
             }
 
             @Override
@@ -165,7 +169,8 @@ public class BibleFragment extends Fragment {
             dialogFragment.show(getChildFragmentManager(), "");
         } else {
             BibleVerse verse = (BibleVerse) autoCompleteAdapter.getItem(position);
-            bibleChapterViewModel.getChapterByVerseId(verse.getBibleChapterId()).observe(getViewLifecycleOwner(), bibleChapter -> {
+            bibleChapterByVerseIdLiveData = bibleChapterViewModel.getChapterByVerseId(verse.getBibleChapterId());
+            bibleChapterByVerseIdLiveData.observe(getViewLifecycleOwner(), bibleChapter -> {
                 ChapterDialogFragment dialogFragment = ChapterDialogFragment.newInstance(bibleChapter);
                 dialogFragment.show(getChildFragmentManager(), "");
             });
@@ -226,17 +231,67 @@ public class BibleFragment extends Fragment {
         }
     }
 
-    RecyclerView mRecyclerView;
-    BibleAdapter mAdapter;
-    LinearLayout layInfo;
-    MaterialAutoCompleteTextView autoCompleteTextView;
+    private RecyclerView mRecyclerView;
+    FragmentBibleBinding bookmarkBinding;
+    private BibleAdapter mAdapter;
+    private LinearLayout layInfo;
+    private MaterialAutoCompleteTextView autoCompleteTextView;
     private final String IS_GROUP_BY_TESTAMENT = "IS_GROUP_BY_TESTAMENT";
-    SharedPreferences sharedPreferences;
-    BibleChapterViewModel bibleChapterViewModel;
+    private SharedPreferences sharedPreferences;
+    private BibleChapterViewModel bibleChapterViewModel;
     private AutoCompleteTextViewAdapter autoCompleteAdapter;
     private CKPreferences ckPreferences;
     private BibleBookViewModel bibleBookViewModel;
-    BibleVerseViewModel bibleVerseViewModel;
+    private BibleVerseViewModel bibleVerseViewModel;
+
+    private LiveData< List<BibleBook> > bibleBooksLiveData;
+    private LiveData< Integer > amountBookOldTestamentLiveData;
+    private LiveData< Integer > amountBookNewTestamentLiveData;
+    private LiveData< List<BibleChapter> > searchBibleChapterLiveData;
+    private LiveData< List<BibleVerse> > searchBibleVerseLiveData;
+    private LiveData<BibleChapter> bibleChapterByVerseIdLiveData;
+
+    @Override
+    public void onDestroy() {
+        //removeLiveDataObservers();
+         bookmarkBinding = null;
+        super.onDestroy();
+
+    }
+
+    @Override
+    public void onStop() {
+        removeLiveDataObservers();
+        super.onStop();
+    }
+
+    private void removeLiveDataObservers(){
+        if ( bibleBooksLiveData != null && bibleBooksLiveData.hasObservers() ) {
+            bibleBooksLiveData.removeObservers(getViewLifecycleOwner());
+            bibleBooksLiveData = null;
+        }
+        if ( amountBookOldTestamentLiveData != null && amountBookOldTestamentLiveData.hasObservers() ) {
+            amountBookOldTestamentLiveData.removeObservers(getViewLifecycleOwner());
+            amountBookOldTestamentLiveData = null;
+        }
+        if ( amountBookNewTestamentLiveData != null && amountBookNewTestamentLiveData.hasObservers() ) {
+            amountBookNewTestamentLiveData.removeObservers(getViewLifecycleOwner());
+            amountBookOldTestamentLiveData = null;
+        }
+        if ( searchBibleChapterLiveData != null && searchBibleChapterLiveData.hasObservers() ) {
+            searchBibleChapterLiveData.removeObservers(getViewLifecycleOwner());
+            searchBibleChapterLiveData = null;
+        }
+        if ( searchBibleVerseLiveData != null && searchBibleVerseLiveData.hasObservers() ) {
+            searchBibleVerseLiveData.removeObservers(getViewLifecycleOwner());
+            searchBibleVerseLiveData = null;
+        }
+        if ( bibleChapterByVerseIdLiveData != null && bibleChapterByVerseIdLiveData.hasObservers() ) {
+            bibleChapterByVerseIdLiveData.removeObservers(getViewLifecycleOwner());
+            bibleChapterByVerseIdLiveData = null;
+        }
+
+    }
 
 
 }
