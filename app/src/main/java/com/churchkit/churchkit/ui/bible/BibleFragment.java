@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.MenuProvider;
@@ -24,6 +25,8 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -64,10 +67,18 @@ public class BibleFragment extends Fragment {
         bibleVerseViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().
                 getApplication()).create(BibleVerseViewModel.class);
 
-         layInfo = bookmarkBinding.layInfo;
+         infoDownloadSong = bookmarkBinding.infoDownloadBible;
 
 
         sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+
+        infoDownloadSong.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(requireView());
+            navController.getGraph().findNode(R.id.dataFragment).setLabel("Download a Bible");
+            Bundle bundle = new Bundle();
+            bundle.putString("FROM","BIBLE");
+            navController.navigate(R.id.action_bookmarkFragment_to_dataFragment,bundle);
+        });
 
 
 
@@ -218,23 +229,39 @@ public class BibleFragment extends Fragment {
 
     @Override
     public void onResume() {
+        TextView tv= getActivity().findViewById(R.id.bible);
+        if (!ckPreferences.isCurrentAndNextBibleEqual()  && !ckPreferences.isCurrentAndNextSongEqual() ){
+            tv.setText(getString(R.string.restart_2_use_new_)+" "+getString(R.string.bible)+" "+getString(R.string.and)+" "+getString(R.string.song) );
+            tv.setVisibility(View.VISIBLE);
+        }else if (!ckPreferences.isCurrentAndNextBibleEqual()){
+            tv.setText(getString(R.string.restart_2_use_new_)+" "+getString(R.string.bible) );
+            tv.setVisibility(View.VISIBLE);
+        }
+        else if (!ckPreferences.isCurrentAndNextSongEqual()){
+            tv.setText(getString(R.string.restart_2_use_new_)+" "+getString(R.string.song) );
+            tv.setText( tv.getText().toString().replace("la nouvelle","le nouveau") );
+            tv.setVisibility(View.VISIBLE);
+        }else {
+            tv.setVisibility(View.GONE);
+        }
 
-        super.onResume();
+
         autoCompleteTextView.setHint( ckPreferences.isBibleTypeSearchIsVerse()?
                 getString(R.string.search_by_verse):getString(R.string.search_by_ref) );
 
 
         if (ckPreferences.isZeroBibleDownloaded()  ){
-            layInfo.setVisibility(View.VISIBLE);
+            infoDownloadSong.setVisibility(View.VISIBLE);
         }else {
-            layInfo.setVisibility(View.GONE);
+            infoDownloadSong.setVisibility(View.GONE);
         }
+        super.onResume();
     }
 
     private RecyclerView mRecyclerView;
     FragmentBibleBinding bookmarkBinding;
     private BibleAdapter mAdapter;
-    private LinearLayout layInfo;
+    private TextView infoDownloadSong;
     private MaterialAutoCompleteTextView autoCompleteTextView;
     private final String IS_GROUP_BY_TESTAMENT = "IS_GROUP_BY_TESTAMENT";
     private SharedPreferences sharedPreferences;

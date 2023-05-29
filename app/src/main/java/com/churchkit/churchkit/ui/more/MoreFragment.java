@@ -51,7 +51,7 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
         biblePreference.setSummary( BibleInfo.getBibleInfoNameById( ckPreferences.getBibleName() ));
         songPreference.setSummary(SongInfo.getBibleInfoNameById( ckPreferences.getSongName() ));
 
-        ActivityResultLauncher<Intent> dataActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+     /*   ActivityResultLauncher<Intent> dataActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
                 if (result.getResultCode() == Activity.RESULT_OK){
@@ -66,7 +66,7 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
                     //biblePreference.setSummary(defaultBibleId);
                 }
             }
-        });
+        });*/
 
         seekBarPreference.setSummary(ckPreferences.getLetterSize()+" px");
 

@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.MenuProvider;
@@ -22,6 +24,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,7 +56,7 @@ public class SongHopeFragment extends Fragment {
         FragmentSongHopeBinding songBinding = FragmentSongHopeBinding.inflate(getLayoutInflater());
         View root = songBinding.getRoot();
 
-        layInfo = songBinding.layInfo;
+        infoDownloadBible = songBinding.infoDownloadBible;
 
         songBookViewModel = ViewModelProvider.AndroidViewModelFactory.
                 getInstance(getActivity().getApplication()).create(SongBookViewModel.class);
@@ -75,6 +79,17 @@ public class SongHopeFragment extends Fragment {
 
 
          ckPreferences = new CKPreferences(getContext());
+
+        infoDownloadBible.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(requireView());
+            navController.getGraph().findNode(R.id.dataFragment).setLabel("Download a song");
+
+            Bundle bundle = new Bundle();
+            bundle.putString("FROM","SONG");
+
+            navController.navigate(R.id.action_homeFragment_to_dataFragment,bundle);
+
+        });
 
 
 
@@ -206,12 +221,28 @@ public class SongHopeFragment extends Fragment {
 
     @Override
     public void onResume() {
+        TextView tv= getActivity().findViewById(R.id.bible);
+        if (!ckPreferences.isCurrentAndNextBibleEqual()  && !ckPreferences.isCurrentAndNextSongEqual() ){
+            tv.setText(getString(R.string.restart_2_use_new_)+" "+getString(R.string.bible)+" "+getString(R.string.and)+" "+getString(R.string.song) );
+            tv.setVisibility(View.VISIBLE);
+        }else if (!ckPreferences.isCurrentAndNextBibleEqual()){
+            tv.setText(getString(R.string.restart_2_use_new_)+" "+getString(R.string.bible) );
+            tv.setVisibility(View.VISIBLE);
+        }
+        else if (!ckPreferences.isCurrentAndNextSongEqual()){
+            tv.setText(getString(R.string.restart_2_use_new_)+" "+getString(R.string.song) );
+            tv.setText( tv.getText().toString().replace("la nouvelle","le nouveau") );
+            tv.setVisibility(View.VISIBLE);
+        }else {
+            tv.setVisibility(View.GONE);
+        }
+
         autoCompleteTextView.setHint( ckPreferences.isSongTypeSearchIsVerse()?
                 getString(R.string.search_by_verse):getString(R.string.search_by_ref) );
         if (ckPreferences.isZeroSongDownloaded()  ){
-            layInfo.setVisibility(View.VISIBLE);
+            infoDownloadBible.setVisibility(View.VISIBLE);
         }else {
-            layInfo.setVisibility(View.GONE);
+            infoDownloadBible.setVisibility(View.GONE);
         }
         super.onResume();
     }
@@ -220,7 +251,7 @@ public class SongHopeFragment extends Fragment {
     private final int GRID = 2;
     private final String LIST_GRID = "LIST_GRID";
     CKPreferences ckPreferences;
-    LinearLayout layInfo;
+    TextView infoDownloadBible;
     MaterialAutoCompleteTextView autoCompleteTextView;
     RecyclerView mRecyclerView;
     SongHopeAdapter homeAdapter;

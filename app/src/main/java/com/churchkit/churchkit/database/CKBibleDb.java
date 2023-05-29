@@ -75,6 +75,10 @@ public abstract class CKBibleDb extends RoomDatabase {
     public static synchronized CKBibleDb getInstance(Context context) {
         preferences = new CKPreferences(context);
         String defBible = preferences.getBibleName();
+        System.out.println("we sil nil: "+defBible);
+        /*if (defBible.equals("null"))
+            return null;*/
+        System.out.println("we sil nil2: "+defBible.equals("-1"));
 
         System.out.println("CKBibleDb");
 

@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_bookmarkFragment_to_listBookByTestamentFragment"
             app:destination="@id/listChapterByTestamentFragment" />
+        <action
+            android:id="@+id/action_bookmarkFragment_to_dataFragment"
+            app:destination="@id/dataFragment" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -26,6 +29,9 @@
         <action
             android:id="@+id/action_homeFragment_to_listSongsFragment2"
             app:destination="@id/listSongsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_dataFragment"
+            app:destination="@id/dataFragment" />
     </fragment>
     <fragment
         android:id="@+id/historyFragment"

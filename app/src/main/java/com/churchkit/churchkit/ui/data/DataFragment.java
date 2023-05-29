@@ -1,8 +1,10 @@
 package com.churchkit.churchkit.ui.data;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -39,6 +41,11 @@ import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
+import com.skydoves.balloon.ArrowOrientation;
+import com.skydoves.balloon.ArrowPositionRules;
+import com.skydoves.balloon.Balloon;
+import com.skydoves.balloon.BalloonAnimation;
+import com.skydoves.balloon.BalloonSizeSpec;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -159,6 +166,14 @@ public class DataFragment extends Fragment {
             holder.size.setText( bibleInfo.getSize() );
 
             holder.download.setVisibility(bibleInfo.isDownloaded() ? View.GONE : View.VISIBLE);
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setToolTop().showAlignLeft(holder.download);
+                }
+            });
+
 
             if (bibleInfo instanceof SongInfo){
                 SongInfo songInfo = (SongInfo) bibleInfo;
@@ -557,6 +572,34 @@ public class DataFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+    public Balloon setToolTop(){
+
+        Context context = getContext();
+
+        Balloon balloon = new Balloon.Builder(context)
+                .setArrowSize(10)
+                .setArrowOrientation(ArrowOrientation.END)
+                .setArrowPositionRules(ArrowPositionRules.ALIGN_ANCHOR)
+                .setArrowPosition(0.5f)
+                .setWidth(BalloonSizeSpec.WRAP)
+                .setHeight(BalloonSizeSpec.WRAP)
+                .setPadding(10)
+                .setTextSize(15f)
+                .setCornerRadius(4f)
+                .setAlpha(0.9f)
+                .setText("Click to download")
+                .setTextColor(ContextCompat.getColor(context, R.color.white))
+                .setTextIsHtml(true)
+                //.setIconDrawable(ContextCompat.getDrawable(context, R.drawable.donate_24))
+                .setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                //.setOnBalloonClickListener(onBalloonClickListener)
+                .setBalloonAnimation(BalloonAnimation.FADE)
+                .setLifecycleOwner(getViewLifecycleOwner())
+                .build();
+        return balloon;
 
     }
 
