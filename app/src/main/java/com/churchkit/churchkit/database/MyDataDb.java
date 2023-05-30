@@ -19,13 +19,14 @@ import com.churchkit.churchkit.database.dao.note.NoteDirectoryDao;
 import com.churchkit.churchkit.database.entity.PexelsPhoto;
 import com.churchkit.churchkit.database.entity.note.NoteDirectoryEntity;
 import com.churchkit.churchkit.database.entity.note.NoteEntity;
+import com.churchkit.churchkit.database.entity.note.NoteFtsEntity;
 import com.churchkit.churchkit.util.Converter;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 
 @TypeConverters(Converter.class)
-@Database(entities = {NoteDirectoryEntity.class, NoteEntity.class, PexelsPhoto.class},version = 1)
+@Database(entities = {NoteDirectoryEntity.class, NoteEntity.class, NoteFtsEntity.class, PexelsPhoto.class},version = 1)
 public abstract class MyDataDb extends RoomDatabase {
     public abstract NoteDao noteDao();
     public abstract NoteDirectoryDao noteDirectoryDao();
@@ -60,7 +61,7 @@ public abstract class MyDataDb extends RoomDatabase {
                             //note.put("id",1);
                             note.put("title","Default note");
                             //note.put("note_amount",0);
-                            String noteString = "Welcome to Church kit\n Start creating and editing your notes.\n The version 2 of Church kit will allow you to do many interesting thing in note\n\n\n\n\n #ChurchKit #defaultNote #"+df.format(time.getTime()).replace(" ","");
+                            String noteString = "Welcome to Church kit\nStart creating and editing your notes.\nThe version 2 of Church kit will allow you to do many interesting thing in note\n\n\n\n\n#ChurchKit #defaultNote #"+df.format(time.getTime()).replace(" ","");
                             note.put("noteText", noteString);
                             note.put("date", Calendar.getInstance().getTimeInMillis());
                             note.put("note_directory_id",(int)a);

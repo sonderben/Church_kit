@@ -30,6 +30,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
                 android:src="@drawable/more_24"
+                android:visibility="invisible"
                 android:padding="@dimen/_5sdp"
                 app:tint="@color/colorPrimary"
                 app:layout_constraintStart_toEndOf="@id/directory"

@@ -8,12 +8,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.Observer;
+import androidx.lifecycle.LiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,9 +24,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.Util;
+import com.churchkit.churchkit.modelview.note.NoteViewModel;
 import com.churchkit.churchkit.ui.adapter.note.NoteDirectoryAdapter;
 import com.churchkit.churchkit.database.MyDataDb;
 import com.churchkit.churchkit.database.entity.note.BaseNoteEntity;
@@ -32,8 +36,10 @@ import com.churchkit.churchkit.database.entity.note.DirectoryWithNote;
 import com.churchkit.churchkit.database.entity.note.NoteDirectoryEntity;
 import com.churchkit.churchkit.modelview.note.NoteDirectoryViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -63,17 +69,23 @@ public class NoteFragment extends Fragment implements View.OnClickListener{
     Animation rotate0to45 ;
     Animation rotate45To0 ;
 
+    MaterialAutoCompleteTextView searchAutoCompleteTextView;
+
 
     Animation fromBottom ;
     Animation toBottom ;
     View root;
     boolean isAddNoteOpened = false;
     NoteDirectoryViewModel noteDirectoryViewModel;
+    NoteViewModel noteViewModel;
     NoteDirectoryAdapter adapter;
+    LiveData<List<DirectoryWithNote>> directoryWithNoteListLiveData;
 //https://youtu.be/x_0QKBsF56U?t=4404
     public  void init(){
          rotate0to45 = AnimationUtils.loadAnimation(getContext(),R.anim.rotate_to_45);
          rotate45To0 = AnimationUtils.loadAnimation(getContext(),R.anim.rotate_to_0);
+
+        searchAutoCompleteTextView = root.findViewById(R.id.search);
 
          fromBottom = AnimationUtils.loadAnimation(getContext(),R.anim.from_bottom);
          toBottom = AnimationUtils.loadAnimation(getContext(),R.anim.from_bottom);
@@ -85,26 +97,53 @@ public class NoteFragment extends Fragment implements View.OnClickListener{
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
          adapter = new NoteDirectoryAdapter(getActivity(), NoteFragment.class);
         recyclerView.setAdapter( adapter );
-        noteDirectoryViewModel = new NoteDirectoryViewModel( MyDataDb.getInstance(getContext()).noteDirectoryDao() ) /*ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication()).create(NoteDirectoryViewModel.class)*/;
+        noteDirectoryViewModel = new NoteDirectoryViewModel( MyDataDb.getInstance(getActivity().getApplicationContext()).noteDirectoryDao() ) /*ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication()).create(NoteDirectoryViewModel.class)*/;
+        noteViewModel = new NoteViewModel(MyDataDb.getInstance(getActivity().getApplicationContext()).noteDao());
 
 
 
         newNote.setOnClickListener(this::onClick);
         newDirectory.setOnClickListener(this::onClick);
         add.setOnClickListener(this::onClick);
-        noteDirectoryViewModel.getAllDirectoryWithNote().observe(getViewLifecycleOwner(), new Observer<List<DirectoryWithNote>>() {
-            @Override
-            public void onChanged(List<DirectoryWithNote> directoryWithNotes) {
+        directoryWithNoteListLiveData = noteDirectoryViewModel.getAllDirectoryWithNote();
+        directoryWithNoteListLiveData.observe(getViewLifecycleOwner(), directoryWithNotes -> {
 
-                List<BaseNoteEntity> baseNoteEntityList = Util.convertToBaseNoteEntityList(directoryWithNotes);
-
+            List<BaseNoteEntity> baseNoteEntityList = Util.convertToBaseNoteEntityList(directoryWithNotes);
 
 
-                adapter.setBaseNoteEntityList( baseNoteEntityList );
-            }
+
+            adapter.setBaseNoteEntityList( baseNoteEntityList );
         });
 
+        searchAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().length() > 2)
+                    noteViewModel.searchNote("*"+s.toString()+"*").observe(getViewLifecycleOwner(), noteEntities -> {
+                        List<BaseNoteEntity> baseNoteEntityList = new ArrayList<>(noteEntities.size());
+                        for (int i = 0; i < noteEntities.size(); i++) {
+                            baseNoteEntityList.add( noteEntities.get(i) );
+                        }
+                        adapter.setBaseNoteEntityList( baseNoteEntityList );
+                    });
+                else {
+                   //if (adapter.baseNoteEntityListIsEmpty()){
+                       List<BaseNoteEntity> baseNoteEntityList = Util.convertToBaseNoteEntityList(directoryWithNoteListLiveData.getValue());
+                       adapter.setBaseNoteEntityList( baseNoteEntityList );
+                   //}
+                }
+            }
+        });
 
     }
 
@@ -138,8 +177,6 @@ public class NoteFragment extends Fragment implements View.OnClickListener{
                 setVisibility();
                 break;
             case R.id.new_note:
-                /*Intent intent = new Intent(getActivity(), EditNoteActivity.class);
-                getActivity().startActivity(intent);*/
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("NOTE",null);
 
@@ -182,6 +219,8 @@ public class NoteFragment extends Fragment implements View.OnClickListener{
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+
 
     private void onCreateMenu() {
         getActivity().addMenuProvider(new MenuProvider() {

@@ -16,4 +16,7 @@ public class NoteRepository extends BaseRepository<NoteDao, NoteEntity> {
     public LiveData<List<NoteEntity>> getAllNoteByNoteDirectory(int id){
         return dao.getAllNoteByNoteDirectory(id);
     }
+    public LiveData<List<NoteEntity>> searchNote(String textSearch){
+        return dao.search(textSearch);
+    }
 }

@@ -10,6 +10,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="main_bg">#000</color>
     <color name="primary_text">#97A8C3</color>
+    <color name="white_black">#FFFFFF</color>
 
     <color name="bg_list_item">#101010</color>
     <color name="black">#FF000000</color>

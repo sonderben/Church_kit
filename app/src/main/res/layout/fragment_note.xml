@@ -14,7 +14,7 @@
         android:layout_height="48dp"
         android:layout_marginTop="@dimen/_20sdp"
         android:background="@drawable/bg_edittext"
-        android:drawableRight="@drawable/search_option_24"
+        android:hint="@string/search_a_note"
         android:drawableTint="@color/color_primary"
         android:inputType="textCapWords"
         android:paddingLeft="12dp"

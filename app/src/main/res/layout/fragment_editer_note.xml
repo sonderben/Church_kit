@@ -16,6 +16,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:gravity="top|left"
+        android:fontFamily="@font/sono_regular"
+        android:background="@android:color/transparent"
         android:layout_margin="@dimen/_10sdp"
         android:inputType="textMultiLine|textNoSuggestions"
         android:textSize="@dimen/_14ssp"

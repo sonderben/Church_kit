@@ -13,6 +13,10 @@
     <color name="primary_text">#374151</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="white_black">#000000</color>
+
+    <color name="gray">#ccc</color>
+    <color name="info">#FF8F00</color>
 
     <color name="colorPrimaryDark">#121C64</color>
     <color name="colorEditorItemToolbar">#5A5959</color>

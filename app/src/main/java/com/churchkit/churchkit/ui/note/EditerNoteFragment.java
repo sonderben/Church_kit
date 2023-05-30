@@ -8,12 +8,15 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 
 import android.text.Editable;
 import android.text.InputType;
+import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
@@ -52,6 +55,11 @@ import com.churchkit.churchkit.modelview.note.NoteDirectoryViewModel;
 import com.churchkit.churchkit.modelview.note.NoteViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.skydoves.balloon.ArrowOrientation;
+import com.skydoves.balloon.ArrowPositionRules;
+import com.skydoves.balloon.Balloon;
+import com.skydoves.balloon.BalloonAnimation;
+import com.skydoves.balloon.BalloonSizeSpec;
 
 
 public class EditerNoteFragment extends Fragment {
@@ -62,7 +70,6 @@ public class EditerNoteFragment extends Fragment {
     public EditerNoteFragment() {
         // Required empty public constructor
     }
-
 
 
 
@@ -83,6 +90,8 @@ public class EditerNoteFragment extends Fragment {
 
 
         activity = requireActivity();
+        SpannableString spannableString = new SpannableString("genial");
+        SpannableString.valueOf("");
 
 
 
@@ -156,11 +165,18 @@ public class EditerNoteFragment extends Fragment {
                 menuInflater.inflate(R.menu.menu_editor_note, menu);
 
                 editText= (EditText) menu.findItem(R.id.title).getActionView();
+                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                //editText.setLayoutParams(params);
+                editText.setSingleLine();
+
+
                 editText.setHint("Title");
-                editText.setWidth(300);
+                editText.setHintTextColor(ContextCompat.getColor(getContext(),R.color.gray));
+                editText.setWidth((int) getResources().getDimension(com.intuit.sdp.R.dimen._120sdp));
+                //editText.setMinWidth(600);
                 editText.setTextColor(Color.WHITE);
                 editText.setGravity(Gravity.START);
-                editText.setText("my title");
+                //editText.setText("my title");
                 if (note!=null)
                     editText.setText( note.getTitle());
 
@@ -184,6 +200,8 @@ public class EditerNoteFragment extends Fragment {
 
 
 
+
+
             }
 
             @Override
@@ -192,29 +210,33 @@ public class EditerNoteFragment extends Fragment {
                     getActivity().onBackPressed();
                     return true;
                 } else if (item.getItemId() == R.id.save) {
-                    //EditText editText = findViewById(R.id.editText);
-                    arEditText.clearFocus();
 
-                    InputMethodManager imm = (InputMethodManager) EditerNoteFragment.this.activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-
-
-
-                    if (note == null) {
-                        note = new NoteEntity(editText.getText().toString());
-
-
-                        note.setNoteDirectoryEntityId( noteDirectory!=null? noteDirectory.getId() : 1 );
-
-
-                        directoryViewModel.incrementAmountDefaultDirectory( noteDirectory!=null? noteDirectory.getId() : 1  );
+                    if (editText.getText().toString().isEmpty()){
+                        setToolTop( ).showAlignBottom(editText);
                     }else {
-                        //directoryViewModel.incrementAmountDefaultDirectory(  noteDirectory.getId() );
+                        arEditText.clearFocus();
+
+                        InputMethodManager imm = (InputMethodManager) EditerNoteFragment.this.activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+
+
+
+                        if (note == null) {
+                            note = new NoteEntity(editText.getText().toString());
+
+
+                            note.setNoteDirectoryEntityId( noteDirectory!=null? noteDirectory.getId() : 1 );
+
+
+                            directoryViewModel.incrementAmountDefaultDirectory( noteDirectory!=null? noteDirectory.getId() : 1  );
+                        }else {
+                            //directoryViewModel.incrementAmountDefaultDirectory(  noteDirectory.getId() );
+                        }
+                        note.setNoteText( arEditText.getText().toString() );
+                        note.setHashtag(Util.extractHashtags( arEditText.getText().toString() ));
+                        noteViewModel.insert(note);
+                        activity.onBackPressed();
                     }
-                    note.setNoteText( arEditText.getText().toString() );
-                    note.setHashtag(Util.extractHashtags( arEditText.getText().toString() ));
-                    noteViewModel.insert(note);
-                    activity.onBackPressed();
 
                 }
 
@@ -243,4 +265,31 @@ public class EditerNoteFragment extends Fragment {
 
     EditText editText;
     NoteDirectoryEntity noteDirectory;
+    public Balloon setToolTop(){
+
+        Context context = getContext();
+
+        Balloon balloon = new Balloon.Builder(context)
+                .setArrowSize(10)
+                .setArrowOrientation(ArrowOrientation.TOP)
+                .setArrowPositionRules(ArrowPositionRules.ALIGN_ANCHOR)
+                .setArrowPosition(0.5f)
+                .setWidth(BalloonSizeSpec.WRAP)
+                .setHeight(BalloonSizeSpec.WRAP)
+                .setPadding(10)
+                .setTextSize(15f)
+                .setCornerRadius(4f)
+                .setAlpha(0.9f)
+                .setText("Please enter a title first")
+                .setTextColor(ContextCompat.getColor(context, R.color.white))
+                .setTextIsHtml(true)
+                //.setIconDrawable(ContextCompat.getDrawable(context, R.drawable.donate_24))
+                .setBackgroundColor(ContextCompat.getColor(context, R.color.info))
+                //.setOnBalloonClickListener(onBalloonClickListener)
+                .setBalloonAnimation(BalloonAnimation.FADE)
+                .setLifecycleOwner(getViewLifecycleOwner())
+                .build();
+        return balloon;
+
+    }
 }

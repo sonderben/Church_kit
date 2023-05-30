@@ -4,14 +4,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.churchkit.churchkit.database.dao.note.NoteDao;
-import com.churchkit.churchkit.database.dao.note.NoteDirectoryDao;
-import com.churchkit.churchkit.database.entity.note.NoteDirectoryEntity;
 import com.churchkit.churchkit.database.entity.note.NoteEntity;
-import com.churchkit.churchkit.repository.note.NoteDirectoryRepository;
 import com.churchkit.churchkit.repository.note.NoteRepository;
 
 import java.util.List;
-import java.util.Map;
 
 public class NoteViewModel extends ViewModel {
     NoteRepository repository;
@@ -28,6 +24,9 @@ public class NoteViewModel extends ViewModel {
 
     public LiveData<List<NoteEntity>> getAllNoteDirectory(int noteDirectoryId) {
         return repository.getAllNoteByNoteDirectory(noteDirectoryId);
+    }
+    public LiveData<List<NoteEntity>> searchNote(String textSearch){
+        return repository.searchNote(textSearch);
     }
 
 

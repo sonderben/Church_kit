@@ -98,4 +98,5 @@ In summary, Church Kit is the ideal app for anyone looking to get closer to God 
     <string name="note">Note</string>
     <string name="download_a_song_book"> <u>Download a Song book</u> </string>
     <string name="download_bible"> <u>Download a  Bible</u> </string>
+    <string name="search_a_note">Search a note</string>
 </resources>

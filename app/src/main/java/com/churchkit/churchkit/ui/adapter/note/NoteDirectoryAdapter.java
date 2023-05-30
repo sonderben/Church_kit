@@ -1,6 +1,7 @@
 package com.churchkit.churchkit.ui.adapter.note;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Html;
@@ -9,12 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -23,11 +21,15 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.churchkit.churchkit.R;
+import com.churchkit.churchkit.database.MyDataDb;
 import com.churchkit.churchkit.database.entity.note.BaseNoteEntity;
 import com.churchkit.churchkit.database.entity.note.NoteDirectoryEntity;
 import com.churchkit.churchkit.database.entity.note.NoteEntity;
+import com.churchkit.churchkit.modelview.note.NoteDirectoryViewModel;
+import com.churchkit.churchkit.modelview.note.NoteViewModel;
 import com.churchkit.churchkit.ui.note.ListNoteFragment;
 import com.churchkit.churchkit.ui.note.NoteFragment;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -37,6 +39,10 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     List<BaseNoteEntity> baseNoteEntityList=new ArrayList<>(1);
     NoteDirectoryEntity noteDirectory;
+
+    public boolean baseNoteEntityListIsEmpty(){
+        return baseNoteEntityList.isEmpty();
+    }
 
 
 
@@ -117,13 +123,12 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 bundle.putSerializable("DIRECTORY",directory);
                 NavController navController = Navigation.findNavController(v);
                // navController.getGraph().findNode(R.id.listChapterByTestamentFragment).setLabel(holder.itemView.getContext().getString( R.string.old_testament ));
-                if (directory.isLock()){
-                    newDirectoryDialog(navController,bundle,directory);
-                }else
+
                     navController.navigate(R.id.action_noteFragment_to_listNoteFragment,bundle);
             });
             dvh.itemView.setOnLongClickListener(v -> {
-                Toast.makeText(dvh.itemView.getContext(), baseNoteEntityList.get(position).getTitle(),Toast.LENGTH_SHORT).show();
+                modifyDialog(activity,baseNoteEntityList.get( holder.getAbsoluteAdapterPosition() ));
+                //Toast.makeText(dvh.itemView.getContext(), baseNoteEntityList.get(position).getTitle(),Toast.LENGTH_SHORT).show();
                 return true;
             });
 
@@ -170,7 +175,8 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             nvh.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Toast.makeText(nvh.itemView.getContext(), baseNoteEntityList.get(position).getTitle(),Toast.LENGTH_SHORT).show();
+                    modifyDialog(activity, baseNoteEntityList.get(holder.getAbsoluteAdapterPosition() ));
+                    //Toast.makeText(nvh.itemView.getContext(), baseNoteEntityList.get(holder.getAbsoluteAdapterPosition()).getTitle(),Toast.LENGTH_SHORT).show();
                     return true;
                 }
             });
@@ -212,7 +218,7 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         return html.replaceAll("<[^>]*>", "");
     }
 
-    private void newDirectoryDialog(NavController navController,Bundle bundle,NoteDirectoryEntity noteDirectory) {
+    /*private void newDirectoryDialog(NavController navController,Bundle bundle,NoteDirectoryEntity noteDirectory) {
 
         Drawable drawableSelected = activity.getResources().getDrawable(R.drawable.bg_point_circle_selected);
         Drawable drawableUnSelected = activity.getResources().getDrawable(R.drawable.bg_point_circle_unselected);
@@ -246,7 +252,15 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                     }
                     if (passwordString.toString().trim().length()==6) {
                         if (noteDirectory.getPassword().equals(passwordString.toString())){
-                            navController.navigate(R.id.action_noteFragment_to_listNoteFragment,bundle);
+                            if (navController!=null)
+                                navController.navigate(R.id.action_noteFragment_to_listNoteFragment,bundle);
+                            else {
+                                NoteDirectoryViewModel noteDirectoryViewModel = new NoteDirectoryViewModel(
+                                        MyDataDb.getInstance(activity.getApplicationContext()).noteDirectoryDao()
+                                );
+                                newDirectoryDialog(noteDirectoryViewModel,noteDirectory);
+                            }
+
                             dialog.dismiss();
                         }else {
                             shake(icon,activity);
@@ -258,9 +272,9 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                     }
                     //Toast.makeText(v.getContext(),""+passwordString.toString(),Toast.LENGTH_SHORT).show();
                     changePreviewPassword(passwordString,linearLayout,drawableSelected,drawableUnSelected);
-                   /* switch (passwordString.length()){
-                        *//*case 6:
-                            linearLayout.getChildAt(5).setBackground(drawableSelected);*//*
+                   *//* switch (passwordString.length()){
+                        *//**//*case 6:
+                            linearLayout.getChildAt(5).setBackground(drawableSelected);*//**//*
                         case 5:
                             linearLayout.getChildAt(4).setBackground(drawableSelected);
                         case 4:
@@ -276,7 +290,7 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                             for (int j = 0; j < 6; j++) {
                                 linearLayout.getChildAt(j).setBackground(drawableUnSelected);
                             }
-                    }*/
+                    }*//*
                     cancelButton.setText(passwordString.toString().length()==0?"Cancelar":"Eliminar");
                 }
             });
@@ -304,7 +318,7 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
 
         dialog.show();
-    }
+    }*/
 
     private void shake(View viewToShake,Activity activity){
 
@@ -374,6 +388,81 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             linearLayout.getChildAt(j).setBackground(drawableUnSelected);
         }
     }
+    private void modifyDialog(Activity activity,BaseNoteEntity baseNoteEntity) {
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        LayoutInflater layoutInflater = activity.getLayoutInflater();
+        final View view = layoutInflater.inflate(R.layout.modify_dialog, (ViewGroup)null);
+        TextView edit = view.findViewById(R.id.edit);
+        TextView delete = view.findViewById(R.id.delete);
+
+        if (baseNoteEntity instanceof  NoteEntity)
+            edit.setVisibility(View.GONE);
+
+
+
+        NoteViewModel noteViewModel = new NoteViewModel(MyDataDb.getInstance(activity.getApplicationContext()).noteDao());
+        NoteDirectoryViewModel directoryViewModel = new NoteDirectoryViewModel(
+                MyDataDb.getInstance(activity.getApplicationContext()).noteDirectoryDao()
+        );
+
+
+        builder.setView(view).setPositiveButton("Cancel", (dialog, id) -> {
+
+
+        });
+
+        AlertDialog alertDialog  = builder.create();
+
+        alertDialog.show();
+        delete.setOnClickListener(v -> {
+            if (baseNoteEntity instanceof NoteDirectoryEntity){
+                directoryViewModel.delete( (NoteDirectoryEntity) baseNoteEntity );
+
+            }else {
+                noteViewModel.delete((NoteEntity) baseNoteEntity);
+            }
+            alertDialog.dismiss();
+        });
+
+        edit.setOnClickListener(v -> {
+
+            if (baseNoteEntity instanceof NoteDirectoryEntity){
+                NoteDirectoryEntity temp = (NoteDirectoryEntity) baseNoteEntity;
+                editDirectoryDialog(directoryViewModel, temp);
+            }else {
+
+            }
+
+            alertDialog.dismiss();
+        });
+    }
+
+    private void editDirectoryDialog(NoteDirectoryViewModel noteDirectoryViewModel, NoteDirectoryEntity e) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+        LayoutInflater layoutInflater = activity.getLayoutInflater();
+        final View view = layoutInflater.inflate(R.layout.new_directory_layout, (ViewGroup)null);
+        TextInputEditText title = view.findViewById(R.id.title);
+        TextInputEditText password = view.findViewById(R.id.pwd);
+
+        TextView titleDialog = view.findViewById(R.id.dialog_title);
+        titleDialog.setText("update directory");
+
+        title.setText(e.getTitle());
+        password.setText(e.getPassword());
+
+
+
+        builder.setView(view).setPositiveButton("Update", (dialog, id) -> {
+            e.setTitle( title.getText().toString() );
+            noteDirectoryViewModel.insert(e);
+        } );
+
+        builder.setNegativeButton("Cancel", (dialog, id) -> dialog.dismiss());
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
 }

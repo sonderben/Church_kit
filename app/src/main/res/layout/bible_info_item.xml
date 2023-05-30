@@ -47,7 +47,8 @@
         android:background="@android:color/transparent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/white_black" />
 
     <TextView
         android:id="@+id/title"
@@ -122,6 +123,15 @@
         app:layout_constraintStart_toStartOf="@id/language"
         app:layout_constraintEnd_toStartOf="@id/checkbox"
         app:layout_constraintTop_toBottomOf="@id/info" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ccc"
+        android:layout_marginTop="@dimen/_34sdp"
+        android:paddingTop="@dimen/_34sdp"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

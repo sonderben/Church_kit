@@ -12,4 +12,8 @@ import java.util.List;
 public interface NoteDao extends BaseDao<NoteEntity> {
     @Query("Select * from note where note_directory_id =:id")
     LiveData<List<NoteEntity>> getAllNoteByNoteDirectory(int id);
+
+    @Query("Select * from note  join note_fts on note.id = note_fts.rowid where note_fts match :textSearch")
+    LiveData<List<NoteEntity>> search(String textSearch);
+
 }
