@@ -13,21 +13,21 @@ public class BibleInfo extends BaseInfo {
     @Ignore
     private static List< BibleInfo> infoList = new ArrayList<>(10);
 
-    public BibleInfo(String id, String language, String name, int testament, String url,String size) {
-        super(id, language, name, testament, url,size);
+    public BibleInfo(String id, String language, String name,String abbreviation, int testament, String url,String size) {
+        super(id, language, name, abbreviation,testament, url,size);
     }
 
-    //"eng","English","English Standard Version® - Hear the Word Audio Bible","EN1ESV",58200000,"United Kingdom","2019-09-10",NULL,"2019-09-11"
+
 
     @Ignore
     public static List<BibleInfo>getAllBibleInfo(){
 
 
         if (infoList.size() == 0){
-            infoList.add(new BibleInfo("FRNTLS","Français","1910 Louis Segond  (Tresorsonore recording)",2,"bible/FRNTLS-v1.json","6 MB"));
+            infoList.add(new BibleInfo("FRNTLS","Français","1910 Louis Segond  (Tresorsonore recording)","FRNTLS",2,"bible/FRNTLS-v1.json","6 MB"));
             //bibleInfoList.add(new BibleInfo("HATHCB","Kreyòl Ayisyen","Alliance Biblique Universelle","1"));
             //infoList.add(new BibleInfo("HATBIV","Kreyòl Ayisyen","Alliance Biblique Universelle",1,"1"));
-            infoList.add(new BibleInfo("ENGESV","English","English Standard Version® - Hear the Word Audio Bible",2,"bible/ENGESV-v1.json","5 MB"));
+            infoList.add(new BibleInfo("ENGESV","English","English Standard Version® - Hear the Word Audio Bible","ENGESV",2,"bible/ENGESV-v1.json","5 MB"));
         }
         return infoList;
     }

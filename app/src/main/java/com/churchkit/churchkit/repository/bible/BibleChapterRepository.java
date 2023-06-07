@@ -22,9 +22,9 @@ public class BibleChapterRepository extends BaseRepository<BibleChapterDao, Bibl
         return dao.getAllChapter();
     }
 
-    public LiveData< List<BibleChapter> > bibleChapterFullTextSearch(String query){
-        return dao.bibleChapterFullTextSearch(query);
-    }
+    /*public LiveData< List<BibleChapter> > bibleChapterFullTextSearch(String bibleInfoId,String query){
+        return dao.bibleChapterFullTextSearch(bibleInfoId,query);
+    }*/
 
     public LiveData<BibleChapter> getChapterByVerseId(String verseId){
         return dao.getChapterByVerseId(verseId);

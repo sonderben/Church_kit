@@ -15,18 +15,18 @@ import com.churchkit.churchkit.database.entity.song.SongHistory;
 import java.util.Map;
 
 public class SongHistoryViewModel extends AndroidViewModel {
-    LiveData<Map<SongHistory, Song>> songWithHistory;
+    //LiveData<Map<SongHistory, Song>> songWithHistory;
     SongHistoryRepository shr ;
 
     public SongHistoryViewModel(@NonNull Application application) {
         super(application);
         shr = new SongHistoryRepository( CKSongDb.getInstance( application.getApplicationContext() ).songHistoryDao() );
-        songWithHistory = shr.getAllHistory();
+        //songWithHistory = shr.getAllHistory();
     }
 
 
-    public LiveData<Map<SongHistory, Song>> getSongWithHistory() {
-        return songWithHistory;
+    public LiveData<Map<SongHistory, Song>> getSongWithHistory(String songInfoId) {
+        return shr.getAllHistory(songInfoId);
     }
     public void insert(SongHistory songHistory){
         shr.insert(songHistory);
@@ -34,7 +34,7 @@ public class SongHistoryViewModel extends AndroidViewModel {
     public void delete(SongHistory songHistory){
         shr.delete(songHistory);
     }
-    public LiveData<Integer> getAmount(){
-        return shr.getAmount();
+    public LiveData<Integer> getAmount(String songInfoId){
+        return shr.getAmount(songInfoId);
     }
 }

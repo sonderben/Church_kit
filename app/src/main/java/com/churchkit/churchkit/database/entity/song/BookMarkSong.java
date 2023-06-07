@@ -12,7 +12,7 @@ import java.util.Objects;
 @Entity(tableName = "book_mark_song",
         foreignKeys = @ForeignKey(entity = Song.class,
                 parentColumns = "id",
-                childColumns = "song_id"),indices = {@Index(value = {"song_id"})})
+                childColumns = "song_id",onDelete = ForeignKey.CASCADE),indices = {@Index(value = {"song_id"})})
 
 public class BookMarkSong extends BaseBookMark {
 

@@ -12,10 +12,10 @@ import java.util.List;
 
 @Dao
 public interface SongDaoGeneral4Insert {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     long insertSongBook(SongBook entity);
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    List<Long> insertSong(List<Song> songs);
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
+    long insertSong(Song songs);
+    @Insert
     List<Long> insertSongVerses(List<Verse> verses);
 }

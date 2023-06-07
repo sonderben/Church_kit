@@ -201,7 +201,7 @@ public class Util {
     }
 
 
-    public static void  prepopulateBibleFromJSonFile(Activity activity, String bibleName){
+    /*public static void  prepopulateBibleFromJSonFile(Activity activity, String bibleName){
 
         ViewModelProvider.Factory factory = new ViewModelProvider.Factory() {
             @NonNull
@@ -268,9 +268,9 @@ public class Util {
 
                                 bibleVerseList.add(
                                         new BibleVerse(
-                                                /*verseJson.getString("reference")*/reference+verseJson.getInt("position")
+                                                *//*verseJson.getString("reference")*//*reference+verseJson.getInt("position")
                                                 ,verseJson.getInt("position")
-                                                ,/*verseJson.getString("reference")*/ reference
+                                                ,*//*verseJson.getString("reference")*//* reference
                                                 ,verseJson.getString("verseText")
                                                 ,chapterJson.getString("bookName") + chapterJson.getInt("position"))
 
@@ -364,7 +364,7 @@ public class Util {
                 exception.printStackTrace();
             }
         });
-    }
+    }*/
     private static SongViewModelGeneral4Insert songViewModelGeneral4Insert;
     private static BibleViewModelGeneral4Insert bibleViewModelGeneral4Insert;
 

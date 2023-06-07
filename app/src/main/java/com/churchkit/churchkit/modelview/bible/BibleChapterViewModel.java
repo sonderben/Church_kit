@@ -31,9 +31,9 @@ public class BibleChapterViewModel extends AndroidViewModel {
         return repository.getAllChapter();
     }
 
-    public LiveData< List<BibleChapter> > bibleChapterFullTextSearch(String query){
-        return repository.bibleChapterFullTextSearch(query);
-    }
+    /*public LiveData< List<BibleChapter> > bibleChapterFullTextSearch(String bibleInfoId,String query){
+        return repository.bibleChapterFullTextSearch(bibleInfoId,query);
+    }*/
     /*public void insert(BibleChapter bibleChapter){
         repository.insert(bibleChapter);
     }*/

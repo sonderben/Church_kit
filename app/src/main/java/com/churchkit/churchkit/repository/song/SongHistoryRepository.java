@@ -16,11 +16,11 @@ public class SongHistoryRepository extends BaseRepository<SongHistoryDao,SongHis
     }
 
 
-    public LiveData<Map<SongHistory, Song>> getAllHistory(){
-        return dao.loadHistorySong();
+    public LiveData<Map<SongHistory, Song>> getAllHistory(String songInfoId){
+        return dao.loadHistorySong(songInfoId);
     }
 
-    public LiveData<Integer> getAmount(){
-        return dao.getAmount();
+    public LiveData<Integer> getAmount(String songInfoId){
+        return dao.getAmount(songInfoId);
     }
 }

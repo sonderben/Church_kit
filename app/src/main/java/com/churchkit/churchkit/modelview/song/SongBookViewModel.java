@@ -21,8 +21,8 @@ public class SongBookViewModel extends AndroidViewModel {
         SongBookDao dao = CKSongDb.getInstance( application.getApplicationContext() ).songBookDao();
         repository = new SongBookRepository(dao);
     }
-    public LiveData<List<SongBook>> getAllSongBook(){
-        return repository.getAllSongBook();
+    public LiveData<List<SongBook>> getAllSongBookBySongInfoId(String id){
+        return repository.getAllSongBookBySongInfoId(id);
     }
 
     public void insert(SongBook songBook) {

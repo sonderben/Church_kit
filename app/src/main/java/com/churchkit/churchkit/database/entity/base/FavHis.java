@@ -13,9 +13,19 @@ public abstract class FavHis {
     protected  String parentId;
     protected long date;
     protected String abbreviation;
+    protected String infoId;
 
-    public FavHis( String parentId, long date, String abbreviation) {
+    public void setInfoId(String infoId) {
+        this.infoId = infoId;
+    }
+
+    public String getInfoId() {
+        return infoId;
+    }
+
+    public FavHis(String parentId, String infoId, long date, String abbreviation) {
         this.parentId = parentId;
+        this.infoId = infoId;
         this.date = date;
         this.abbreviation = abbreviation;
     }

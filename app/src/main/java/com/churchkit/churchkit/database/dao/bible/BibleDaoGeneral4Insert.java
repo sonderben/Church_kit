@@ -12,10 +12,17 @@ import java.util.List;
 
 @Dao
 public interface BibleDaoGeneral4Insert {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert//(onConflict = OnConflictStrategy.REPLACE)
     long insertBibleBook(BibleBook bibleBook);
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    List<Long> insertBibleChapter(List<BibleChapter> bibleChapters);
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    List<Long> insertBibleVerses(List<BibleVerse> bibleVerses);
+    @Insert//(onConflict = OnConflictStrategy.REPLACE)
+    List<Long> insertBibleChapters(List<BibleChapter> bibleChapters);
+
+    @Insert//(onConflict = OnConflictStrategy.REPLACE)
+    long insertBibleChapter(BibleChapter bibleChapters);
+
+    @Insert//(onConflict = OnConflictStrategy.REPLACE)
+    long insertBibleVerse(BibleVerse bibleVerse);
+
+    @Insert//(onConflict = OnConflictStrategy.REPLACE)
+    List<Long> insertBibleVerses(List<BibleVerse> bibleVerse);
 }

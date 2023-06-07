@@ -197,6 +197,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener{
         //builder.setTitle("Add Reference");
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
         final View view = layoutInflater.inflate(R.layout.new_directory_layout, (ViewGroup)null);
+
         TextInputEditText title = view.findViewById(R.id.title);
         TextInputEditText password = view.findViewById(R.id.pwd);
         builder.setView(view).setPositiveButton("Ok", new DialogInterface.OnClickListener() {

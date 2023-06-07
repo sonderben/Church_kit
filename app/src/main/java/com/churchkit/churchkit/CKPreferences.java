@@ -25,13 +25,13 @@ public class CKPreferences {
 
     }
 
-    public static final int CHAPTER_BIBLE_TYPE_SEARCH = 1;
-    public static final int VERSE_BIBLE_TYPE_SEARCH = 2;
+    public static final int BIBLE_NORMAL_SEARCH_TYPE = 1;
+    public static final int BIBLE_FULL_TEXT_SEARCH_TYPE = 2;
 
-    public static final int CHAPTER_SONG_TYPE_SEARCH = 1;
-    public static final int VERSE_SONG_TYPE_SEARCH = 2;
+    public static final int SONG_NORMAL_SEARCH_TYPE = 1;
+    public static final int SONG_FULL_TEXT_SEARCH_TYPE = 2;
     public int getBibleTypeSearch(){
-        return preference.getInt("BIBLE_TYPE_SEARCH",CHAPTER_BIBLE_TYPE_SEARCH);
+        return preference.getInt("BIBLE_TYPE_SEARCH", BIBLE_NORMAL_SEARCH_TYPE);
     }
     public void setBibleTypeSearch(int bibleType){
         SharedPreferences.Editor editor = preference.edit();
@@ -41,7 +41,7 @@ public class CKPreferences {
     }
 
     public int getSongTypeSearch(){
-        return preference.getInt("SONG_TYPE_SEARCH",CHAPTER_SONG_TYPE_SEARCH);
+        return preference.getInt("SONG_TYPE_SEARCH", SONG_NORMAL_SEARCH_TYPE);
     }
     public void setSongTypeSearch(int songType){
         SharedPreferences.Editor editor = preference.edit();
@@ -49,11 +49,11 @@ public class CKPreferences {
         editor.apply(); //commit the changes asynchronously
 
     }
-    public boolean isSongTypeSearchIsVerse(){
-        return getSongTypeSearch() == VERSE_SONG_TYPE_SEARCH;
+    public boolean isSongTypeSearchIsFullTextSearch(){
+        return getSongTypeSearch() == SONG_FULL_TEXT_SEARCH_TYPE;
     }
-    public boolean isBibleTypeSearchIsVerse(){
-        return getBibleTypeSearch() == VERSE_BIBLE_TYPE_SEARCH;
+    public boolean isBibleTypeSearchIsFullTextSearch(){
+        return getBibleTypeSearch() == BIBLE_FULL_TEXT_SEARCH_TYPE;
     }
 
     public static SharedPreferences getSettingPref(Context context){
@@ -131,7 +131,7 @@ public class CKPreferences {
 
 
     public String getBibleName(){
-        return preference.getString("DEFAULT_BIBLE","null");
+        return preference.getString("DEFAULT_BIBLE","");
     }
 
     public boolean setBibleName(String bibleName){
@@ -139,26 +139,9 @@ public class CKPreferences {
         editor.putString("DEFAULT_BIBLE", bibleName);
         return editor.commit(); //commit the changes asynchronously
     }
-    public String getNextBibleName(){
-        return preference.getString("NEXT_DEFAULT_BIBLE","null");
-    }
 
-    public boolean setNextBibleName(String bibleName){
-        SharedPreferences.Editor editor = preference.edit();
-        editor.putString("NEXT_DEFAULT_BIBLE", bibleName);
-       return editor.commit(); //commit the changes synchronously
-    }
-
-    public boolean isCurrentAndNextBibleEqual(){
-        return getNextBibleName().equalsIgnoreCase(getBibleName());
-    }
-    public boolean isZeroBibleDownloaded(){
-        return isCurrentAndNextBibleEqual() &&
-                getBibleName().equalsIgnoreCase("null");
-    }
-    ///////
     public String getSongName(){
-        return preference.getString("DEFAULT_SONG","nil");
+        return preference.getString("DEFAULT_SONG","");
     }
 
     public boolean setSongName(String bibleName){
@@ -166,25 +149,10 @@ public class CKPreferences {
         editor.putString("DEFAULT_SONG", bibleName);
         return editor.commit(); //commit the changes asynchronously
     }
-    public String getNextSongName(){
-        return preference.getString("NEXT_DEFAULT_SONG","nil");
-    }
 
-    public boolean setNextSongName(String bibleName){
-        SharedPreferences.Editor editor = preference.edit();
-        editor.putString("NEXT_DEFAULT_SONG", bibleName);
-        return editor.commit(); //commit the changes synchronously
-    }
 
-    public boolean isCurrentAndNextSongEqual(){
-        return getNextSongName().equalsIgnoreCase(getSongName());
-    }
-    public boolean isZeroSongDownloaded(){
-        System.out.println("isZeroSongDownloaded: "+isCurrentAndNextSongEqual());
-        System.out.println("isZeroSongDownloaded: "+getSongName().equalsIgnoreCase("nil") );
-        return isCurrentAndNextSongEqual() &&
-                getSongName().equalsIgnoreCase("nil");
-    }
+
+
 
     public boolean existPhotoInDb(){
         return preference.getBoolean("EXIST_PHOTO",false);

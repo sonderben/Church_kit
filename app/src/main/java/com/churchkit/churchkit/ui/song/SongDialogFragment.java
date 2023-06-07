@@ -99,7 +99,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
 
          liveDataBookMarkSong= songBookMarkViewModel.getAllBookMark(mSongId);
 
-        songFavoriteLiveData=songFavoriteViewModel.getSongFavoriteWithSongId(mSongId);
+        songFavoriteLiveData=songFavoriteViewModel.getSongFavoriteWithSongId(ckp.getSongName(), mSongId);
         songFavoriteLiveData.observe(getViewLifecycleOwner(), songFavorite -> {
 
               favorite.setEnabled(true);
@@ -186,7 +186,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
 
 
         /*churchKitDd.verseDao()*/songVerseViewModel.getAllVerseByIdSong(mSongId).observe(requireActivity(), verses -> {
-            System.out.println("msongid: "+mSongId);
+            System.out.println("msongid: "+mSongId+" "+verses);
            // System.out.println("verse: "+verses);
             allVerse = listVerseToString(verses);
             tv.setText( allVerse );
@@ -349,7 +349,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
 
 
         songHistoryViewModel.insert(
-                new SongHistory(mSongId,Calendar.getInstance().getTimeInMillis(), mReference)
+                new SongHistory(mSongId, ckp.getSongName(), Calendar.getInstance().getTimeInMillis(), mReference)
         );
 
     }
@@ -519,7 +519,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
                 }
                 else{
                     songFavoriteViewModel.insert(
-                            new SongFavorite(mSongId,Calendar.getInstance().getTimeInMillis(), mReference)
+                            new SongFavorite(mSongId,ckp.getSongName(),Calendar.getInstance().getTimeInMillis(), mReference)
                     );
                     /*Toast toast=Toast.makeText(getContext(),"Add to favorite with success",Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.TOP,0,0);

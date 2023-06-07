@@ -18,10 +18,10 @@ public class SongRepositoryGeneral4Insert {
     public SongRepositoryGeneral4Insert(SongDaoGeneral4Insert songDaoGeneral4Insert) {
         this.songDaoGeneral4Insert = songDaoGeneral4Insert;
     }
-    public void insert(final SongBook songBook, final List<Song>songs, final List<Verse>verses){
+    public void insert(final SongBook songBook, final Song songs, final List<Verse>verses){
         Flowable.fromAction(() -> {
            songDaoGeneral4Insert.insertSongBook(songBook);
-           songDaoGeneral4Insert.insertSong(new ArrayList<>(songs));
+           songDaoGeneral4Insert.insertSong( songs );
            songDaoGeneral4Insert.insertSongVerses(verses);
         })
                 .subscribeOn(Schedulers.computation())

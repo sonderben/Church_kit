@@ -69,7 +69,8 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
     }
     public static ChapterDialogFragment newInstance(BibleChapter bibleChapter){
         mId = bibleChapter.getId();
-        mReference = bibleChapter.getBookAbbreviation()+" "+bibleChapter.getPosition();
+        mReference = bibleChapter.getBookAbbreviation()+" "+ Integer.valueOf( com.churchkit.churchkit.Util.formatNumberToString(bibleChapter.getPosition()).trim() );
+        //bibleChapter.getPosition();
         return new ChapterDialogFragment();
     }
     @Nullable
@@ -77,7 +78,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ConstraintLayout root = (ConstraintLayout) inflater.inflate(R.layout.fragment_list_chapter,container,false);
 
-
+        ckPreferences = new CKPreferences(getContext());
 
         versets = root.findViewById(R.id.text);
         bookReference = root.findViewById(R.id.book_name);
@@ -168,13 +169,17 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         }
 
     });
-         bibleVerseLiveData = bibleVerseViewModel.getAllVerse(mId);
+
+         bibleVerseLiveData = bibleVerseViewModel.getAllVerse(mId /*"ENGESV_PROProverbs9"*/);
+
          bibleVerseLiveData.observe(requireActivity(), bibleVerseList -> {
             allVersets = listVerseToString(bibleVerseList);
             versets.setText( allVersets );
             setVerseTitle( bibleVerseList);
 
-            liveDataBookMark.observe(getViewLifecycleOwner(), new Observer<List<BookMarkChapter>>() {
+
+            if (getView() != null)
+                liveDataBookMark.observe(getViewLifecycleOwner(), new Observer<List<BookMarkChapter>>() {
                 @Override
                 public void onChanged(List<BookMarkChapter> bookMarkChapters) {
                     versets.setText(allVersets);
@@ -229,7 +234,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         endingFavoriteImageView.setOnClickListener(this::onClick);
 
 
-         bibleFavoriteLiveData = bibleFavoriteViewModel.existed(mId);
+         bibleFavoriteLiveData = bibleFavoriteViewModel.existed(mId, ckPreferences.getBibleName());
         bibleFavoriteLiveData.observe(getViewLifecycleOwner(), songFavorite -> {
 
             endingFavoriteImageView.setEnabled(true);
@@ -261,7 +266,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
 
     private void setChapterHistory() {
         bibleChapterViewModel.insert(
-                new BibleChapterHistory(mId, Calendar.getInstance().getTimeInMillis(), mReference)
+                new BibleChapterHistory(mId, ckPreferences.getBibleName(), Calendar.getInstance().getTimeInMillis(), mReference)
         );
 
     }
@@ -356,6 +361,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
     private static String mId;
     private static String mReference, mChapterhapter;
     private static int mVerseAmount;
+    private CKPreferences ckPreferences;
     private List<Util.VersePosition> versePositionList = new ArrayList<>();
     private FloatingActionButton fab;
     private ConstraintLayout headerLayout;
@@ -425,7 +431,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
                 else{
 
                     bibleFavoriteViewModel.insert(
-                            new BibleChapterFavorite(mId, Calendar.getInstance().getTimeInMillis(), mReference)
+                            new BibleChapterFavorite(mId,ckPreferences.getBibleName(), Calendar.getInstance().getTimeInMillis(), mReference)
                     );
                     Toast toast=Toast.makeText(getContext(),"Add to favorite with success",Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.TOP,0,0);

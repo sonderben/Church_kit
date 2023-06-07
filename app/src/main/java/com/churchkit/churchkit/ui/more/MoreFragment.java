@@ -151,21 +151,8 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
 
     @Override
     public void onResume() {
-        TextView tv= getActivity().findViewById(R.id.bible);
-        if (!ckPreferences.isCurrentAndNextBibleEqual()  && !ckPreferences.isCurrentAndNextSongEqual() ){
-            tv.setText(getString(R.string.restart_2_use_new_)+" "+getString(R.string.bible)+" "+getString(R.string.and)+" "+getString(R.string.song) );
-           tv.setVisibility(View.VISIBLE);
-        }else if (!ckPreferences.isCurrentAndNextBibleEqual()){
-            tv.setText(getString(R.string.restart_2_use_new_)+" "+getString(R.string.bible) );
-            tv.setVisibility(View.VISIBLE);
-        }
-        else if (!ckPreferences.isCurrentAndNextSongEqual()){
-            tv.setText(getString(R.string.restart_2_use_new_)+" "+getString(R.string.song) );
-            tv.setText( tv.getText().toString().replace("la nouvelle","le nouveau") );
-            tv.setVisibility(View.VISIBLE);
-        }else {
-            tv.setVisibility(View.GONE);
-        }
+
+
         super.onResume();
     }
 }

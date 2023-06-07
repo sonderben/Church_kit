@@ -29,4 +29,11 @@ public class BibleVerseRepository extends BaseRepository<BibleVerseDao, BibleVer
     public LiveData<List<BibleVerse>> getAllVerse(){
         return dao.getAllVerse();
     }
+
+    public LiveData<List<BibleVerse>> fullTextSearch(String bibleInfoId, String textSearch){
+        return dao.fullTextSearch(bibleInfoId,textSearch);
+    }
+    public LiveData<List<BibleVerse>> normalSearch(String bibleInfoId, String textSearch){
+        return dao.normalSearch(bibleInfoId,textSearch);
+    }
 }

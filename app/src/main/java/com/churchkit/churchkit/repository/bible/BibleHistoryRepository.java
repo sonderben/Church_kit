@@ -16,12 +16,12 @@ public class BibleHistoryRepository extends BaseRepository<BibleChapterHistoryDa
         super(bibleChapterDao);
     }
 
-    public LiveData<Integer> getAmount(){
-        return dao.getAmount();
+    public LiveData<Integer> getAmount(String bibleInfoId){
+        return dao.getAmount( bibleInfoId);
     }
 
-    public LiveData< Map<BibleChapterHistory, BibleChapter> > loadHistoriesChapter(){
-        return dao.loadHistoriesChapter();
+    public LiveData< Map<BibleChapterHistory, BibleChapter> > loadHistoriesChapter(String bibleInfoId){
+        return dao.loadHistoriesChapter( bibleInfoId);
     }
 
 

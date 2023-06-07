@@ -22,7 +22,7 @@ public class SongViewModelGeneral4Insert extends AndroidViewModel {
         SongDaoGeneral4Insert dao = CKSongDb.getInstance( application.getApplicationContext() ).songDaoGeneral4Insert();
         srg4i = new SongRepositoryGeneral4Insert(dao);
     }
-    public void insert(SongBook songBook, List<Song> songs, List<Verse>verses){
-       srg4i.insert(songBook,songs,verses);
+    public void insert(SongBook songBook, Song song, List<Verse>verses){
+       srg4i.insert(songBook,song,verses);
     }
 }

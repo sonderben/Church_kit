@@ -17,15 +17,39 @@ public abstract class SongAndChapter {
     protected String bookId;
     @ColumnInfo(name = "book_abbreviation")
     protected String bookAbbreviation;
+    protected String infoId;
 
-    public SongAndChapter(@NonNull String id, String bookTitle, float position, String bookId,
+
+
+
+
+
+
+    public void setPosition(float position) {
+        this.position = position;
+    }
+
+    public String getInfoId() {
+        return infoId;
+    }
+
+    public void setInfoId(String infoId) {
+        this.infoId = infoId;
+    }
+
+
+
+    public SongAndChapter(String infoId,@NonNull String id, String bookTitle, float position, String bookId,
                           String bookAbbreviation) {
         this.id = id;
         this.bookTitle = bookTitle;
         this.position = position;
         this.bookId = bookId;
         this.bookAbbreviation = bookAbbreviation;
+        this.infoId = infoId;
     }
+
+
 
     @Override
     public String toString() {

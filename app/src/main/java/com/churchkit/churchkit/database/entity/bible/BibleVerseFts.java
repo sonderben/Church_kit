@@ -11,14 +11,14 @@ public class BibleVerseFts {
     private String reference;
     @ColumnInfo(name = "verse_text")
     private String verseText;
-    @ColumnInfo(name = "bible_chapter_id")
-    private String bibleChapterId;
+    /*@ColumnInfo(name = "bible_chapter_id")
+    private String bibleChapterId;*/
 
-    public BibleVerseFts(@NonNull String bibleVerseId, String reference, String verseText, String bibleChapterId) {
+    public BibleVerseFts(@NonNull String bibleVerseId, String reference, String verseText/*, String bibleChapterId*/) {
         this.bibleVerseId = bibleVerseId;
         this.reference = reference;
         this.verseText = verseText;
-        this.bibleChapterId = bibleChapterId;
+        //this.bibleChapterId = bibleChapterId;
     }
 
     public String getBibleVerseId() {
@@ -45,11 +45,11 @@ public class BibleVerseFts {
         this.verseText = verseText;
     }
 
-    public String getBibleChapterId() {
+    /*public String getBibleChapterId() {
         return bibleChapterId;
     }
 
     public void setBibleChapterId(String bibleChapterId) {
         this.bibleChapterId = bibleChapterId;
-    }
+    }*/
 }

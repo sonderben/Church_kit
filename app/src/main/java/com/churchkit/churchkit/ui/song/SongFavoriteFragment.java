@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.database.CKBibleDb;
 import com.churchkit.churchkit.database.CKSongDb;
@@ -60,8 +61,8 @@ public class SongFavoriteFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_song_favorite, container, false);
         recyclerView = view.findViewById(R.id.recyclerview);
-
-        db.songFavoriteDao().getAllSongFavoriteWithSong().observe(getViewLifecycleOwner(), new Observer<Map<SongFavorite, Song>>() {
+        ckp = new CKPreferences(getContext());
+        db.songFavoriteDao().getAllSongFavoriteWithSong(ckp.getSongName()).observe(getViewLifecycleOwner(), new Observer<Map<SongFavorite, Song>>() {
             @Override
             public void onChanged(Map<SongFavorite, Song> songFavoriteSongMap) {
                 System.out.println("yow poze ui: "+songFavoriteSongMap);
@@ -72,4 +73,5 @@ public class SongFavoriteFragment extends Fragment {
     }
     CKSongDb db;
     RecyclerView recyclerView;
+    CKPreferences ckp;
 }

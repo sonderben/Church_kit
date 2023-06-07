@@ -19,13 +19,35 @@ public class SongVerseRepository extends BaseRepository<VerseDao, Verse>{
         Completable.fromAction(()->dao.insertAll(verses))
                 .subscribeOn(Schedulers.computation())
                 .subscribe();
-        //return dao.insertAll(verses);
+
     }
     public LiveData<List<Verse>> getAllVerseByIdSong(String idSong){
         return dao.getAllVerseByIdSong(idSong);
     }
 
-    public LiveData<List<Verse>> search (String textSearch){
-        return dao.search(textSearch);
+    public LiveData<List<Verse>> fullTextSearch(String songInfoId, String textSearch){
+        return dao.fullTextSearch(songInfoId,textSearch);
+    }
+
+    public LiveData<List<Verse>> normalTextSearch (String songInfoId,String textSearch){
+        return dao.normalTextSearch(songInfoId,textSearch);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

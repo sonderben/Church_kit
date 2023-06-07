@@ -26,8 +26,8 @@
     <string name="dark_mode">Mòd nwa</string>
     <string name="display">Afichaj</string>
     <string name="old">Ansyen</string>
-    <string name="search_by_verse">Chèche pa vèsè</string>
-    <string name="search_by_ref">Rechèch pa tit oswa referans</string>
+    <string name="full_text_search">Chèche pa vèsè</string>
+    <string name="normal_search">Rechèch pa tit oswa referans</string>
     <string name="and">e</string>
     <string name="testament">testaman</string>
     <string name="restart_2_use_new_">"Rekòmanse aplikasyon an pou itilize nouvo "</string>

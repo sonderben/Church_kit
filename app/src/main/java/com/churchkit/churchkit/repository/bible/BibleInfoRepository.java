@@ -29,4 +29,7 @@ public class BibleInfoRepository extends BaseRepository <BibleInfoDao, BibleInfo
     public LiveData<List<BibleInfo>> getAllBibleInfo() {
         return dao.getAllBibleInfo();
     }
+    public void update(BibleInfo bibleInfo){
+        dao.update(bibleInfo);
+    }
 }

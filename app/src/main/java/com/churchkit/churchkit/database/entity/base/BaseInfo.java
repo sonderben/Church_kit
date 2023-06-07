@@ -21,15 +21,34 @@ public abstract class BaseInfo {
     protected String id;
     protected String language;
     protected String name;
+    protected String abbreviation;
     protected long population;
     protected String country;
     protected String videoDate;
+
+    public String getAbbreviation() {
+        return abbreviation;
+    }
+
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
+    }
+
     protected String audioDate;
     protected String textDate;
     protected String url;
     protected String size;
     protected boolean isDownloaded=false;
     protected int testament;
+    protected boolean forceUpdate;
+
+    public void setForceUpdate(boolean forceUpdate) {
+        this.forceUpdate = forceUpdate;
+    }
+
+    public boolean isForceUpdate() {
+        return forceUpdate;
+    }
 
     public String getSize() {
         return size;
@@ -42,10 +61,11 @@ public abstract class BaseInfo {
     @Ignore
 
 
-    public BaseInfo(String id, String language, String name, int testament, String url,String size){
+    public BaseInfo(String id, String language, String name,String abbreviation, int testament, String url,String size){
         this.id = id;
         this.language = language;
         this.name = name;
+        this.abbreviation = abbreviation;
         this.testament = testament;
         this.url = url;
         this.size = size;
@@ -90,6 +110,19 @@ public abstract class BaseInfo {
         this.language = language;
     }
 
+    @Override
+    public String toString() {
+        return "BaseInfo{" +
+                "id='" + id + '\'' +
+                ", language='" + language + '\'' +
+                ", name='" + name + '\'' +
+                ", url='" + url + '\'' +
+                ", size='" + size + '\'' +
+                ", isDownloaded=" + isDownloaded +
+                ", testament=" + testament +
+                '}';
+    }
+//id='ENGESV'
     public String getName() {
         return name;
     }

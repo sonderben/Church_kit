@@ -10,15 +10,16 @@ import com.churchkit.churchkit.database.entity.base.SongAndChapter;
 @Entity(tableName = "song",indices = {/*@Index(value = {"title"},unique = true),*/@Index(value = {"book_id"})},
         foreignKeys = @ForeignKey(entity = SongBook.class,
                 parentColumns = "id",
-                childColumns = "book_id"))
+                childColumns = "book_id",onDelete = ForeignKey.CASCADE))
 public class Song extends SongAndChapter {
 
     @NonNull
     private String title;
     private int page;
 
-    public Song(@NonNull String id,String title, String bookTitle, float position, int page, String bookAbbreviation,String bookId) {
-        super(id, bookTitle, position, bookId, bookAbbreviation);
+    public Song(String infoId,@NonNull String id,String title, String bookTitle, float position, int page, String bookAbbreviation,String bookId) {
+        super(infoId,id, bookTitle, position, bookId, bookAbbreviation);
+        //super("","1","",1.2f,"","","");
         this.title = title;
         this.page = page;
     }

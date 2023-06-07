@@ -14,27 +14,27 @@ import com.churchkit.churchkit.repository.bible.BibleFavoriteRepository;
 import java.util.Map;
 
 public class BibleFavoriteViewModel extends AndroidViewModel {
-    LiveData<Map<BibleChapterFavorite, BibleChapter>> songWithHistory;
+    //LiveData<Map<BibleChapterFavorite, BibleChapter>> songWithHistory;
     BibleFavoriteRepository shr ;
     public BibleFavoriteViewModel(@NonNull Application application) {
         super(application);
         shr = new BibleFavoriteRepository( CKBibleDb.getInstance( application.getApplicationContext() ).bibleChapterFavoriteDao() );
-        songWithHistory = shr.loadFavoritesChapter();
+        //songWithHistory = shr.loadFavoritesChapter();
     }
 
-    public LiveData< Map<BibleChapterFavorite, BibleChapter> > loadFavoritesChapter(){
-        return songWithHistory;
-    }
-
-
-    public LiveData <BibleChapterFavorite>  existed(String id){
-        return shr.existed(id);
+    public LiveData< Map<BibleChapterFavorite, BibleChapter> > loadFavoritesChapter(String bibleInfoId){
+        return shr.loadFavoritesChapter(bibleInfoId);
     }
 
 
+    public LiveData <BibleChapterFavorite>  existed(String id,String bibleInfoId){
+        return shr.existed(id,bibleInfoId);
+    }
 
-    public BibleChapterFavorite  isExisted(String id){
-        return shr.isExisted(id);
+
+
+    public BibleChapterFavorite  isExisted(String id,String bibleInfoId){
+        return shr.isExisted(id,bibleInfoId);
     }
 
     public void insert(BibleChapterFavorite bibleChapterFavorite){
@@ -43,8 +43,8 @@ public class BibleFavoriteViewModel extends AndroidViewModel {
     public void delete(BibleChapterFavorite bibleChapterFavorite){
         shr.delete(bibleChapterFavorite);
     }
-    public LiveData<Integer> getAmount(){
-        return shr.getAmount();
+    public LiveData<Integer> getAmount(String bibleInfoId){
+        return shr.getAmount(bibleInfoId);
     }
 
 }

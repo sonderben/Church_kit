@@ -16,8 +16,21 @@
         android:textStyle="italic"
         android:visibility="gone"
         android:layout_marginLeft="@dimen/_15sdp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/internet"
         android:text="Restart the app to use the new bible"/>
+    <TextView
+        android:id="@+id/internet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FF0000"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:drawableTint="@color/white_black"
+        android:drawableLeft="@drawable/baseline_wifi_off_24"
+        android:visibility="visible"
+        android:layout_marginRight="@dimen/_15sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="No internet"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"

@@ -39,4 +39,11 @@ public class BibleVerseViewModel extends AndroidViewModel {
     public LiveData<List<BibleVerse>> getAllVerse(){
         return repository.getAllVerse();
     }
+
+    public LiveData<List<BibleVerse>> fullTextSearch(String bibleInfoId, String textSearc){
+       return repository.fullTextSearch(bibleInfoId,textSearc);
+    }
+    public LiveData<List<BibleVerse>> normalSearch(String bibleInfoId, String textSearc){
+        return repository.normalSearch(bibleInfoId,textSearc);
+    }
 }

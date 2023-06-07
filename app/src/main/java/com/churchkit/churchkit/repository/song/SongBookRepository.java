@@ -11,7 +11,7 @@ public class SongBookRepository extends BaseRepository<SongBookDao, SongBook>{
     public SongBookRepository(SongBookDao songBookDao) {
         super(songBookDao);
     }
-    public LiveData<List<SongBook>> getAllSongBook(){
-        return dao.getAllSongBook();
+    public LiveData<List<SongBook>> getAllSongBookBySongInfoId(String id){
+        return dao.getAllSongBookBySongInfoId(id);
     }
 }

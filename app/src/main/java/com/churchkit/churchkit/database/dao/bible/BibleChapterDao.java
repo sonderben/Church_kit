@@ -17,11 +17,13 @@ public interface BibleChapterDao extends BaseDao<BibleChapter> {
     LiveData<List<BibleChapter>> getAllChapter();
 
 
-    @Query("Select * from bible_chapter " +
+   /* @Query("Select Distinct * from bible_chapter " +
             "join bible_chapter_fts on bible_chapter.position = bible_chapter_fts.position " +
             "and bible_chapter.book_abbreviation = bible_chapter_fts.book_abbreviation " +
-            "where bible_chapter_fts match :query ORDER by bible_chapter.position limit 50")
-    LiveData< List<BibleChapter> > bibleChapterFullTextSearch(String query);
+            "where ( (bible_chapter_fts match :query) and (bible_chapter.infoId =:bibleInfoId) )  " +
+            "ORDER by bible_chapter.position limit 50")
+    LiveData< List<BibleChapter> > bibleChapterFullTextSearch(String bibleInfoId,String query);*/
+
 
     @Query("SELECT * from bible_chapter WHERE id = :id")
     LiveData<BibleChapter> getChapterByVerseId(String id);

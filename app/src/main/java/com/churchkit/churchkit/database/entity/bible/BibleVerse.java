@@ -8,7 +8,7 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "bible_verse",indices = {@Index(value = {"bible_chapter_id"})},
-foreignKeys = @ForeignKey(entity = BibleChapter.class,parentColumns = "id",childColumns = "bible_chapter_id"))
+foreignKeys = @ForeignKey(entity = BibleChapter.class,parentColumns = "id",childColumns = "bible_chapter_id",onDelete = ForeignKey.CASCADE))
 public class BibleVerse {
     @PrimaryKey
     @NonNull
@@ -19,13 +19,23 @@ public class BibleVerse {
     private String verseText;
     @ColumnInfo(name = "bible_chapter_id")
     private String bibleChapterId;
+    private String bibleInfoId;
 
-    public BibleVerse(@NonNull String bibleVerseId, int position, String reference, String verseText, String bibleChapterId) {
+    public String getBibleInfoId() {
+        return bibleInfoId;
+    }
+
+    public void setBibleInfoId(String bibleInfoId) {
+        this.bibleInfoId = bibleInfoId;
+    }
+
+    public BibleVerse(String bibleInfoId,@NonNull String bibleVerseId, int position, String reference, String verseText, String bibleChapterId) {
         this.bibleVerseId = bibleVerseId;
         this.position = position;
         this.reference = reference;
         this.verseText = verseText;
         this.bibleChapterId = bibleChapterId;
+        this.bibleInfoId = bibleInfoId;
     }
 
     @NonNull

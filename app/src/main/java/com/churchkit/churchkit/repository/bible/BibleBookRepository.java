@@ -8,30 +8,44 @@ import com.churchkit.churchkit.repository.song.BaseRepository;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public class BibleBookRepository extends BaseRepository<BibleBookDao, BibleBook> {
     public BibleBookRepository(BibleBookDao bibleBookDao) {
         super(bibleBookDao);
     }
 
 
-    public LiveData<List<BibleBook>> getAllBibleBook(){
-        return dao.getAllBibleBook();
+    public LiveData<List<BibleBook>> getAllBibleBookByIdBibleInfo(String bibleInfoId){
+        return dao.getAllBibleBookByIdBibleInfo(bibleInfoId);
     }
 
 
-    public LiveData<List<BibleBook>> getAllNewTestamentBibleBook(){
-        return dao.getAllNewTestamentBibleBook();
+    public LiveData<List<BibleBook>> getAllNewTestamentBibleBook(String bibleInfoId){
+        return dao.getAllNewTestamentBibleBook(bibleInfoId);
     }
 
 
-    public LiveData<List<BibleBook>> getAllOldTestamentBibleBook(){
-        return dao.getAllOldTestamentBibleBook();
+    public LiveData<List<BibleBook>> getAllOldTestamentBibleBook(String bibleInfoId){
+        return dao.getAllOldTestamentBibleBook(bibleInfoId);
     }
 
-    public LiveData<Integer>getAmountBookOldTestament()  {
-            return dao.getAmountBookOldTestament();
+    public void deleteAll(String bibleInfoId){
+
+        Completable.fromAction( ()-> dao.deleteAll( bibleInfoId ) )
+                .subscribeOn(Schedulers.single())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
     }
-    public LiveData<Integer>getAmountBookNewTestament()  {
-        return dao.getAmountBookNewTestament();
+
+
+
+    public LiveData<Integer>getAmountBookOldTestament(String bibleInfoId)  {
+            return dao.getAmountBookOldTestament(bibleInfoId);
+    }
+    public LiveData<Integer>getAmountBookNewTestament(String bibleInfoId)  {
+        return dao.getAmountBookNewTestament(bibleInfoId);
     }
 }

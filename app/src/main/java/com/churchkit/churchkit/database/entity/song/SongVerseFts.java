@@ -1,6 +1,5 @@
 package com.churchkit.churchkit.database.entity.song;
 
-import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Fts4;
 
@@ -10,18 +9,20 @@ public class SongVerseFts {
 
     private String verseId;
     private String verse;
-    @ColumnInfo(name = "song_id")
-    private String SongId;
     private String reference;
+    private String songTitle;
+
+    public String getSongTitle() {
+        return songTitle;
+    }
+
+    public void setSongTitle(String songTitle) {
+        this.songTitle = songTitle;
+    }
 
     public SongVerseFts(){}
 
-    public SongVerseFts(String verseId, String verse, String songId, String reference) {
-        this.verseId = verseId;
-        this.verse = verse;
-        SongId = songId;
-        this.reference = reference;
-    }
+
 
     public String getReference() {
         return reference;
@@ -34,9 +35,7 @@ public class SongVerseFts {
     @Override
     public String toString() {
         return "SongVerseFts{" +
-                "verseId='" + verseId + '\'' +
                 ", verse='" + verse + '\'' +
-                ", SongId='" + SongId + '\'' +
                 ", reference='" + reference + '\'' +
                 '}';
     }
@@ -57,11 +56,4 @@ public class SongVerseFts {
         this.verse = verse;
     }
 
-    public String getSongId() {
-        return SongId;
-    }
-
-    public void setSongId(String songId) {
-        SongId = songId;
-    }
 }

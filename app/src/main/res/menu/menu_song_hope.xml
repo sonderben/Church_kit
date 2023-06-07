@@ -2,11 +2,12 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/recyclerview_style"
-        android:icon="@drawable/list_view_24"
-        android:iconTint="@color/white"
-        app:showAsAction="ifRoom"
-        android:title="Column" />
+
+    <item
+        android:id="@+id/app_bar_spinner"
+        android:title="Bible"
+        app:showAsAction="always"
+        app:actionViewClass="android.widget.Spinner" />
     <item
         android:id="@+id/app_bar_switch"
         android:title="Switch"

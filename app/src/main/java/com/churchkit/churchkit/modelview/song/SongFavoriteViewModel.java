@@ -15,19 +15,19 @@ import com.churchkit.churchkit.database.entity.song.SongFavorite;
 import java.util.Map;
 
 public class SongFavoriteViewModel extends AndroidViewModel {
-    LiveData<Map<SongFavorite, Song>> songWithHistory;
+    //LiveData<Map<SongFavorite, Song>> songWithHistory;
     SongFavoriteRepository shr ;
     public SongFavoriteViewModel(@NonNull Application application) {
         super(application);
         shr = new SongFavoriteRepository( CKSongDb.getInstance( application.getApplicationContext() ).songFavoriteDao() );
-        songWithHistory = shr.loadUserAndBookNames();
+        //songWithHistory = shr.loadUserAndBookNames();
     }
 
-    public LiveData<Map<SongFavorite, Song>> getSongFavorite() {
-        return songWithHistory;
+    public LiveData<Map<SongFavorite, Song>> getSongFavorite(String songInfoId) {
+        return shr.loadUserAndBookNames(songInfoId);
     }
-    public LiveData<SongFavorite> getSongFavoriteWithSongId(String id){
-        return shr.getSongFavoriteWithSongId(id);
+    public LiveData<SongFavorite> getSongFavoriteWithSongId(String songInfoId,String id){
+        return shr.getSongFavoriteWithSongId(songInfoId,id);
     }
     public void insert(SongFavorite sf){
         shr.insert(sf);
@@ -35,7 +35,7 @@ public class SongFavoriteViewModel extends AndroidViewModel {
     public void delete(SongFavorite sf){
         shr.delete(sf);
     }
-    public LiveData<Integer> getAmount(){
-       return shr.getAmount();
+    public LiveData<Integer> getAmount(String songInfoId){
+       return shr.getAmount(songInfoId);
     }
 }

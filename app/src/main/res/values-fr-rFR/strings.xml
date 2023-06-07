@@ -26,8 +26,8 @@
     <string name="letter_size_title">Taille des lettres</string>
     <string name="display">Affichage</string>
     <string name="old">Ancien</string>
-    <string name="search_by_verse">Recherche par verset</string>
-    <string name="search_by_ref">Recherche par titre ou référence</string>
+    <string name="full_text_search">Recherche par verset</string>
+    <string name="normal_search">Recherche par titre ou référence</string>
     <string name="and">et</string>
     <string name="testament">testament</string>
     <string name="restart_2_use_new_">Redémarrez l\'application pour utiliser la nouvelle</string>

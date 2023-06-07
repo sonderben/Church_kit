@@ -22,19 +22,19 @@
     <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:checkedButton="@id/ref"
+        android:checkedButton="@id/normal_text_search"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/label">
         <RadioButton
-            android:id="@+id/verse"
+            android:id="@+id/full_text_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Verse"/>
+            android:text="Full text search"/>
         <RadioButton
-            android:id="@+id/ref"
+            android:id="@+id/normal_text_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Title or Reference"/>
+            android:text="Normal"/>
     </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

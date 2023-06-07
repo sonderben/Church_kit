@@ -30,4 +30,11 @@ public class SongInfoRepository extends BaseRepository <SongInfoDao, SongInfo> {
     public LiveData<List<SongInfo>> getAllSongInfo() {
         return dao.getAllSongInfo();
     }
+
+    public void update(SongInfo songInfo){
+        Completable.fromAction( ()-> dao.update(songInfo) )
+                .subscribeOn(Schedulers.single())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+    }
 }

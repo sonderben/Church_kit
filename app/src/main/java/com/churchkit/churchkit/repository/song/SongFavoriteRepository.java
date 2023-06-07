@@ -13,16 +13,16 @@ public class SongFavoriteRepository extends BaseRepository<SongFavoriteDao, Song
         super(songHistoryDao);
 
     }
-    public LiveData<SongFavorite> getSongFavoriteWithSongId(String id){
-       return dao.getSongFavoriteWithSongId(id);
+    public LiveData<SongFavorite> getSongFavoriteWithSongId(String songInfoId,String id){
+       return dao.getSongFavoriteWithSongId(songInfoId,id);
     }
     /*public SongFavorite isExisted(String id){
         return songHistoryDao.isExisted(id);
     }*/
-    public LiveData<Integer> getAmount(){
-        return dao.getAmount();
+    public LiveData<Integer> getAmount(String songInfoId){
+        return dao.getAmount(songInfoId);
     }
-    public LiveData<Map<SongFavorite, Song>> loadUserAndBookNames(){
-        return dao.getAllSongFavoriteWithSong();
+    public LiveData<Map<SongFavorite, Song>> loadUserAndBookNames(String songInfoId){
+        return dao.getAllSongFavoriteWithSong(songInfoId);
     }
 }

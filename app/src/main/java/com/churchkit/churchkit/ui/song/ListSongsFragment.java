@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.Util;
 import com.churchkit.churchkit.ui.adapter.song.ListSongsAdapter;
@@ -24,9 +25,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ListSongsFragment extends Fragment {
 
-    public ListSongsFragment() {
-        // Required empty public constructor
-    }
+    public ListSongsFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,6 +37,7 @@ public class ListSongsFragment extends Fragment {
 
         mRecyclerView = listSongsBinding.recyclerview;
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
+        ckp = new CKPreferences(getContext());
 
         String from = getArguments().getString("FROM");
         String songBookName = getArguments().getString("songBookName");
@@ -46,22 +46,24 @@ public class ListSongsFragment extends Fragment {
             case Util.FROM_SONG_FAVORITE:
                 songFavoriteViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication()).create(SongFavoriteViewModel.class);
 
-                songFavoriteViewModel.getSongFavorite().observe(getViewLifecycleOwner(), songFavoriteSongMap -> {
+                songFavoriteViewModel.getSongFavorite(ckp.getSongName() ).observe(getViewLifecycleOwner(), songFavoriteSongMap -> {
                     listSongsAdapter.setSongFavoriteWrapperList( SongFavoriteWrapper.fromMap(songFavoriteSongMap) );
                     mRecyclerView.setAdapter( listSongsAdapter );
                 });
                 break;
             case Util.FROM_SONG_HISTORY:
                 SongHistoryViewModel songHistoryViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication()).create(SongHistoryViewModel.class);
-                songHistoryViewModel.getSongWithHistory().observe(getViewLifecycleOwner(), songHistorySongMap -> {
+                songHistoryViewModel.getSongWithHistory(ckp.getSongName() ).observe(getViewLifecycleOwner(), songHistorySongMap -> {
                     listSongsAdapter.setSongHistoryWrapperList( SongHistoryWrapper.fromMap(songHistorySongMap) );
                     mRecyclerView.setAdapter( listSongsAdapter );
                 });
                 break;
             default:
-                ckSongDb.songDao().getAllSongWithVerseById(getArguments().getString("ID")).observe(requireActivity(), songs -> {
-                    listSongsAdapter.setSongList(songs);
-                    mRecyclerView.setAdapter(listSongsAdapter);
+                ckSongDb.songDao().getAllSongWithVerseById( getArguments().getString("ID")).observe(requireActivity(), songs -> {
+                    if (songs!=null){
+                        listSongsAdapter.setSongList(songs);
+                        mRecyclerView.setAdapter(listSongsAdapter);
+                    }
                 });
         }
 
@@ -88,6 +90,7 @@ public class ListSongsFragment extends Fragment {
     CKSongDb ckSongDb;
     ListSongsAdapter listSongsAdapter;
     private SongFavoriteViewModel songFavoriteViewModel;
+    CKPreferences ckp;
 
 
 }

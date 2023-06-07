@@ -15,21 +15,21 @@ public class BibleFavoriteRepository extends BaseRepository<BibleChapterFavorite
 
     }
 
-    public LiveData< Map<BibleChapterFavorite, BibleChapter> > loadFavoritesChapter(){
-        return dao.loadFavoritesChapter();
+    public LiveData< Map<BibleChapterFavorite, BibleChapter> > loadFavoritesChapter(String bibleInfoId){
+        return dao.loadFavoritesChapter(bibleInfoId);
     }
 
 
-    public LiveData <BibleChapterFavorite>  existed(String id){
-        return dao.existed(id);
+    public LiveData <BibleChapterFavorite>  existed(String id,String bibleInfoId){
+        return dao.existed(id,bibleInfoId);
     }
 
 
-    public LiveData<Integer> getAmount(){
-        return dao.getAmount();
+    public LiveData<Integer> getAmount(String bibleInfoId){
+        return dao.getAmount(bibleInfoId);
     }
 
-    public BibleChapterFavorite  isExisted(String id){
-        return dao.isExisted(id);
+    public BibleChapterFavorite  isExisted(String id,String bibleInfoId){
+        return dao.isExisted(id,bibleInfoId);
     }
 }

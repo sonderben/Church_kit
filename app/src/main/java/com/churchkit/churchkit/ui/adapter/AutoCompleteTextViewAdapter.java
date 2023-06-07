@@ -61,7 +61,7 @@ public class AutoCompleteTextViewAdapter extends ArrayAdapter<Object> implements
 
         if ( aClass == BibleFragment.class){
 
-            if (object instanceof BibleChapter){
+            /*if (object instanceof BibleChapter){
                 if(convertView == null) {
                     convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_auto_complete_song, parent, false);
                 }
@@ -75,20 +75,20 @@ public class AutoCompleteTextViewAdapter extends ArrayAdapter<Object> implements
                 songPosition.setText( "" );
                 title.setText( "");
                 bookName.setText( bibleChapter.getBookAbbreviation()+" "+bibleChapter.getPosition() );
-            }else {
+            }else {*/
                 if(convertView == null)
                     convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_auto_complete_verse,parent,false);
-                TextView bibleVerseTextView = convertView.findViewById(R.id.verse);
+                TextView bibleVerseTextView = convertView.findViewById(R.id.full_text_search);
                 BibleVerse bibleVerse = (BibleVerse) object;
                 String verseTextTemp = bibleVerse.getVerseText();
                 String verseText = strong(mConstraint.toString(),verseTextTemp);
                 Spanned temp = Html.fromHtml("<b> <b> "+bibleVerse.getReference()+"</b> </b>"+" "+verseText);
 
                 bibleVerseTextView.setText(temp);
-            }
+            //}
 
         } else {
-            if (object instanceof Song){
+            /*if (object instanceof Song){
                 if(convertView == null) {
                     convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_auto_complete_song, parent, false);
                 }
@@ -102,17 +102,17 @@ public class AutoCompleteTextViewAdapter extends ArrayAdapter<Object> implements
                 songPosition.setText( "" );
                 title.setText( "");
                 bookName.setText( bibleChapter.getBookAbbreviation()+" "+bibleChapter.getPosition() );
-            }else {
+            }else {*/
                 if(convertView == null)
                     convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_auto_complete_verse,parent,false);
-                TextView bibleVerseTextView = convertView.findViewById(R.id.verse);
+                TextView bibleVerseTextView = convertView.findViewById(R.id.full_text_search);
                 Verse bibleVerse = (Verse) object;
                 String verseTextTemp = bibleVerse.getVerse();
                 String verseText = strong(mConstraint.toString(),verseTextTemp);
                 Spanned temp = Html.fromHtml("<b> <b> "+bibleVerse.getReference()+"</b> </b>"+" "+verseText);
 
                 bibleVerseTextView.setText(temp);
-            }
+            //}
         }
 
 

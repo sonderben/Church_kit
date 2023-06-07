@@ -11,7 +11,7 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "verse",indices = {@Index(value = {"song_id"})},
         foreignKeys = @ForeignKey(entity = Song.class,
                 parentColumns = "id",
-                childColumns = "song_id"))
+                childColumns = "song_id",onDelete = ForeignKey.CASCADE))
 public class Verse {
     @PrimaryKey()
     @NonNull
@@ -22,14 +22,35 @@ public class Verse {
     @ColumnInfo(name = "song_id")
     private String SongId;
     private String reference;
+    private String infoId;
+    private String songTitle;
 
     public Verse(){}
-    public Verse(String verseId, String verse,String reference, int position, String songId) {
+
+    public String getInfoId() {
+        return infoId;
+    }
+
+    public void setInfoId(String infoId) {
+        this.infoId = infoId;
+    }
+
+    public String getSongTitle() {
+        return songTitle;
+    }
+
+    public void setSongTitle(String songTitle) {
+        this.songTitle = songTitle;
+    }
+
+    public Verse(String infoId, String verseId, String verse, String reference, int position, String songId, String songTitle) {
         this.verseId = verseId;
         this.verse = verse;
         this.position = position;
         this.reference = reference;
-        SongId = songId;
+        this.SongId = songId;
+        this.infoId = infoId;
+        this.songTitle = songTitle;
     }
 
     public String getReference() {

@@ -2,12 +2,10 @@ package com.churchkit.churchkit.ui.util;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 
 import androidx.annotation.NonNull;
@@ -36,19 +34,19 @@ public class OptionSearchView implements View.OnClickListener  {
         View view = inflater.inflate(R.layout.option_search_layout,null);
 
         dialog.setView( view );
-        RadioButton verse = view.findViewById(R.id.verse);
-        RadioButton ref = view.findViewById(R.id.ref);
+        RadioButton fullTextSearchRb = view.findViewById(R.id.full_text_search);
+        RadioButton normalRb = view.findViewById(R.id.normal_text_search);
 
-        verse.setOnClickListener(this);
-        ref.setOnClickListener(this);
+        fullTextSearchRb.setOnClickListener(this);
+        normalRb.setOnClickListener(this);
 
 
 
         if (klass == SongHopeFragment.class){
 
-            verse.setChecked( ckPreferences.isSongTypeSearchIsVerse() );
+            fullTextSearchRb.setChecked( ckPreferences.isSongTypeSearchIsFullTextSearch() );
         }else if (klass == BibleFragment.class){
-            verse.setChecked( ckPreferences.isBibleTypeSearchIsVerse() );
+            fullTextSearchRb.setChecked( ckPreferences.isBibleTypeSearchIsFullTextSearch() );
         }
 
 
@@ -63,25 +61,23 @@ public class OptionSearchView implements View.OnClickListener  {
 
     @Override
     public void onClick(View v) {
-        /*if (v.getId()==R.id.close)
-            alertDialog.dismiss();*/
          if (klass == SongHopeFragment.class){
             switch (v.getId()){
-                case R.id.ref:
-                    ckPreferences.setSongTypeSearch(CKPreferences.CHAPTER_SONG_TYPE_SEARCH);
-                    autoCompleteTextView.setHint(context.getString(R.string.search_by_ref));
+                case R.id.normal_text_search:
+                    ckPreferences.setSongTypeSearch(CKPreferences.SONG_NORMAL_SEARCH_TYPE);
+                    autoCompleteTextView.setHint(context.getString(R.string.normal_search));
                     break;
-                case R.id.verse:ckPreferences.setSongTypeSearch(CKPreferences.VERSE_SONG_TYPE_SEARCH);
-                    autoCompleteTextView.setHint(context.getString(R.string.search_by_verse));
+                case R.id.full_text_search:ckPreferences.setSongTypeSearch(CKPreferences.SONG_FULL_TEXT_SEARCH_TYPE);
+                    autoCompleteTextView.setHint(context.getString(R.string.full_text_search));
                     break;
             }
         }else if (klass == BibleFragment.class){
             switch (v.getId()){
-                case R.id.ref: ckPreferences.setBibleTypeSearch( CKPreferences.CHAPTER_BIBLE_TYPE_SEARCH );
-                    autoCompleteTextView.setHint(context.getString(R.string.search_by_ref));
+                case R.id.normal_text_search: ckPreferences.setBibleTypeSearch( CKPreferences.BIBLE_NORMAL_SEARCH_TYPE);
+                    autoCompleteTextView.setHint(context.getString(R.string.normal_search));
                 break;
-                case R.id.verse:ckPreferences.setBibleTypeSearch( CKPreferences.VERSE_BIBLE_TYPE_SEARCH );
-                    autoCompleteTextView.setHint(context.getString(R.string.search_by_verse));
+                case R.id.full_text_search:ckPreferences.setBibleTypeSearch( CKPreferences.BIBLE_FULL_TEXT_SEARCH_TYPE);
+                    autoCompleteTextView.setHint(context.getString(R.string.full_text_search));
             }
         }
         alertDialog.dismiss();

@@ -14,20 +14,19 @@ import com.churchkit.churchkit.repository.bible.BibleHistoryRepository;
 import java.util.Map;
 
 public class BibleHistoryViewModel extends AndroidViewModel {
-    LiveData<Map<BibleChapterHistory, BibleChapter>> liveData ;
+    //LiveData<Map<BibleChapterHistory, BibleChapter>> liveData ;
     BibleHistoryRepository shr;
     public BibleHistoryViewModel(@NonNull Application application) {
         super(application);
          shr = new BibleHistoryRepository( CKBibleDb.getInstance( application.getApplicationContext() ).bibleChapterHistoryDao() );
 
-        liveData = shr.loadHistoriesChapter();
     }
-    public LiveData<Integer> getAmount(){
-        return shr.getAmount();
+    public LiveData<Integer> getAmount(String bibleInfoId){
+        return shr.getAmount(bibleInfoId);
     }
 
-    public LiveData< Map<BibleChapterHistory, BibleChapter> > loadHistoriesChapter(){
-        return liveData;
+    public LiveData< Map<BibleChapterHistory, BibleChapter> > loadHistoriesChapter(String bibleInfoId){
+        return shr.loadHistoriesChapter(bibleInfoId);
     }
     public void insert(BibleChapterHistory bibleChapterHistory){
         shr.insert(bibleChapterHistory);

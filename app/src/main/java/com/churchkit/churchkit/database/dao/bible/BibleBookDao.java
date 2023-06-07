@@ -10,18 +10,21 @@ import com.churchkit.churchkit.database.entity.bible.BibleBook;
 import java.util.List;
 @Dao
 public interface BibleBookDao extends BaseDao<BibleBook> {
-    @Query("SELECT * FROM BIBLE_BOOK ORDER BY testament, position ")
-     LiveData<List<BibleBook>> getAllBibleBook();
+    @Query("SELECT * FROM BIBLE_BOOK where bible_info_id = :bibleInfoId ORDER BY testament, position ")
+     LiveData<List<BibleBook>> getAllBibleBookByIdBibleInfo(String bibleInfoId);
 
-    @Query("SELECT * FROM BIBLE_BOOK WHERE testament  > 0 ORDER BY position")
-    LiveData<List<BibleBook>> getAllNewTestamentBibleBook();
+    @Query("SELECT * FROM BIBLE_BOOK WHERE bible_info_id = :bibleInfoId and  testament  > 0 ORDER BY position")
+    LiveData<List<BibleBook>> getAllNewTestamentBibleBook(String bibleInfoId);
 
-    @Query("SELECT * FROM BIBLE_BOOK WHERE testament  < 0 ORDER BY position")
-    LiveData<List<BibleBook>> getAllOldTestamentBibleBook();
+    @Query("SELECT * FROM BIBLE_BOOK  WHERE bible_info_id = :bibleInfoId and testament  < 0 ORDER BY position")
+    LiveData<List<BibleBook>> getAllOldTestamentBibleBook(String bibleInfoId);
 
-   @Query("Select Count(*) from bible_book Where testament <0")
-    LiveData<Integer>getAmountBookOldTestament();
+   @Query("Select Count(*) from bible_book Where bible_info_id = :bibleInfoId and testament <0")
+    LiveData<Integer>getAmountBookOldTestament(String bibleInfoId);
 
-    @Query("Select Count(*) from bible_book Where testament >0")
-    LiveData<Integer>getAmountBookNewTestament();
+    @Query("Select Count(*) from bible_book Where bible_info_id = :bibleInfoId and testament >0")
+    LiveData<Integer>getAmountBookNewTestament(String bibleInfoId);
+
+    @Query("Delete  from BIBLE_BOOK where BIBLE_BOOK.bible_info_id = :bibleInfoId")
+    void deleteAll(String bibleInfoId);
 }

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.Util;
 import com.churchkit.churchkit.database.CKBibleDb;
@@ -28,14 +29,9 @@ import java.util.List;
 
 public class ListChapterFragment extends Fragment {
 
-
     public ListChapterFragment() {
         // Required empty public constructor
     }
-
-
-
-
 
 
     @Override
@@ -45,6 +41,7 @@ public class ListChapterFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_list_chapter2, container, false);
         mRecyclerView = root.findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
+        ckPreferences = new CKPreferences(getContext());
 
 
 
@@ -56,14 +53,14 @@ public class ListChapterFragment extends Fragment {
 
         switch (getArguments().getString("FROM")){
             case Util.FROM_BIBLE_FAVORITE:
-                db.bibleChapterFavoriteDao().loadFavoritesChapter().observe(getViewLifecycleOwner(), bibleChapterFavoriteBibleChapterMap -> {
+                db.bibleChapterFavoriteDao().loadFavoritesChapter(ckPreferences.getBibleName() ).observe(getViewLifecycleOwner(), bibleChapterFavoriteBibleChapterMap -> {
                     adapter = new Adapter(getChildFragmentManager(), null);
                     adapter.setChapterFavoriteWrapperList( BibleChapterFavoriteWrapper.fromMap(bibleChapterFavoriteBibleChapterMap ) );
                     mRecyclerView.setAdapter( adapter );
                 });
                 break;
             case Util.FROM_BIBLE_HISTORY:
-                db.bibleChapterHistoryDao().loadHistoriesChapter().observe(getViewLifecycleOwner(), bibleChapterFavoriteBibleChapterMap -> {
+                db.bibleChapterHistoryDao().loadHistoriesChapter(ckPreferences.getBibleName()).observe(getViewLifecycleOwner(), bibleChapterFavoriteBibleChapterMap -> {
                     adapter = new Adapter(getChildFragmentManager(), null);
                     adapter.setChapterHistoryWrapperList( BibleChapterHistoryWrapper.fromMap(bibleChapterFavoriteBibleChapterMap ) );
                     mRecyclerView.setAdapter( adapter );
@@ -93,6 +90,7 @@ public class ListChapterFragment extends Fragment {
     Adapter adapter;
     CKBibleDb db/*= CKBibleDb.getInstance( getContext() )*/;
     static String bibleBookId;
+    CKPreferences ckPreferences;
 
     @Override
     public void onResume() {
@@ -157,8 +155,8 @@ public class ListChapterFragment extends Fragment {
                 });
             }else if (chapterFavoriteWrapperList != null){
                 bibleChapter = chapterFavoriteWrapperList.get(holder.getAbsoluteAdapterPosition()).getBibleChapter();
-                holder.chapter.setText(bibleChapter.getPosition()+"");
-
+                //holder.chapter.setText(bibleChapter.getPosition()+"");
+                holder.chapter.setText( Util.formatNumberToString( bibleChapter.getPosition() ) );
                 calendar.setTimeInMillis( chapterFavoriteWrapperList.get(holder.getAbsoluteAdapterPosition()).getDate() );
 
                 holder.date.setText(dateFormat.format(calendar.getTime()));
@@ -171,7 +169,9 @@ public class ListChapterFragment extends Fragment {
                 });
             }else if (chapterHistoryWrapperList != null){
                 bibleChapter = chapterHistoryWrapperList.get(holder.getAbsoluteAdapterPosition()).getBibleChapter();
-                holder.chapter.setText(bibleChapter.getPosition()+"");
+                //holder.chapter.setText(bibleChapter.getPosition()+"");
+                holder.chapter.setText( Util.formatNumberToString( bibleChapter.getPosition() ) );
+
 
                 calendar.setTimeInMillis( chapterHistoryWrapperList.get(holder.getAbsoluteAdapterPosition()).getDate() );
 

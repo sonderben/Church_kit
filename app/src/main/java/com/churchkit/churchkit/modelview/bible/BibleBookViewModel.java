@@ -15,44 +15,49 @@ import java.util.List;
 
 public class BibleBookViewModel extends AndroidViewModel {
     BibleBookRepository repository;
-    LiveData<Integer> amountBookOldTestament;
-    LiveData<Integer> amountBookNewTestament;
+    //LiveData<Integer> amountBookOldTestament;
+    //LiveData<Integer> amountBookNewTestament;
 
     public BibleBookViewModel(@NonNull Application application) {
         super(application);
         BibleBookDao dao = CKBibleDb.getInstance( application.getApplicationContext() ).bibleBookDao();
         repository = new BibleBookRepository(dao);
-        amountBookOldTestament = repository.getAmountBookOldTestament();
-        amountBookNewTestament = repository.getAmountBookNewTestament();
+       // amountBookOldTestament = repository.getAmountBookOldTestament();
+       // amountBookNewTestament = repository.getAmountBookNewTestament();
     }
-
-    public LiveData<List<BibleBook>> getAllBibleBook(){
-        return repository.getAllBibleBook();
+    public void delete(BibleBook bibleBook){
+        repository.delete(bibleBook);
     }
-
-
-    public LiveData<List<BibleBook>> getAllNewTestamentBibleBook(){
-        return repository.getAllNewTestamentBibleBook();
+    public void deleteAll(String bibleInfoId){
+        repository.deleteAll(bibleInfoId);
     }
-
-
-    public LiveData<List<BibleBook>> getAllOldTestamentBibleBook(){
-        return repository.getAllOldTestamentBibleBook();
-    }
-    public LiveData<Integer>getAmountBookOldTestament()  {
-            return amountBookOldTestament;
-    }
-    public LiveData<Integer>getAmountBookNewTestament()  {
-        return amountBookNewTestament;
+    public LiveData<List<BibleBook>> getAllBibleBook(String bibleInfoId){
+        return repository.getAllBibleBookByIdBibleInfo(bibleInfoId);
     }
 
 
-    public int getAmountBookOldTest()  {
+    public LiveData<List<BibleBook>> getAllNewTestamentBibleBook(String bibleInfoId){
+        return repository.getAllNewTestamentBibleBook(bibleInfoId);
+    }
+
+
+    public LiveData<List<BibleBook>> getAllOldTestamentBibleBook(String bibleInfoId){
+        return repository.getAllOldTestamentBibleBook(bibleInfoId);
+    }
+    public LiveData<Integer>getAmountBookOldTestament(String bibleInfoId)  {
+            return repository.getAmountBookOldTestament(bibleInfoId);
+    }
+    public LiveData<Integer>getAmountBookNewTestament(String bibleInfoId)  {
+        return repository.getAmountBookNewTestament(bibleInfoId);
+    }
+
+
+    /*public int getAmountBookOldTest()  {
         return amountBookOldTestament.getValue();
     }
     public int getAmountBookNewTest()  {
         return amountBookNewTestament.getValue();
-    }
+    }*/
 
 
 }

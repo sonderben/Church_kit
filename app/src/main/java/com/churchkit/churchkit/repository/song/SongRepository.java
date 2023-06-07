@@ -13,21 +13,21 @@ public class SongRepository extends BaseRepository<SongDao, Song>{
     }
 
 
-    public LiveData<List<Song>> songFullTextSearch(String query){
-        return dao.songFullTextSearch(query);
-    }
+   /* public LiveData<List<Song>> songFullTextSearch(String songInfoId,String query){
+        return dao.songFullTextSearch(songInfoId,query);
+    }*/
 
 
-    public LiveData< List<Song> > getAllSongWithVerseById(String songBookId){
-        return dao.getAllSongWithVerseById(songBookId);
+    public LiveData< List<Song> > getAllSongWithVerseById(String songInfoId,String songBookId){
+        return dao.getAllSongWithVerseById( songBookId);
     }
 
     public LiveData<Song> getSongById(String id){
         return dao.getSongById(id);
     }
 
-    public LiveData<List<Song>> getAllSong(){
-        return dao.getAllSong();
+    public LiveData<List<Song>> getAllSong(String songInfoId){
+        return dao.getAllSong(songInfoId);
     }
 
 }

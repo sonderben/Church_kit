@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 <TextView
-    android:id="@+id/verse"
+    android:id="@+id/full_text_search"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:layout_constraintTop_toTopOf="parent"
@@ -18,5 +18,5 @@
         android:layout_height="2dp"
         android:layout_marginTop="4dp"
         app:layout_goneMarginTop="@dimen/_13sdp"
-        app:layout_constraintTop_toBottomOf="@id/verse" />
+        app:layout_constraintTop_toBottomOf="@id/full_text_search" />
 </androidx.constraintlayout.widget.ConstraintLayout>

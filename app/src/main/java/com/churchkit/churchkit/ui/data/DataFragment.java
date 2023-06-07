@@ -1,26 +1,35 @@
 package com.churchkit.churchkit.ui.data;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.R;
+import com.churchkit.churchkit.Util;
 import com.churchkit.churchkit.database.CKBibleDb;
 import com.churchkit.churchkit.database.CKSongDb;
 import com.churchkit.churchkit.database.dao.bible.BibleDaoGeneral4Insert;
@@ -30,13 +39,20 @@ import com.churchkit.churchkit.database.entity.bible.BibleBook;
 import com.churchkit.churchkit.database.entity.bible.BibleChapter;
 import com.churchkit.churchkit.database.entity.bible.BibleInfo;
 import com.churchkit.churchkit.database.entity.bible.BibleVerse;
+import com.churchkit.churchkit.database.entity.note.NoteDirectoryEntity;
 import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.database.entity.song.SongBook;
 import com.churchkit.churchkit.database.entity.song.SongInfo;
 import com.churchkit.churchkit.database.entity.song.Verse;
+import com.churchkit.churchkit.modelview.bible.BibleBookViewModel;
 import com.churchkit.churchkit.modelview.bible.BibleInfoViewModel;
 import com.churchkit.churchkit.modelview.song.SongInfoViewModel;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.churchkit.churchkit.ui.util.SwipeToDeleteCallback;
+import com.churchkit.churchkit.util.InternetBroadcastReceiver;
+import com.google.android.gms.tasks.OnCanceledListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -58,15 +74,20 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.FlowableSubscriber;
+import io.reactivex.rxjava3.functions.Action;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class DataFragment extends Fragment {
+
+
 
 
 
@@ -93,33 +114,121 @@ public class DataFragment extends Fragment {
 
         init();
 
+        TextView isConnectedTextView = view.findViewById(R.id.internet);
+
+
+
+
+
+        SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(getContext()) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int a = viewHolder.getAbsoluteAdapterPosition();
+                BaseInfo baseInfo = myAdapter.getBaseInfoList().get(a);
+
+                baseInfo.setDownloaded(false);
+
+
+
+                myAdapter.notifyItemChanged(a);
+
+
+                bibleBookViewModel.deleteAll(baseInfo.getId());
+                bibleInfoViewModel.delete((BibleInfo) baseInfo);
+
+
+                Snackbar snackbar = Snackbar
+                        .make(view, "Item was removed from the list.", Snackbar.LENGTH_LONG);
+                snackbar.setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        baseInfo.setDownloaded(true);
+                        myAdapter.notifyItemChanged(a);
+                        recyclerView.scrollToPosition(a);
+                    }
+                });
+
+
+
+                snackbar.setActionTextColor(Color.YELLOW);
+                snackbar.show();
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeToDeleteCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+
+
+        internetBroadcastReceiver = new InternetBroadcastReceiver();
+         intentFilter = new IntentFilter();
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+
+        internetBroadcastReceiver.setOnInternetStatusChange(new InternetBroadcastReceiver.OnInternetStatusChange() {
+
+
+            @Override
+            public void change(boolean isConnected) {
+                    isConnectedTextView.setVisibility( !isConnected? View.VISIBLE:View.GONE );
+
+                myAdapter.setIsConnected(isConnected);
+
+            }
+        });
+
+
 
 
 
         if (origin.equalsIgnoreCase("BIBLE")) {
-            info.setVisibility(ckPreferences.isCurrentAndNextBibleEqual() ? View.GONE : View.VISIBLE);
-            viewModel.getAllBibleInfo().observe(getViewLifecycleOwner(), bibleInfoList -> {
-                if (myAdapter.isBaseInfosEmpty())
-                    myAdapter.setBaseInfoList(new ArrayList<>(bibleInfoList));
+            bibleInfoViewModel.getAllBibleInfo().observe(getViewLifecycleOwner(), bibleInfoList -> {
+                myAdapter.setBaseInfoList(new ArrayList<>(bibleInfoList));
             });
         } else {
-            info.setVisibility(ckPreferences.isCurrentAndNextSongEqual() ? View.GONE : View.VISIBLE);
+
             songInfoViewModel.getAllSongInfo().observe(getViewLifecycleOwner(), songInfoList -> {
-                if (myAdapter.isBaseInfosEmpty())
+                //if (myAdapter.isBaseInfosEmpty())
                     myAdapter.setBaseInfoList(new ArrayList<>(songInfoList));
             });
         }
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(internetBroadcastReceiver, intentFilter);
+        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottom_nav);
+        bottomNavigationView.getMenu().getItem(3).setChecked(true);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver( internetBroadcastReceiver );
+    }
+
     private RecyclerView recyclerView;
+
+    private boolean isConnected = false;
     private DataFragment.MyAdapter myAdapter;
-    private BibleInfoViewModel viewModel;
+    private BibleInfoViewModel bibleInfoViewModel;
+    InternetBroadcastReceiver internetBroadcastReceiver;
+    IntentFilter intentFilter;
+
     private SongInfoViewModel songInfoViewModel;
+    private BibleBookViewModel bibleBookViewModel;
     private String origin;
     private CKPreferences ckPreferences;
     //private String defaultBibleId;
     private TextView info;
     private View view;
+
 
     private void init() {
         recyclerView = view.findViewById(R.id.recyclerview);
@@ -130,17 +239,48 @@ public class DataFragment extends Fragment {
         recyclerView.setAdapter(myAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        viewModel = new BibleInfoViewModel(getActivity().getApplication());
+        bibleInfoViewModel = new BibleInfoViewModel(getActivity().getApplication());
+        bibleBookViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication()).create(BibleBookViewModel.class);
         songInfoViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication()).create(SongInfoViewModel.class);
     }
 
-    private final class MyAdapter extends RecyclerView.Adapter<DataFragment.MyAdapter.MyViewHolder> {
+    public final class MyAdapter extends RecyclerView.Adapter<DataFragment.MyAdapter.MyViewHolder> {
+
+        private boolean isConnected = false;
+        public void setIsConnected(boolean isConnected){
+            this.isConnected = isConnected;
+        }
         List<BaseInfo> baseInfoList = new ArrayList<>();
 
+        public List<BaseInfo> getBaseInfoList() {
+            return baseInfoList;
+        }
 
         public void setBaseInfoList(List<BaseInfo> baseInfoList) {
             this.baseInfoList = baseInfoList;
             notifyDataSetChanged();
+
+            if (baseInfoList.size()>0){
+
+                if (baseInfoList.get(0) instanceof BibleInfo && ckPreferences.getBibleName().equalsIgnoreCase("")){
+                    for (int i = 0; i < baseInfoList.size(); i++) {
+                        if (baseInfoList.get(i).isDownloaded()) {
+                            ckPreferences.setBibleName(baseInfoList.get(i).getId());
+                            break;
+                        }
+                    }
+                }
+                else if (baseInfoList.get(0) instanceof SongInfo && ckPreferences.getSongName().equalsIgnoreCase("")){
+                    for (int i = 0; i < baseInfoList.size(); i++) {
+                        if (baseInfoList.get(i).isDownloaded()) {
+                            ckPreferences.setSongName(baseInfoList.get(i).getId());
+                            break;
+                        }
+                    }
+                }
+
+            }
+
         }
 
 
@@ -167,76 +307,43 @@ public class DataFragment extends Fragment {
 
             holder.download.setVisibility(bibleInfo.isDownloaded() ? View.GONE : View.VISIBLE);
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    setToolTop().showAlignLeft(holder.download);
-                }
-            });
+            holder.itemView.setOnClickListener(v -> setToolTop("Click to download").showAlignLeft(holder.download));
 
 
             if (bibleInfo instanceof SongInfo){
                 SongInfo songInfo = (SongInfo) bibleInfo;
                 holder.testament.setText( songInfo.isSinglePart()? (songInfo.getAmountSong()+" "+getString(R.string.song)): songInfo.getTestament()+" "+getString(R.string.part) );
-                holder.checkBox.setChecked( bibleInfo.getId().equalsIgnoreCase(ckPreferences.getNextSongName()) );
-
             }else {
                 holder.testament.setText( getStringTestament(bibleInfo.getTestament() ) );
-                holder.checkBox.setChecked(bibleInfo.getId().equalsIgnoreCase(ckPreferences.getNextBibleName()));
-
             }
 
 
+            holder.deleteImg.setVisibility(!bibleInfo.isDownloaded() ? View.GONE : View.VISIBLE);
+
+            holder.deleteImg.setOnClickListener(v -> {
+                deleteBookDialog( bibleInfo);
 
 
-            holder.checkBox.setVisibility(!bibleInfo.isDownloaded() ? View.GONE : View.VISIBLE);
-
-            if (bibleInfo.getId().equalsIgnoreCase(ckPreferences.getNextBibleName())) {
-                oldPositionSelected = holder.getAbsoluteAdapterPosition();
-            }
-            if (bibleInfo.getId().equalsIgnoreCase(ckPreferences.getNextSongName() )) {
-                oldPositionSelected = holder.getAbsoluteAdapterPosition();
-            }
-
-           /* if (bibleInfo instanceof BibleInfo)
-                holder.checkBox.setChecked(bibleInfo.getId().equalsIgnoreCase(ckPreferences.getNextBibleName()));
-            else  if (bibleInfo instanceof SongInfo)
-                holder.checkBox.setChecked( bibleInfo.getId().equalsIgnoreCase(ckPreferences.getNextSongName()) );*/
-
-            if (bibleInfo.getId().equalsIgnoreCase(ckPreferences.getNextBibleName())) {
-                oldPositionSelected = holder.getAbsoluteAdapterPosition();
-            }
-
-            holder.download.setOnClickListener(v -> {
-
-                v.setVisibility(View.GONE);
-                if (bibleInfo instanceof BibleInfo)
-                    downloadDataFromFireBaseStorage( (BibleInfo) bibleInfo, holder);
-                if (bibleInfo instanceof SongInfo)
-                    downloadDataFromFireBaseStorage( (SongInfo) bibleInfo, holder);
-                holder.info.setVisibility(View.VISIBLE);
             });
 
-            holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                BaseInfo bibleInfo1 = baseInfoList.get( holder.getAbsoluteAdapterPosition() );
 
-                if (isChecked) {
+
+            holder.download.setOnClickListener(download -> {
+
+                if (isConnected){
+                    download.setVisibility(View.GONE);
                     if (bibleInfo instanceof BibleInfo)
-                        ckPreferences.setNextBibleName( bibleInfo1.getId()) ;
-                    else if (bibleInfo instanceof SongInfo)
-                        ckPreferences.setNextSongName( bibleInfo.getId() );
-
-                    notifyItemChanged(oldPositionSelected);
-                    oldPositionSelected = holder.getAbsoluteAdapterPosition();
+                        downloadDataFromFireBaseStorage( (BibleInfo) bibleInfo, holder);
+                    if (bibleInfo instanceof SongInfo)
+                        downloadDataFromFireBaseStorage( (SongInfo) bibleInfo, holder);
+                    holder.info.setVisibility(View.VISIBLE);
                 }
-
-                if (bibleInfo instanceof BibleInfo)
-                    info.setVisibility( ckPreferences.isCurrentAndNextBibleEqual() ? View.GONE : View.VISIBLE );
-                else if (bibleInfo instanceof SongInfo)
-                    info.setVisibility( ckPreferences.isCurrentAndNextSongEqual() ? View.GONE : View.VISIBLE );
-
-
+                else {
+                    setToolTop("Please connect to the internet").showAlignBottom(holder.itemView);
+                }
             });
+
+
 
         }
 
@@ -246,9 +353,9 @@ public class DataFragment extends Fragment {
         }
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
-            TextView title, language, info, testament,size;
+            TextView title, language, info, testament,size,infoPrepopulate;
             ImageButton download;
-            RadioButton checkBox;
+            ImageView deleteImg;
             ProgressBar downloadProgressBar, prepopulateProgressBar;
 
             public MyViewHolder(@NonNull View itemView) {
@@ -259,9 +366,10 @@ public class DataFragment extends Fragment {
                 language = itemView.findViewById(R.id.language);
                 info = itemView.findViewById(R.id.info);
                 download = itemView.findViewById(R.id.download);
-                checkBox = itemView.findViewById(R.id.checkbox);
+                deleteImg = itemView.findViewById(R.id.checkbox);
                 downloadProgressBar = itemView.findViewById(R.id.progressBar3);
                 prepopulateProgressBar = itemView.findViewById(R.id.progressBar2);
+                infoPrepopulate = itemView.findViewById(R.id.info_prepopulate);
 
             }
         }
@@ -281,8 +389,9 @@ public class DataFragment extends Fragment {
     }
 
     public void prepopulateBibleFromJSonFile(String jsonStr, MyAdapter.MyViewHolder myViewHolder, BaseInfo bibleInfo) {
-
+        myViewHolder.infoPrepopulate.setVisibility(View.VISIBLE);
         BibleDaoGeneral4Insert bibleDaoGeneral4Insert = CKBibleDb.getInstance4Insert(getActivity().getApplicationContext(), bibleInfo.getId()).bibleDaoGeneral4Insert();
+
         Flowable.fromAction(() -> {
                     try {
 
@@ -302,9 +411,10 @@ public class DataFragment extends Fragment {
                                 color = null;
                                 image = null;
                             }
-
-                            BibleBook bibleBook = new BibleBook(
-                                    songBookJson.getString("id") ,
+                            System.out.println("test12: "+bibleInfo.getId());
+                            String bibleBookId = bibleInfo.getId()+"_"+songBookJson.getString("id");
+                            BibleBook bibleBook = new BibleBook(bibleInfo.getId(),
+                                    bibleBookId ,
                                     songBookJson.getString("abbr"),
                                     songBookJson.getString("name"),
                                     songBookJson.getInt("position"),
@@ -313,48 +423,89 @@ public class DataFragment extends Fragment {
                                     color,
                                     image);
                             System.out.println(bibleBook);
+                            try {
+                                bibleDaoGeneral4Insert.insertBibleBook(bibleBook);
+                            }catch (Throwable t){
+                                System.err.println(t.getMessage());
+                            }
 
                             JSONArray bibleChapterList = songBookJson.getJSONArray("bibleChapterList");
-                            List<BibleChapter> bibleChapters = new ArrayList<>(50);
+
 
                             for (int jj = 0; jj < bibleChapterList.length(); jj++) {
                                 JSONObject chapterJson = bibleChapterList.getJSONObject(jj);
 
+                                String bibleChapterId = bibleBookId + chapterJson.getInt("position");
 
-                                BibleChapter bibleChapter = new BibleChapter(
-                                        chapterJson.getString("bookName") + chapterJson.getInt("position"),
+                                BibleChapter bibleChapter = new BibleChapter(bibleInfo.getId(),
+                                        bibleChapterId+"",
                                         songBookJson.getString("name"),
                                         chapterJson.getInt("position"),
-                                        songBookJson.getString("id"),
+                                        bibleBookId+"" ,
                                         songBookJson.getString("abbr")
                                 );
-                                bibleChapters.add(bibleChapter);
+
                                 JSONArray bibleVerseArray = chapterJson.getJSONArray("bibleVerses");
 
-                                List<BibleVerse> bibleVerseList = new ArrayList<>(30);
+
+                                try {
+                                    bibleDaoGeneral4Insert.insertBibleChapter(bibleChapter);
+                                }catch (Throwable t){
+                                    System.err.println(t.getMessage());
+                                }
+                                List<BibleVerse>bibleVerses = new ArrayList<>();
                                 for (int i = 0; i < bibleVerseArray.length(); i++) {
                                     JSONObject verseJson = bibleVerseArray.getJSONObject(i);
 
                                     String reference = songBookJson.getString("abbr") + " " + chapterJson.getInt("position") + ":" + verseJson.getInt("position");
 
-                                    bibleVerseList.add(
-                                            new BibleVerse(
-                                                    /*verseJson.getString("reference")*/reference + verseJson.getInt("position")
-                                                    , verseJson.getInt("position")
-                                                    ,/*verseJson.getString("reference")*/ reference
-                                                    , verseJson.getString("verseText")
-                                                    , chapterJson.getString("bookName") + chapterJson.getInt("position"))
+                                    String bibleVerseId = bibleInfo.getId()+" "+reference;
 
-                                    );
+
+                                    BibleVerse bibleVerse =     new BibleVerse(
+                                                    bibleInfo.getId()
+                                                    ,bibleVerseId
+                                                    , verseJson.getInt("position")
+                                                    , reference
+                                                    , verseJson.getString("verseText")
+                                                    , bibleChapterId);
+                                    bibleVerses.add(bibleVerse);
+
+
+
+
+                                }
+                                try {
+                                    bibleDaoGeneral4Insert.insertBibleVerses(bibleVerses);
+                                }catch (Throwable t){
+                                    System.err.println(t.getMessage());
                                 }
 
-                                // bibleViewModelGeneral4Insert.insert(bibleBook, bibleChapters, bibleVerseList);
-                                bibleDaoGeneral4Insert.insertBibleBook(bibleBook);
-                                bibleDaoGeneral4Insert.insertBibleChapter(new ArrayList<>(bibleChapters));
-                                bibleDaoGeneral4Insert.insertBibleVerses(bibleVerseList);
+
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        myViewHolder.infoPrepopulate.setText(bibleBook.getTitle()+" / "+ Util.formatNumberToString( bibleChapter.getPosition() ));
+                                    }
+                                });
+
                             }
 
+
+
                         }
+
+
+
+
+
+                       getActivity().runOnUiThread(new Runnable() {
+                           @Override
+                           public void run() {
+                               myViewHolder.infoPrepopulate.setVisibility(View.GONE);
+                           }
+                       });
+
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -384,9 +535,9 @@ public class DataFragment extends Fragment {
                         System.out.println("onComplete: ");
                         myViewHolder.prepopulateProgressBar.setVisibility(View.GONE);
                         bibleInfo.setDownloaded(true);
-                        viewModel.insert((BibleInfo) bibleInfo);
+                        bibleInfoViewModel.insert((BibleInfo) bibleInfo);
                         myViewHolder.info.setVisibility(View.GONE);
-                        myViewHolder.checkBox.setVisibility(View.VISIBLE);
+                        myViewHolder.deleteImg.setVisibility(View.VISIBLE);
                     }
                 });
 
@@ -396,47 +547,66 @@ public class DataFragment extends Fragment {
     public void prepopulateSongFromJSonFile(String jsonStr, MyAdapter.MyViewHolder myViewHolder, BaseInfo bibleInfo) {
 
         SongDaoGeneral4Insert bibleDaoGeneral4Insert = CKSongDb.getInstance4Insert(getActivity().getApplicationContext(), bibleInfo.getId()).songDaoGeneral4Insert();
+        myViewHolder.infoPrepopulate.setVisibility(View.VISIBLE);
         Flowable.fromAction(() -> {
                     try {
                         Gson gson = new Gson();
 
                         JSONObject jsonObject = new JSONObject(jsonStr);
                         JSONArray dataArray = jsonObject.getJSONArray("data");
+                        System.out.println("afiche: ");
                         for (int i = 0; i < dataArray.length(); i++) {
-                            //System.out.println("genial: "+i);
                             JSONObject songBookJson = dataArray.getJSONObject(i);
 
                             SongBook songBook = gson.fromJson(songBookJson.toString(),SongBook.class);
-                            songBook.setId( songBookJson.getString("id") );
+                            songBook.setSongInfoId( bibleInfo.getId() );
+                            songBook.setId( bibleInfo.getId()+"_"+songBookJson.getString("id") );
                             songBook.setChildAmount( songBookJson.getInt("songAmount") );
                             songBook.setTitle( songBookJson.getString("name") );
 
-                            //System.out.println("name: "+songBookJson.getString("name"));
 
-
+                            try {
+                                bibleDaoGeneral4Insert.insertSongBook(songBook);
+                            } catch (Throwable t) {
+                                // Handle the Throwable
+                                System.err.println("Caught Throwable: " + t.getMessage());
+                            }
 
 
 
                             JSONArray songArrayJson = songBookJson.getJSONArray("songList");
 
-                            /*if (songArrayJson.length()==0){
-                                continue;
-                            }*/
 
-                            List<Song>songList = new ArrayList<>();
 
                             for (int j = 0; j < songArrayJson.length(); j++) {
 
 
                                 JSONObject songObj = songArrayJson.getJSONObject(j);
                                 Song song = gson.fromJson(songObj.toString(),Song.class);
-                                song.setId( songObj.getString("id") );
-                                song.setBookId( songBookJson.getString("id") );
+                                String songId = songObj.getString("id")+UUID.randomUUID();
+                                song.setId( songId );
+                                song.setBookId( bibleInfo.getId()+"_"+songBookJson.getString("id")  );
+                                song.setInfoId( bibleInfo.getId() );
+
+
 
                                 song.setBookTitle( songBook.getTitle() );
                                 song.setBookAbbreviation( songBook.getAbbreviation() );
-                                songList.add(song);
 
+
+                                try {
+                                    bibleDaoGeneral4Insert.insertSong( song );
+                                } catch (Throwable t) {
+                                    // Handle the Throwable
+                                    System.err.println("Caught Throwable: " + t.getMessage());
+                                }
+
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        myViewHolder.infoPrepopulate.setText(songBook.getTitle()+"/"+song.getTitle());
+                                    }
+                                });
 
 
                                 JSONArray verseArray = songObj.getJSONArray("verseList");
@@ -445,26 +615,38 @@ public class DataFragment extends Fragment {
                                 for (int k = 0; k < verseArray.length(); k++) {
                                     JSONObject verseObj = verseArray.getJSONObject(k);
                                     Verse verse = gson.fromJson(verseObj.toString(),Verse.class);
-                                    verse.setVerseId( verseObj.getInt("position")+songObj.getString("id") );
-                                    verse.setSongId( songObj.getString("id") );
-                                    verse.setReference(song.getPosition()+" "+ songBook.getAbbreviation()+" "+verseObj.getInt("position") );
+                                    verse.setVerseId( songId + verseObj.getInt("position") );
+                                    verse.setSongId( songId );
+                                    verse.setInfoId( bibleInfo.getId() );
+                                    verse.setReference( floatToString( song.getPosition() ) +" "+ songBook.getAbbreviation()+" "+verseObj.getInt("position") );
+                                    verse.setSongTitle( song.getTitle() );
                                     verseList.add( verse );
-
-
-
 
                                 }
                                 System.out.println("afiche: "+song.getTitle()+" pos: "+song.getPosition());
 
-                                bibleDaoGeneral4Insert.insertSongBook(songBook);
-                                bibleDaoGeneral4Insert.insertSong(new ArrayList<>(songList));
-                                bibleDaoGeneral4Insert.insertSongVerses(verseList);
+                                //bibleDaoGeneral4Insert.insertSongBook(songBook);
+                                //bibleDaoGeneral4Insert.insertSong(new ArrayList<>(songList));
+                                try {
+                                    bibleDaoGeneral4Insert.insertSongVerses(verseList);
+                                } catch (Throwable t) {
+                                    // Handle the Throwable
+                                    System.err.println("Caught Throwable: " + t.getMessage());
+                                }
+
 
                                // myViewHolder.prepopulateProgressBar.setProgress(i);
 
 
 
                             }
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    myViewHolder.infoPrepopulate.setVisibility(View.GONE);
+                                }
+                            });
+
                         }
 
 
@@ -500,11 +682,11 @@ public class DataFragment extends Fragment {
                         myViewHolder.prepopulateProgressBar.setVisibility(View.GONE);
                         bibleInfo.setDownloaded(true);
                         if (bibleInfo instanceof BibleInfo)
-                            viewModel.insert((BibleInfo) bibleInfo);
+                            bibleInfoViewModel.insert((BibleInfo) bibleInfo);
                         else if(bibleInfo instanceof SongInfo)
                             songInfoViewModel.insert( (SongInfo) bibleInfo );
                         myViewHolder.info.setVisibility(View.GONE);
-                        myViewHolder.checkBox.setVisibility(View.VISIBLE);
+                        myViewHolder.deleteImg.setVisibility(View.VISIBLE);
                     }
                 });
 
@@ -533,17 +715,21 @@ public class DataFragment extends Fragment {
             if (percent == 100) {
                 myViewHolder.downloadProgressBar.setVisibility(View.GONE);
                 myViewHolder.prepopulateProgressBar.setVisibility(View.VISIBLE);
-
                 readFromCache( myViewHolder, bibleInfo);
 
-
-
             }
-        }).addOnFailureListener(new OnFailureListener() {
+        }).addOnFailureListener(e -> {
+            myViewHolder.downloadProgressBar.setVisibility(View.GONE);
+            downloadTask.cancel();
+
+            // hay que presentar un dialogo de porque ocurio el error
+        }).addOnCanceledListener(new OnCanceledListener() {
             @Override
-            public void onFailure(@NonNull Exception e) {
-                myViewHolder.downloadProgressBar.setVisibility(View.GONE);
-                // hay que presentar un dialogo de porque ocurio el error
+            public void onCanceled() {
+                myViewHolder.downloadProgressBar.setVisibility(View.VISIBLE);
+                myViewHolder.prepopulateProgressBar.setVisibility(View.GONE);
+                myViewHolder.info.setVisibility(View.GONE);
+                myViewHolder.deleteImg.setVisibility(View.GONE);
             }
         });
 
@@ -575,13 +761,13 @@ public class DataFragment extends Fragment {
 
     }
 
-    public Balloon setToolTop(){
+    public Balloon setToolTop(String message){
 
         Context context = getContext();
 
         Balloon balloon = new Balloon.Builder(context)
                 .setArrowSize(10)
-                .setArrowOrientation(ArrowOrientation.END)
+                .setArrowOrientation(ArrowOrientation.TOP)
                 .setArrowPositionRules(ArrowPositionRules.ALIGN_ANCHOR)
                 .setArrowPosition(0.5f)
                 .setWidth(BalloonSizeSpec.WRAP)
@@ -590,7 +776,7 @@ public class DataFragment extends Fragment {
                 .setTextSize(15f)
                 .setCornerRadius(4f)
                 .setAlpha(0.9f)
-                .setText("Click to download")
+                .setText(message)
                 .setTextColor(ContextCompat.getColor(context, R.color.white))
                 .setTextIsHtml(true)
                 //.setIconDrawable(ContextCompat.getDrawable(context, R.drawable.donate_24))
@@ -603,5 +789,71 @@ public class DataFragment extends Fragment {
 
     }
 
+    private void deleteBookDialog(BaseInfo bibleInfo) {
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+        final View view = layoutInflater.inflate(R.layout.dialog_delete_book, (ViewGroup)null);
+        TextView title = view.findViewById(R.id.description);
+
+
+        builder.setView(view);
+
+
+
+
+
+        builder.setPositiveButton("Delete", (dialog, which) -> {
+            bibleInfo.setDownloaded(false);
+            if (origin.equalsIgnoreCase("BIBLE")){
+
+                Flowable.fromAction(() -> CKBibleDb.getInstance(getActivity().getApplicationContext()).runInTransaction(new Runnable() {
+                            @Override
+                            public void run() {
+                                ckPreferences.setBibleName("");
+                                bibleInfoViewModel.delete( (BibleInfo) bibleInfo );
+                                CKBibleDb.getInstance(getActivity().getApplicationContext())
+                                        .bibleBookDao().deleteAll( bibleInfo.getId() );
+                            }
+                        })).subscribeOn(Schedulers.single())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe();
+
+            }else {
+
+                Flowable.fromAction(() -> CKBibleDb.getInstance(getActivity().getApplicationContext()).runInTransaction(new Runnable() {
+                            @Override
+                            public void run() {
+                                ckPreferences.setSongName("");
+                                songInfoViewModel.delete( (SongInfo) bibleInfo );
+                                CKSongDb.getInstance(getActivity().getApplicationContext())
+                                        .songBookDao().deleteAll(bibleInfo.getId());
+
+                            }
+                        })).subscribeOn(Schedulers.single())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe();
+            }
+        });
+
+
+
+        builder.setNegativeButton("Cancel", (dialog, id) -> dialog.dismiss());
+        AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(dialog1 -> {
+            Button delete = ((AlertDialog) dialog1).getButton(AlertDialog.BUTTON_POSITIVE);
+            delete.setTextColor(Color.RED);
+
+        });
+        dialog.show();
+    }
+
+    private String floatToString(float position) {
+        try {
+            return String.valueOf( (int) position );
+        }catch (Exception e){
+            return String.valueOf( position );
+        }
+    }
 }

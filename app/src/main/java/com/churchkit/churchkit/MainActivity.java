@@ -4,16 +4,11 @@ import static com.churchkit.churchkit.ui.aboutapp.Payment.startPayment;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Html;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.splashscreen.SplashScreen;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -45,6 +41,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PaymentResultListener {
 
 
@@ -64,8 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //obligao que sea on the top
         ckPreferences = new CKPreferences(this.getApplicationContext());
-        ckPreferences.setBibleName( ckPreferences.getNextBibleName() );
-        ckPreferences.setSongName( ckPreferences.getNextSongName() );
+
 
 
 
@@ -112,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         bibleInfoViewModel.getAllBibleInfo().observe(this, bibleInfoList -> {
+            System.out.println("bibleInfoList: "+bibleInfoList);
             if (bibleInfoList.size()==0){
                 bibleInfoViewModel.insert( BibleInfo.getAllBibleInfo() );
             }
@@ -119,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         songInfoViewModel.getAllSongInfo().observe(this, songInfos -> {
             if (songInfos.size() == 0){
-                songInfoViewModel.insert( SongInfo.getAllBibleInfo() );
+                songInfoViewModel.insert( SongInfo.getAllSongInfo() );
             }
         });
 
@@ -144,13 +142,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navView.setNavigationItemSelectedListener(this::onNavigationItemSelected);
 
-        /*Flowable.fromAction(() -> {
-            try {
-                PexelsRepository pexelsRepository =new PexelsRepository();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });*/
+
 
 
     }
@@ -221,11 +213,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         version.setGravity(Gravity.CENTER);
         version.setText("1.0.0");
 
-        songHistoryViewModel.getAmount().observe(this, integer -> songHistory.setText(integer>0? "+"+integer:"" ));
-        songFavoriteViewModel.getAmount().observe(this, integer -> songFavorite.setText(integer>0? "+"+integer:"" ));
+        bibleInfoViewModel.getAllBibleInfo().observe(this, bibleInfos -> {
+            bibleHistoryViewModel.getAmount(ckPreferences.getBibleName()).observe(MainActivity.this, integer -> bibleHistory.setText(integer>0? "+"+integer:"" ));
+            bibleFavoriteViewModel.getAmount(ckPreferences.getBibleName()).observe(MainActivity.this, integer -> bibleFavorite.setText(integer>0? "+"+integer:"" ));
+        });
 
-        bibleHistoryViewModel.getAmount().observe(this, integer -> bibleHistory.setText(integer>0? "+"+integer:"" ));
-        bibleFavoriteViewModel.getAmount().observe(this, integer -> bibleFavorite.setText(integer>0? "+"+integer:"" ));
+        songInfoViewModel.getAllSongInfo().observe(this, new Observer<List<SongInfo>>() {
+            @Override
+            public void onChanged(List<SongInfo> songInfos) {
+                songHistoryViewModel.getAmount( ckPreferences.getSongName() ).observe(MainActivity.this, integer -> songHistory.setText(integer>0? "+"+integer:"" ));
+                songFavoriteViewModel.getAmount( ckPreferences.getSongName() ).observe(MainActivity.this, integer -> songFavorite.setText(integer>0? "+"+integer:"" ));
+
+            }
+        });
+
+
 
         developer.setText( Html.fromHtml(
                 " By <br> <a a href=\"https://www.instagram.com/sonderben/\">Bennderson</a>  and <a href=\"https://johnyoute.com/\">John Ersen</a>")

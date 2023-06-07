@@ -24,23 +24,23 @@ public class SongViewModel extends AndroidViewModel {
 
     }
 
-    public LiveData<List<Song>> songFullTextSearch(String query){
-        return repository.songFullTextSearch(query);
-    }
+   /* public LiveData<List<Song>> songFullTextSearch(String songInfoId,String query){
+        return repository.songFullTextSearch(songInfoId,query);
+    }*/
 
     public void insert(Song song){
         repository.insert(song);
     }
 
 
-    public LiveData< List<Song> > getAllSongWithVerseById(String songBookId){
-        return repository.getAllSongWithVerseById(songBookId);
+    public LiveData< List<Song> > getAllSongWithVerseById(String songInfoId,String songBookId){
+        return repository.getAllSongWithVerseById(songInfoId,songBookId);
     }
     public LiveData<Song> getSongById(String id){
         return repository.getSongById(id);
     }
 
-    public LiveData<List<Song>> getAllSong(){
-        return repository.getAllSong();
+    public LiveData<List<Song>> getAllSong(String songInfoId){
+        return repository.getAllSong(songInfoId);
     }
 }

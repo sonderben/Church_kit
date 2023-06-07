@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.ui.adapter.bible.BibleAdapter;
 import com.churchkit.churchkit.database.CKBibleDb;
@@ -38,6 +40,9 @@ public class ListBookByTestamentFragment extends Fragment {
         autoCompleteTextView.setVisibility(View.GONE);
         mRecyclerView = root.findViewById(R.id.recyclerview);
         db= CKBibleDb.getInstance( requireContext() );
+        ckPreferences = new CKPreferences(getContext());
+
+        download = root.findViewById(R.id.info_download_bible);
 
 
 
@@ -50,12 +55,14 @@ public class ListBookByTestamentFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         final int testament = getArguments().getInt("TESTAMENT");
         if (testament<0){
-            db.bibleBookDao().getAllOldTestamentBibleBook().observe(requireActivity(), bibleBooks -> {
+            download.setVisibility(View.GONE);
+            db.bibleBookDao().getAllOldTestamentBibleBook( ckPreferences.getBibleName() ).observe(requireActivity(), bibleBooks -> {
                 adapter = new BibleAdapter(getChildFragmentManager(),bibleBooks);
                 mRecyclerView.setAdapter(adapter);
             });
         }else {
-            db.bibleBookDao().getAllNewTestamentBibleBook().observe(requireActivity(), bibleBooks -> {
+            download.setVisibility(View.GONE);
+            db.bibleBookDao().getAllNewTestamentBibleBook( ckPreferences.getBibleName() ).observe(requireActivity(), bibleBooks -> {
                 adapter = new BibleAdapter(getChildFragmentManager(),bibleBooks);
                 mRecyclerView.setAdapter(adapter);
             });
@@ -77,6 +84,8 @@ public class ListBookByTestamentFragment extends Fragment {
     BibleAdapter adapter;
     MaterialAutoCompleteTextView autoCompleteTextView;
     CKBibleDb db;
+    private CKPreferences ckPreferences;
+    TextView download;
 
 
 }
