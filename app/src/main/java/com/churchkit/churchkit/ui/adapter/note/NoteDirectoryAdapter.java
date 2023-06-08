@@ -2,6 +2,7 @@ package com.churchkit.churchkit.ui.adapter.note;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Html;
@@ -53,12 +54,11 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     Activity activity;
     Class aClass;
 
+    Resources resources;
+
     DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
 
-    /*public int getAmountDefaultRepository(){
-        int amount =0;
-        for (int i = 0; i < baseNoteEntityList.size(); i++) if (baseNoteEntityList.get(i) instanceof NoteEntity) amount +=1; return amount;
-    }*/
+
 
 
     public  NoteDirectoryAdapter(Activity activity,Class aClass) {
@@ -100,6 +100,9 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (resources == null){
+            resources = holder.itemView.getResources();
+        }
 
         if (holder instanceof DirectoryViewHolder){
             DirectoryViewHolder dvh = ((DirectoryViewHolder)holder);
@@ -113,7 +116,7 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             int noteAmount = directory.getNoteAmount();
             if (noteAmount>0){
                 dvh.amountNote.setVisibility(View.VISIBLE);
-                dvh.amountNote.setText(noteAmount+" "+"notes");
+                dvh.amountNote.setText(noteAmount+" "+resources.getString(R.string.note));
             }else {
                 dvh.amountNote.setVisibility(View.GONE);
             }
@@ -176,7 +179,6 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 @Override
                 public boolean onLongClick(View v) {
                     modifyDialog(activity, baseNoteEntityList.get(holder.getAbsoluteAdapterPosition() ));
-                    //Toast.makeText(nvh.itemView.getContext(), baseNoteEntityList.get(holder.getAbsoluteAdapterPosition()).getTitle(),Toast.LENGTH_SHORT).show();
                     return true;
                 }
             });
@@ -326,16 +328,6 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         Animation shakeAnimation = AnimationUtils.loadAnimation(activity.getApplicationContext(), R.anim.shake_animation);
 
 
-
-
-
-
-
-
-
-
-
-
         shakeAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {}
@@ -396,6 +388,7 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         TextView edit = view.findViewById(R.id.edit);
         TextView delete = view.findViewById(R.id.delete);
 
+
         if (baseNoteEntity instanceof  NoteEntity)
             edit.setVisibility(View.GONE);
 
@@ -407,7 +400,7 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         );
 
 
-        builder.setView(view).setPositiveButton("Cancel", (dialog, id) -> {
+        builder.setView(view).setPositiveButton(resources.getString(R.string.cancel), (dialog, id) -> {
 
 
         });
@@ -448,19 +441,19 @@ public class NoteDirectoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         TextInputEditText password = view.findViewById(R.id.pwd);
 
         TextView titleDialog = view.findViewById(R.id.dialog_title);
-        titleDialog.setText("update directory");
+        titleDialog.setText(resources.getString(R.string.update_directory));
 
         title.setText(e.getTitle());
         password.setText(e.getPassword());
 
 
 
-        builder.setView(view).setPositiveButton("Update", (dialog, id) -> {
+        builder.setView(view).setPositiveButton(resources.getString(R.string.update), (dialog, id) -> {
             e.setTitle( title.getText().toString() );
             noteDirectoryViewModel.insert(e);
         } );
 
-        builder.setNegativeButton("Cancel", (dialog, id) -> dialog.dismiss());
+        builder.setNegativeButton(resources.getString(R.string.cancel), (dialog, id) -> dialog.dismiss());
         AlertDialog dialog = builder.create();
         dialog.show();
     }

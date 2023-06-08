@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,6 +28,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.Observer;
@@ -44,15 +44,12 @@ import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.Util;
 import com.churchkit.churchkit.api.PexelsRepository;
-import com.churchkit.churchkit.database.CKBibleDb;
-import com.churchkit.churchkit.database.CKSongDb;
 import com.churchkit.churchkit.database.MyDataDb;
 import com.churchkit.churchkit.database.entity.PexelsPhoto;
 import com.churchkit.churchkit.database.entity.base.BaseBookMark;
 import com.churchkit.churchkit.database.entity.bible.BookMarkChapter;
 import com.churchkit.churchkit.database.entity.song.BookMarkSong;
 import com.churchkit.churchkit.modelview.bible.BibleBookMarkViewModel;
-import com.churchkit.churchkit.modelview.bible.BibleBookViewModel;
 import com.churchkit.churchkit.modelview.song.SongBookMarkViewModel;
 import com.churchkit.churchkit.ui.bible.ChapterDialogFragment;
 import com.churchkit.churchkit.ui.song.SongDialogFragment;
@@ -107,7 +104,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
             @Override
             public void onShow(DialogInterface dialog) {
                 BottomSheetDialog d = (BottomSheetDialog) dialog;
-                View bottomSheetInternal = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+                 bottomSheetInternal = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
                 BottomSheetBehavior.from(bottomSheetInternal).setState(BottomSheetBehavior.STATE_EXPANDED);
 
             }
@@ -124,6 +121,28 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
         //randomImage = root.findViewById(R.id.random_img);
         textFont = root.findViewById(R.id.text_font);
         recyclerViewListImg = root.findViewById(R.id.recycler_view_pexels);
+
+        ConstraintLayout.LayoutParams temp= (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
+
+
+        applicationContext = getActivity().getApplicationContext();
+
+
+
+        imageView.setOnClickListener(v -> {
+
+            if ( a % 2 ==0){
+                recyclerViewListImg.setVisibility(View.GONE);
+                ViewGroup.LayoutParams pa= new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                imageView.setLayoutParams(pa);
+
+            }else {
+                recyclerViewListImg.setVisibility(View.VISIBLE);
+                imageView.setLayoutParams(temp);
+            }
+            a+=1;
+
+        });
 
         ckPreferences = new CKPreferences(getContext());
 
@@ -146,12 +165,6 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
          adapterListImage = new AdapterListImage();
         recyclerViewListImg.setAdapter( adapterListImage );
         updateAdapter();
-
-
-
-
-
-
 
 
         List<Integer> imgId = Arrays.asList(
@@ -213,7 +226,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
                 }
 
 
-                //Toast.makeText(getContext(),"clicked: "+newColorIndex,Toast.LENGTH_SHORT).show();
+
             }
         });
         randomColor.setOnClickListener(new View.OnClickListener() {
@@ -227,19 +240,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
 
             }
         });
-        /*randomImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Drawable drawable = getContext().getDrawable(imgId.get(imageIndex));
-                imageIndex += 1;
-                Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap(); //
-                Bitmap bit = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-                bitmapToSave = drawerCitacion.getCitationWithBgColor(bit);
-                imageView.setImageBitmap(bitmapToSave);
-                if (imgId.size() - 1 == imageIndex)
-                    imageIndex = 0;
-            }
-        });*/
+
         textFont.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -248,12 +249,13 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
                 imageView.setImageBitmap(bitmapToSave);
                 if (Util.getAllFont().size() - 1 == fontIndex)
                     fontIndex = 0;
-                //Toast.makeText(getContext(),"change",Toast.LENGTH_LONG).show();
+
             }
         });
 
         //BOOKMARK
         if (M_TYPE == BOOK_MARK) {
+            bookMarkLayout.setVisibility(View.VISIBLE);
             layoutPhoto.setVisibility(View.GONE);
             action.setVisibility(View.GONE);
 
@@ -296,7 +298,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
 
         downloadImage.setOnClickListener(v -> {
             saveImageToGallery(bitmapToSave);
-            Toast.makeText(getContext(), "Image save in gallery", Toast.LENGTH_LONG).show();
+            Toast.makeText(applicationContext, R.string.img_save_in_gallery, Toast.LENGTH_LONG).show();
         });
 
         return root;
@@ -378,7 +380,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
         //return super.getTheme();
     }
 
-    public static void sendBitmapToOtherApp(Context context, String packageApp, Bitmap bitmap) {
+    public  void sendBitmapToOtherApp(Context context, String packageApp, Bitmap bitmap) {
         FileOutputStream outputStream = null;
         File file = new File(context.getCacheDir(), "image.jpg");
         try {
@@ -401,7 +403,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
             context.startActivity(sendIntent);
             //file.delete();
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(context, "La aplicacion no está instalado en tu dispositivo", Toast.LENGTH_SHORT).show();
+            Toast.makeText(applicationContext, R.string.app_not_installed_on_device, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -419,6 +421,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
     private static TextView mTextSelected, fontSize;
     private ImageButton increaseTextSize, decreaseTextSize;
     private static int M_TYPE;
+    View bottomSheetInternal;
     private static String mId;
     private static String mRef;
     private LinearLayout action, layoutPhoto;
@@ -434,6 +437,8 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
     private static BaseBookMark mBookMark;
     private static int mTYPE_BOOKMARK;
     private CKPreferences ckPreferences;
+    private Context applicationContext;
+    int a = 2;
 
 
     private ImageView imageView;
@@ -556,7 +561,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
 
 
         }
-        Toast.makeText(getContext(), "size: " + mTYPE_BOOKMARK, Toast.LENGTH_LONG).show();
+
         EditorBottomSheet.this.dismiss();
 
     }
@@ -615,14 +620,6 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
                             holder.itemView.setOnClickListener(v -> {
 
 
-
-                                //imageView.setImageBitmap(bitmapToSave);
-
-
-
-
-
-
                                 Glide.with(getContext())
                                         .asBitmap()
                                         .load(pexelsPhoto.getUrlPortrait())
@@ -677,7 +674,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
 
     @SuppressLint("CheckResult")
     public void updateAdapter(){
-        //MyDataDb db=MyDataDb.getInstance( getActivity().getApplicationContext() );
+
         PexelsRepository repo = new PexelsRepository( MyDataDb.getInstance( getActivity().getApplicationContext() ).photoPexelsDao() );
 
 
@@ -685,7 +682,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
             repo.makeJ("btoaaaq")
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(photoList2 -> {
-                        System.out.println("btoaaaq suscribe: "+photoList2);
+
 
                         repo.insertAll(photoList2);
                         ckPreferences.setExistPhotoInDb(true);
@@ -694,7 +691,6 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
                         adapterListImage.notifyDataSetChanged();
 
                     },error->{
-                        System.out.println("btoaaaq error2: "+error);
                         ckPreferences.setExistPhotoInDb(false);
                     });
         }else {
@@ -703,7 +699,6 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
                 @Override
                 public void onChanged(List<PexelsPhoto> photoList) {
                     if (photoList != null && photoList.size() != 0){
-                        System.out.println("btoaaaq observe livedata: "+photoList);
                         adapterListImage.setPexelsPhotoList(photoList);
                         adapterListImage.notifyDataSetChanged();
                     }

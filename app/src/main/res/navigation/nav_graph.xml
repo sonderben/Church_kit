@@ -165,5 +165,19 @@
             android:name="FROM"
             app:argType="string" />
     </fragment>
+    <dialog
+        android:id="@+id/editorBottomSheet"
+        android:name="com.churchkit.churchkit.ui.EditorBottomSheet"
+        android:label="EditorBottomSheet" >
+        <action
+            android:id="@+id/action_editorBottomSheet_to_imageViewerFragment"
+            app:destination="@id/imageViewerFragment" />
+    </dialog>
+    <fragment
+        android:id="@+id/imageViewerFragment"
+        android:name="com.churchkit.churchkit.ui.ImageViewerFragment"
+        android:label="fragment_image_viewer"
+        tools:layout="@layout/fragment_image_viewer" >
+    </fragment>
 
 </navigation>

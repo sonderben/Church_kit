@@ -1,6 +1,7 @@
 package com.churchkit.churchkit.ui.adapter.song;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -35,6 +36,8 @@ public class SongHopeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     List<SongBook> songBooks;
     List<Song> songs;
     CKPreferences ckPreferences;
+
+    Resources resources;
 
 
 
@@ -73,7 +76,9 @@ public class SongHopeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder,  int position) {
-
+        if (resources==null){
+            resources = holder.itemView.getResources();
+        }
         if ( songBooks != null){
             ListPartViewHolder tempVh = (ListPartViewHolder) holder;
 
@@ -83,7 +88,7 @@ public class SongHopeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 tempVh.tileAcronym.setTextColor(Color.parseColor("#"+ songBooks.get(holder.getAbsoluteAdapterPosition()).getColor() ) );
             }
 
-            tempVh.number.setText(songBooks.get(position).getChildAmount()+" chants");
+            tempVh.number.setText(songBooks.get(position).getChildAmount()+" "+resources.getString(R.string.song).toLowerCase());
 
             tempVh.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -108,6 +108,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
 
                   if (drawable != null) {
                       drawable.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+                      drawable.setTint(Color.RED);
                       favorite.setImageDrawable(drawable);
                   }
               }
@@ -115,6 +116,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
                   int color = getResources().getColor(R.color.white);
                   if (drawable != null) {
                       drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+                      drawable.setTint(Color.WHITE);
                       favorite.setImageDrawable(drawable);
                   }
               }
@@ -411,7 +413,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
         if (startPosition == endPosition){
             a = startPosition<0?getString(R.string.chorus): String.valueOf(startPosition);
         }else {
-            a = startPosition<0?getString(R.string.chorus): startPosition + " à "+
+            a = startPosition<0?getString(R.string.chorus): startPosition + " "+getResources().getString(R.string.to)+" "+
                     (endPosition<0?getString(R.string.chorus): String.valueOf(endPosition));
         }
 
@@ -431,7 +433,6 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
     private boolean isPhraseVisible(@NonNull final String phrase) {
         int index = tv.getText().toString().indexOf(phrase);
         if (index == -1) {
-            System.out.println("isPhraseVisible: false1");
             return false;
         }
         Layout layout = tv.getLayout();
@@ -553,7 +554,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
                         }
                     });
                 }else {
-                    Toast.makeText(getContext(), "Please select a text first", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getResources().getString(R.string.select_text_first)+"Please select a text first", Toast.LENGTH_SHORT).show();
                 }
 
                 break;

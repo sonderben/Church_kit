@@ -17,8 +17,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.splashscreen.SplashScreen;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -85,31 +87,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-        splashScreen.setKeepOnScreenCondition(new SplashScreen.KeepOnScreenCondition() {
-            @Override
-            public boolean shouldKeepOnScreen() {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return false;
+        splashScreen.setKeepOnScreenCondition(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+            return false;
         });
-
-        /*PexelsRepository repo = new PexelsRepository();
-        repo.makeJ("btoaaaq")
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(jsonObject -> {
-                    System.out.println("afiche error: "+jsonObject);
-                },error->{
-                    System.out.println("afiche error: "+error);
-                });*/
 
 
 
         bibleInfoViewModel.getAllBibleInfo().observe(this, bibleInfoList -> {
-            System.out.println("bibleInfoList: "+bibleInfoList);
+
             if (bibleInfoList.size()==0){
                 bibleInfoViewModel.insert( BibleInfo.getAllBibleInfo() );
             }
@@ -129,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
 
-        View headerView = navView.getHeaderView(0);
+
 
 
 
@@ -213,18 +203,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         version.setGravity(Gravity.CENTER);
         version.setText("1.0.0");
 
+
         bibleInfoViewModel.getAllBibleInfo().observe(this, bibleInfos -> {
-            bibleHistoryViewModel.getAmount(ckPreferences.getBibleName()).observe(MainActivity.this, integer -> bibleHistory.setText(integer>0? "+"+integer:"" ));
-            bibleFavoriteViewModel.getAmount(ckPreferences.getBibleName()).observe(MainActivity.this, integer -> bibleFavorite.setText(integer>0? "+"+integer:"" ));
+            bibleAmountHistoryLiveData = bibleHistoryViewModel.getAmount( ckPreferences.getBibleName() );
+            bibleAmountFavoriteLiveData = bibleFavoriteViewModel.getAmount(ckPreferences.getBibleName());
+
+            if (bibleAmountHistoryLiveData.hasActiveObservers())
+                bibleAmountHistoryLiveData.removeObservers(MainActivity.this);
+            bibleAmountHistoryLiveData.observe(MainActivity.this, integer -> bibleHistory.setText(integer>0? "+"+integer:"" ));
+
+            if (bibleAmountFavoriteLiveData.hasActiveObservers())
+                bibleAmountFavoriteLiveData.removeObservers(MainActivity.this);
+            bibleAmountFavoriteLiveData.observe(MainActivity.this, integer -> bibleFavorite.setText(integer>0? "+"+integer:"" ));
         });
 
-        songInfoViewModel.getAllSongInfo().observe(this, new Observer<List<SongInfo>>() {
-            @Override
-            public void onChanged(List<SongInfo> songInfos) {
-                songHistoryViewModel.getAmount( ckPreferences.getSongName() ).observe(MainActivity.this, integer -> songHistory.setText(integer>0? "+"+integer:"" ));
-                songFavoriteViewModel.getAmount( ckPreferences.getSongName() ).observe(MainActivity.this, integer -> songFavorite.setText(integer>0? "+"+integer:"" ));
+        songInfoViewModel.getAllSongInfo().observe(this, songInfos -> {
 
-            }
+            songHistoryViewModel.getAmount( ckPreferences.getSongName() ).observe(MainActivity.this, integer -> songHistory.setText(integer>0? "+"+integer:"" ));
+            songFavoriteViewModel.getAmount( ckPreferences.getSongName() ).observe(MainActivity.this, integer -> songFavorite.setText(integer>0? "+"+integer:"" ));
+
+            //
+            songAmountHistoryLiveData = songHistoryViewModel.getAmount( ckPreferences.getSongName() );
+            songAmountFavoriteLiveData = songFavoriteViewModel.getAmount(ckPreferences.getSongName());
+
+            if (songAmountHistoryLiveData.hasActiveObservers())
+                songAmountHistoryLiveData.removeObservers(MainActivity.this);
+            songAmountHistoryLiveData.observe(MainActivity.this, integer -> songHistory.setText(integer>0? "+"+integer:"" ));
+
+            if (songAmountFavoriteLiveData.hasActiveObservers())
+                songAmountFavoriteLiveData.removeObservers(MainActivity.this);
+            songAmountFavoriteLiveData.observe(MainActivity.this, integer -> songFavorite.setText(integer>0? "+"+integer:"" ));
+
+
         });
 
 
@@ -257,30 +267,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()){
             case R.id.songHistory:
                 bundle.putString("FROM",Util.FROM_SONG_HISTORY);
-                mNavController.getGraph().findNode(R.id.listSongsFragment).setLabel("Song Histories");
+                mNavController.getGraph().findNode(R.id.listSongsFragment).setLabel(getString(R.string.song_history));
                 mNavController.navigate(R.id.listSongsFragment,bundle);
                 drawerLayout.close();
                 return true;
             case R.id.songFavorite:
                 bundle.putString("FROM",Util.FROM_SONG_FAVORITE);
                 drawerLayout.close();
-                mNavController.getGraph().findNode(R.id.listSongsFragment).setLabel("Song Favorites");
+                mNavController.getGraph().findNode(R.id.listSongsFragment).setLabel(getString(R.string.song_favorite));
                 mNavController.navigate(R.id.listSongsFragment,bundle);
                 return true;
             case R.id.bibleFavorite:
                 bundle.putString("FROM",Util.FROM_BIBLE_FAVORITE);
-                mNavController.getGraph().findNode(R.id.listChapterFragment).setLabel("Chapter Favorites");
+                mNavController.getGraph().findNode(R.id.listChapterFragment).setLabel(getString(R.string.chapter_favorite));
                 mNavController.navigate(R.id.listChapterFragment,bundle);
                 drawerLayout.close();
                 return true;
             case R.id.bibleHistory:
                 bundle.putString("FROM",Util.FROM_BIBLE_HISTORY);
-                mNavController.getGraph().findNode(R.id.listChapterFragment).setLabel("Chapter Histories");
+                mNavController.getGraph().findNode(R.id.listChapterFragment).setLabel(getString(R.string.chapter_history));
                 mNavController.navigate(R.id.listChapterFragment,bundle);
                 drawerLayout.close();
                 return true;
             case R.id.aboutFragment:
-                mNavController.getGraph().findNode(R.id.aboutFragment).setLabel("About");
+                mNavController.getGraph().findNode(R.id.aboutFragment).setLabel(getString(R.string.about));
                 mNavController.navigate(R.id.aboutFragment);
                 drawerLayout.close();
                 return true;
@@ -345,6 +355,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SongHistoryViewModel songHistoryViewModel;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_SETTINGS = 12432;
     TextView info;
+    LiveData<Integer> bibleAmountHistoryLiveData;
+    LiveData<Integer> songAmountHistoryLiveData;
+
+    LiveData<Integer> bibleAmountFavoriteLiveData;
+    LiveData<Integer> songAmountFavoriteLiveData;
+
 
     @Override
     protected void onDestroy() {

@@ -82,11 +82,15 @@ public class AboutFragment extends Fragment {
 20. <b>Can I add my own notes to verses in Church Kit?</b></br>Yes, you can add your own notes to verses in Church Kit</br>
      */
 
-    String txt = "<P>Welcome to <b>Church Kit</b>, the perfect app to enhance your worship and connection with God. </br>Created by <a href=\"https://www.instagram.com/sonderben/\">Bennderson</a>  and <a href=\"https://johnyoute.com/\">John Ersen</a>, Church Kit is a practical and useful tool for those looking to deepen their Christian faith.</br> The app has three main sections: </br>\n" +
-            "<p> <b>Song:</b> The songs section provides access to a wide variety of worship songs, from classic hymns to modern songs.</br></p>\n" +
-            "<p><b>Bible: </b>The Bible section allows you to access different versions of the Bible, with all the features you need to study and analyze the Word of God. You can also save your favorite verses, perform advanced searches, and read additional notes to help you better understand the texts.</p>\n" +
-            "\n" +
-            "<p>Currently, Church Kit is available for free and without advertisements, but future versions will include advertising. This will allow us to continue developing the app and improving the user experience. <!--If you have any comments, suggestions, or issues with the app, please do not hesitate to contact us through our support page.--></p>\n" +
-            "\n" +
-            "In summary, Church Kit is the ideal app for anyone looking to get closer to God through the Bible and worship music. Download it today and start enjoying all its features and useful tools for your worship experience and spiritual growth.</p>";
+    String txt = "<P>Welcome to <b>Church Kit</b>, the perfect app to enhance your worship and connection with God. </br>Created by <a href=\"https://www.instagram.com/sonderben/\">Bennderson</a>  and <a href=\"https://johnyoute.com/\">John Ersen</a>, Church Kit is a practical and useful tool for those looking to deepen their Christian faith.</br> The app has three main sections: </br>" +
+            "            <p> <b>Song:</b> The songs section provides access to a wide variety of song book, from classic hymns to modern songs.</br></p>" +
+            "            <p><b>Bible: </b>The Bible section allows you to access different versions of the Bible, with all the features you need to study and analyze the Word of God. You can also save your favorite verses, perform advanced searches, and read additional notes to help you better understand the texts.</p>" +
+            "            " +
+            "            <p><b>Note: </b> this section allows you to take notes, to create directories to group the notes according to your choices. </p>" +
+            "            " +
+            "            <p> <i>Just like in the song and bible section you can save your favorite chapters, your favorite songs and also see your reading history. The application allows you to perform normal searches and advanced searches.</i> </p>" +
+            "            " +
+            "            <p>Currently, Church Kit is available for free and without advertisements, but future versions will include advertising. This will allow us to continue developing the app and improving the user experience. </br>If you have any comments, suggestions, or issues with the app, please don't hesitate to contact us. <!--If you have any comments, suggestions, or issues with the app, please do not hesitate to contact us through our support page.--></p>" +
+            "            " +
+            "            In summary, Church Kit is the ideal app for anyone looking to get closer to God through the Bible and worship music. Download it today and start enjoying all its features and useful tools for your worship experience and spiritual growth.</p>";
 }

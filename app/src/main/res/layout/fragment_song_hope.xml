@@ -33,6 +33,7 @@
         android:text="@string/download_a_song_book"
         android:textColor="#FF8F00"
         android:elevation="12dp"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

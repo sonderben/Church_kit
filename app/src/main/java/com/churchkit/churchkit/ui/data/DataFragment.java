@@ -411,7 +411,6 @@ public class DataFragment extends Fragment {
                                 color = null;
                                 image = null;
                             }
-                            System.out.println("test12: "+bibleInfo.getId());
                             String bibleBookId = bibleInfo.getId()+"_"+songBookJson.getString("id");
                             BibleBook bibleBook = new BibleBook(bibleInfo.getId(),
                                     bibleBookId ,
@@ -532,7 +531,7 @@ public class DataFragment extends Fragment {
                     @Override
                     public void onComplete() {
 
-                        System.out.println("onComplete: ");
+
                         myViewHolder.prepopulateProgressBar.setVisibility(View.GONE);
                         bibleInfo.setDownloaded(true);
                         bibleInfoViewModel.insert((BibleInfo) bibleInfo);
@@ -711,7 +710,6 @@ public class DataFragment extends Fragment {
         downloadTask.addOnProgressListener(snapshot -> {
             double percent = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
             myViewHolder.downloadProgressBar.setProgress((int) percent);
-            System.out.println("percent: " + percent);
             if (percent == 100) {
                 myViewHolder.downloadProgressBar.setVisibility(View.GONE);
                 myViewHolder.prepopulateProgressBar.setVisibility(View.VISIBLE);
@@ -804,7 +802,7 @@ public class DataFragment extends Fragment {
 
 
 
-        builder.setPositiveButton("Delete", (dialog, which) -> {
+        builder.setPositiveButton(getContext().getResources().getString(R.string.delete), (dialog, which) -> {
             bibleInfo.setDownloaded(false);
             if (origin.equalsIgnoreCase("BIBLE")){
 
@@ -839,7 +837,7 @@ public class DataFragment extends Fragment {
 
 
 
-        builder.setNegativeButton("Cancel", (dialog, id) -> dialog.dismiss());
+        builder.setNegativeButton(getContext().getResources().getString(R.string.cancel), (dialog, id) -> dialog.dismiss());
         AlertDialog dialog = builder.create();
         dialog.setOnShowListener(dialog1 -> {
             Button delete = ((AlertDialog) dialog1).getButton(AlertDialog.BUTTON_POSITIVE);

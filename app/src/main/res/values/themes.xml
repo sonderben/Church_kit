@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.ChurchKit" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.ChurchKit" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color.  -->
         <item name="colorPrimary">#283593</item>
         <item name="colorPrimaryVariant">#F2283593</item>
@@ -42,19 +42,8 @@
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <!-- Set the splash screen background, animated icon, and animation duration. -->
         <item name="windowSplashScreenBackground">@color/white</item>
-
-        <!-- Use windowSplashScreenAnimatedIcon to add either a drawable or an
-             animated drawable. One of these is required. -->
         <item name="windowSplashScreenAnimatedIcon">@drawable/church_kit_logo_splashscreen</item>
-
-
-
-    <!-- Required for animated icons -->
         <item name="windowSplashScreenAnimationDuration">200</item>
-
-        <!-- Set the theme of the Activity that directly follows your splash screen. -->
-        <!-- Required -->
-
         <item name="postSplashScreenTheme">@style/Theme.ChurchKit</item>
     </style>
 

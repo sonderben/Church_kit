@@ -170,7 +170,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
 
     });
 
-         bibleVerseLiveData = bibleVerseViewModel.getAllVerse(mId /*"ENGESV_PROProverbs9"*/);
+         bibleVerseLiveData = bibleVerseViewModel.getAllVerse(mId);
 
          bibleVerseLiveData.observe(requireActivity(), bibleVerseList -> {
             allVersets = listVerseToString(bibleVerseList);
@@ -243,6 +243,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
 
                 if (drawable != null) {
                     drawable.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+                    drawable.setTint(Color.RED);
                     endingFavoriteImageView.setImageDrawable(drawable);
                 }
             }
@@ -250,6 +251,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
                 int color = getResources().getColor(R.color.white);
                 if (drawable != null) {
                     drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+                    drawable.setTint(Color.WHITE);
                     endingFavoriteImageView.setImageDrawable(drawable);
                 }
             }
@@ -296,7 +298,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
 
     private void setVerseTitle(List<BibleVerse> bibleVerseList){
 
-            chapTitle.setText("Verse: 1 to "+bibleVerseList.size());
+            chapTitle.setText(getResources().getString(R.string.verse_range)+" "+bibleVerseList.size());
 
 
     }
@@ -347,7 +349,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         if (startPosition == endPosition){
             a = startPosition<0?getString(R.string.chorus): String.valueOf(startPosition);
         }else {
-            a = startPosition<0?getString(R.string.chorus): startPosition + " à "+
+            a = startPosition<0?getString(R.string.chorus): startPosition + " "+getResources().getString(R.string.to)+" "+
                     (endPosition<0?getString(R.string.chorus): String.valueOf(endPosition));
         }
 
@@ -375,7 +377,6 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
     public  Point getLocationOnScreen(View view) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        Toast.makeText(getContext(),"endingFavoriteImageView=> x: "+location[0]+" y: "+location[1],Toast.LENGTH_LONG).show();
         return new Point(location[0], location[1]);
     }
 
@@ -433,9 +434,9 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
                     bibleFavoriteViewModel.insert(
                             new BibleChapterFavorite(mId,ckPreferences.getBibleName(), Calendar.getInstance().getTimeInMillis(), mReference)
                     );
-                    Toast toast=Toast.makeText(getContext(),"Add to favorite with success",Toast.LENGTH_SHORT);
+                    /*Toast toast=Toast.makeText(getContext(),"Add to favorite with success",Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.TOP,0,0);
-                    toast.show();
+                    toast.show();*/
                 }
                 break;
             case R.id.more:
@@ -465,7 +466,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
                         }
                     });
                 }else {
-                    Toast.makeText(getContext(), "Please select a text first", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), getResources().getString(R.string.select_text_first), Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.donate:

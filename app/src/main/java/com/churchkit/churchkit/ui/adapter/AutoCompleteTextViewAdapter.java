@@ -1,9 +1,8 @@
 package com.churchkit.churchkit.ui.adapter;
-/*
-public class AutoCompleteTextViewAdapter {
-}*/
+
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;
@@ -19,9 +18,7 @@ import androidx.annotation.Nullable;
 
 import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.R;
-import com.churchkit.churchkit.database.entity.bible.BibleChapter;
 import com.churchkit.churchkit.database.entity.bible.BibleVerse;
-import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.database.entity.song.Verse;
 import com.churchkit.churchkit.ui.bible.BibleFragment;
 
@@ -32,6 +29,7 @@ public class AutoCompleteTextViewAdapter extends ArrayAdapter<Object> implements
     CharSequence mConstraint;
     CKPreferences ckPreferences;
     Class aClass;
+
 
     public void setSongs(List objects) {
         this.objects = objects;
@@ -61,21 +59,7 @@ public class AutoCompleteTextViewAdapter extends ArrayAdapter<Object> implements
 
         if ( aClass == BibleFragment.class){
 
-            /*if (object instanceof BibleChapter){
-                if(convertView == null) {
-                    convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_auto_complete_song, parent, false);
-                }
 
-                TextView songPosition = convertView.findViewById(R.id.number);
-                TextView bookName = convertView.findViewById(R.id.book);
-                TextView title = convertView.findViewById(R.id.title);
-
-
-                BibleChapter bibleChapter = (BibleChapter) object;
-                songPosition.setText( "" );
-                title.setText( "");
-                bookName.setText( bibleChapter.getBookAbbreviation()+" "+bibleChapter.getPosition() );
-            }else {*/
                 if(convertView == null)
                     convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_auto_complete_verse,parent,false);
                 TextView bibleVerseTextView = convertView.findViewById(R.id.full_text_search);
@@ -88,21 +72,7 @@ public class AutoCompleteTextViewAdapter extends ArrayAdapter<Object> implements
             //}
 
         } else {
-            /*if (object instanceof Song){
-                if(convertView == null) {
-                    convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_auto_complete_song, parent, false);
-                }
 
-                TextView songPosition = convertView.findViewById(R.id.number);
-                TextView bookName = convertView.findViewById(R.id.book);
-                TextView title = convertView.findViewById(R.id.title);
-
-
-                Song bibleChapter = (Song) object;
-                songPosition.setText( "" );
-                title.setText( "");
-                bookName.setText( bibleChapter.getBookAbbreviation()+" "+bibleChapter.getPosition() );
-            }else {*/
                 if(convertView == null)
                     convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_auto_complete_verse,parent,false);
                 TextView bibleVerseTextView = convertView.findViewById(R.id.full_text_search);
@@ -112,7 +82,7 @@ public class AutoCompleteTextViewAdapter extends ArrayAdapter<Object> implements
                 Spanned temp = Html.fromHtml("<b> <b> "+bibleVerse.getReference()+"</b> </b>"+" "+verseText);
 
                 bibleVerseTextView.setText(temp);
-            //}
+
         }
 
 
@@ -125,7 +95,7 @@ public class AutoCompleteTextViewAdapter extends ArrayAdapter<Object> implements
             String []searchTextArray = searchText.split(" ");
             for (int i = 0; i < searchTextArray.length; i++) {
                 int index = verseText.toUpperCase().indexOf( searchTextArray[i].toUpperCase() );
-                System.out.println("condition: "+searchText+" :"+ index );
+
 
                 if (index>-1){
                     String oldText = verseText.substring(index).split(" ")[0];
@@ -143,11 +113,6 @@ public class AutoCompleteTextViewAdapter extends ArrayAdapter<Object> implements
         Filter filter = new Filter() {
             @Override
             public CharSequence convertResultToString(Object resultValue) {
-                /*if ( resultValue instanceof Song)
-                    return ((Song )resultValue).getTitle();
-                else if ( resultValue instanceof BibleChapter )
-                    return  ((BibleChapter )resultValue).getBibleBookAbbr()+ " " + ((BibleChapter )resultValue).getPosition();
-                else*/
                     return mConstraint;
             }
 

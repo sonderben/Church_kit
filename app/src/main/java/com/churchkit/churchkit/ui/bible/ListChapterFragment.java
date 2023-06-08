@@ -64,15 +64,11 @@ public class ListChapterFragment extends Fragment {
                     adapter = new Adapter(getChildFragmentManager(), null);
                     adapter.setChapterHistoryWrapperList( BibleChapterHistoryWrapper.fromMap(bibleChapterFavoriteBibleChapterMap ) );
                     mRecyclerView.setAdapter( adapter );
-                    System.out.println("db.bibleChapterFavoriteDao().insert: "+bibleChapterFavoriteBibleChapterMap);
                 });
                 break;
             default:
                 adapter = new Adapter(getChildFragmentManager(), getArguments().getString("BOOK_NAME_ABBREVIATION"));
                 bibleBookId = getArguments().getString("ID");
-
-                System.out.println("men id: "+bibleBookId);
-
 
                 db.bibleChapterDao().getAllChapterByBookId(bibleBookId).observe(requireActivity(), bibleChapters -> {
                     adapter.setBibleChapters(bibleChapters);

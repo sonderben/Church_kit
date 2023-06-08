@@ -2,18 +2,9 @@ package com.churchkit.churchkit.ui.more;
 
 import static com.churchkit.churchkit.Util.setAppLanguage;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.preference.ListPreference;
@@ -41,7 +32,6 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
         ckPreferences = new CKPreferences(requireActivity().getApplicationContext());
         langListPreference = findPreference("LANGUAGE");
         seekBarPreference = findPreference("LETTER_SIZE");
-        darKModeListPreference = findPreference("DARK_MODE");
         switchPreferenceCompat  = findPreference("SONG_ABBR_COLOR");
         fontListPreference = findPreference("FONT");
         isFontBold = findPreference("BOLD");
@@ -92,19 +82,13 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
             return true;
         });
 
-        darKModeListPreference.setOnPreferenceChangeListener((preference, newValue) -> {
-            String lang = (String) newValue;
-            setAppLanguage(getContext(),lang);
-            AppCompatDelegate.setDefaultNightMode(Integer.parseInt(lang));
-            getActivity().recreate();
-            return true;
-        });
+
 
         switchPreferenceCompat.setOnPreferenceChangeListener((preference, newValue) -> true);
 
         biblePreference.setOnPreferenceClickListener(preference -> {
             NavController navController = Navigation.findNavController(requireView());
-            navController.getGraph().findNode(R.id.dataFragment).setLabel("Download a bible");
+            navController.getGraph().findNode(R.id.dataFragment).setLabel(getString(R.string.download_bible));
             Bundle bundle = new Bundle();
             bundle.putString("FROM","BIBLE");
             navController.navigate(R.id.action_historyFragment_to_dataFragment,bundle);
@@ -116,7 +100,7 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
             Bundle bundle = new Bundle();
             bundle.putString("FROM","SONG");
             NavController navController = Navigation.findNavController(requireView());
-            navController.getGraph().findNode(R.id.dataFragment).setLabel("Download a song");
+            navController.getGraph().findNode(R.id.dataFragment).setLabel(getString(R.string.download_song));
             navController.navigate(R.id.action_historyFragment_to_dataFragment,bundle);
             return true;
         });
@@ -131,7 +115,7 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
     SeekBarPreference seekBarPreference;
 
     ListPreference langListPreference;
-    ListPreference darKModeListPreference,fontListPreference;
+    ListPreference fontListPreference;
     CKPreferences ckPreferences;
     SwitchPreferenceCompat switchPreferenceCompat,isFontBold;
     Preference biblePreference,songPreference;

@@ -1,6 +1,8 @@
 package com.churchkit.churchkit.ui.adapter.bible;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -32,6 +34,8 @@ public class BibleAdapter extends RecyclerView.Adapter {
     int typeView;
     boolean fromBookByTestamentFragment = false;
     FragmentManager fm;
+    Context context;
+    Resources resource;
     List<BibleBook> bibleBooks;
 
     int amountOldTestament = 0;
@@ -49,11 +53,7 @@ public class BibleAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    /*public BibleAdapter(int typeView,FragmentManager fm,List<BibleBook> bibleBooks) {
-        this.fm = fm;
-        this.typeView = typeView;
-        this.bibleBooks=bibleBooks;
-    }*/
+
 
     public BibleAdapter(FragmentManager fm){
         this.fm = fm;
@@ -87,6 +87,10 @@ public class BibleAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        if (context == null) {
+            context = holder.itemView.getContext();
+            resource = context.getResources();
+        }
         if (typeView ==0){ // group by testament
             Bundle bundle = new Bundle();
             if(position == 0) {
@@ -98,7 +102,7 @@ public class BibleAdapter extends RecyclerView.Adapter {
                         .placeholder(R.mipmap.img_bg_creole)
                         .into( ( (GroupByTestamentViewHolder) holder ).img );
 
-                ( (GroupByTestamentViewHolder) holder ).bookNumber.setText(amountOldTestament+" Books");
+                ( (GroupByTestamentViewHolder) holder ).bookNumber.setText(amountOldTestament+" "+resource.getString(R.string.books));
                 bundle.putInt("TESTAMENT",-2);
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -114,7 +118,7 @@ public class BibleAdapter extends RecyclerView.Adapter {
                 bundle.putInt("TESTAMENT",2);
                 ((GroupByTestamentViewHolder) holder).textView.setText(R.string.new_testament);
                 ( (GroupByTestamentViewHolder) holder ).img.setImageResource(R.mipmap.nt);
-                ( (GroupByTestamentViewHolder) holder ).bookNumber.setText(amountNewTestament+" Books");
+                ( (GroupByTestamentViewHolder) holder ).bookNumber.setText(amountNewTestament+" "+resource.getString(R.string.books));
 
                 Glide.with(( (GroupByTestamentViewHolder) holder ).img)
                         .asBitmap()

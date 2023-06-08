@@ -29,12 +29,12 @@
             android:id="@+id/full_text_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Full text search"/>
+            android:text="@string/full_text_search"/>
         <RadioButton
             android:id="@+id/normal_text_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Normal"/>
+            android:text="@string/normal_search"/>
     </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

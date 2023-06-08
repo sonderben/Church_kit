@@ -65,7 +65,7 @@ public class SongFavoriteFragment extends Fragment {
         db.songFavoriteDao().getAllSongFavoriteWithSong(ckp.getSongName()).observe(getViewLifecycleOwner(), new Observer<Map<SongFavorite, Song>>() {
             @Override
             public void onChanged(Map<SongFavorite, Song> songFavoriteSongMap) {
-                System.out.println("yow poze ui: "+songFavoriteSongMap);
+
             }
         });
 

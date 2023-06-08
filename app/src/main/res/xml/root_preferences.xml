@@ -69,18 +69,6 @@
     </PreferenceCategory>
 
 
-    <PreferenceCategory app:title="@string/display">
 
-        <ListPreference
-            app:defaultValue="2"
-            app:entries="@array/dark_mode_entry"
-            app:entryValues="@array/dark_mode_values"
-            app:key="DARK_MODE"
-            app:icon="@drawable/dark_mode_24"
-            app:title="@string/dark_mode"
-            app:useSimpleSummaryProvider="true" />
-
-
-    </PreferenceCategory>
 
 </PreferenceScreen>

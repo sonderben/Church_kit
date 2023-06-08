@@ -90,8 +90,8 @@ public class EditerNoteFragment extends Fragment {
 
 
         activity = requireActivity();
-        SpannableString spannableString = new SpannableString("genial");
-        SpannableString.valueOf("");
+
+
 
 
 
@@ -280,7 +280,7 @@ public class EditerNoteFragment extends Fragment {
                 .setTextSize(15f)
                 .setCornerRadius(4f)
                 .setAlpha(0.9f)
-                .setText("Please enter a title first")
+                .setText(getString(R.string.please_enter_title_first))
                 .setTextColor(ContextCompat.getColor(context, R.color.white))
                 .setTextIsHtml(true)
                 //.setIconDrawable(ContextCompat.getDrawable(context, R.drawable.donate_24))

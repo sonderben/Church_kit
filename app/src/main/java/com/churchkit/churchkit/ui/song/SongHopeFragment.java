@@ -109,7 +109,7 @@ public class SongHopeFragment extends Fragment {
 
         infoDownloadBible.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(requireView());
-            navController.getGraph().findNode(R.id.dataFragment).setLabel("Download a song");
+            navController.getGraph().findNode(R.id.dataFragment).setLabel(getString(R.string.download_song));
 
             Bundle bundle = new Bundle();
             bundle.putString("FROM", "SONG");

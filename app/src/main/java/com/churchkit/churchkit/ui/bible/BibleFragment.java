@@ -3,6 +3,7 @@ package com.churchkit.churchkit.ui.bible;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -63,6 +64,7 @@ public class BibleFragment extends Fragment {
         bookmarkBinding = FragmentBibleBinding.inflate(getLayoutInflater());
         mRecyclerView = bookmarkBinding.recyclerview;
         autoCompleteTextView = bookmarkBinding.search;
+        resources = getContext().getResources();
 
         ckPreferences = new CKPreferences(getContext());
         bibleChapterViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().
@@ -82,7 +84,7 @@ public class BibleFragment extends Fragment {
 
         infoDownloadSong.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(requireView());
-            navController.getGraph().findNode(R.id.dataFragment).setLabel("Download a Bible");
+            navController.getGraph().findNode(R.id.dataFragment).setLabel(resources.getString(R.string.download_bible));
             Bundle bundle = new Bundle();
             bundle.putString("FROM", "BIBLE");
             navController.navigate(R.id.action_bookmarkFragment_to_dataFragment, bundle);
@@ -315,6 +317,7 @@ public class BibleFragment extends Fragment {
     BibleInfoViewModel bibleInfoViewModel;
     private MaterialAutoCompleteTextView autoCompleteTextView;
     boolean wasTouch = false;
+    Resources resources;
     private final String IS_GROUP_BY_TESTAMENT = "IS_GROUP_BY_TESTAMENT";
     private SharedPreferences sharedPreferences;
     private BibleChapterViewModel bibleChapterViewModel;
