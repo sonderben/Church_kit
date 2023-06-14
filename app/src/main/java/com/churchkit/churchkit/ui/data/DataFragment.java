@@ -1,5 +1,7 @@
 package com.churchkit.churchkit.ui.data;
 
+import static com.churchkit.churchkit.Util.deleteCache;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.IntentFilter;
@@ -701,7 +703,12 @@ public class DataFragment extends Fragment {
 
         myViewHolder.downloadProgressBar.setVisibility(View.VISIBLE);
 
-        File localFile = new File(getActivity().getCacheDir(), bibleInfo.getId() + "-v1" + ".json");
+        String path = bibleInfo.getUrl().replace("bible/","");
+        path = path.replace("song/","");
+
+        System.out.println("path: "+path);
+        File localFile = new File(getActivity().getCacheDir(), path);
+
 
 
         FileDownloadTask downloadTask = storageRef.getFile(localFile);
@@ -734,7 +741,9 @@ public class DataFragment extends Fragment {
     }
 
     private void readFromCache(MyAdapter.MyViewHolder myViewHolder, BaseInfo bibleInfo) {
-        File localFile = new File(getActivity().getCacheDir(), bibleInfo.getId() + "-v1" + ".json");
+        String path = bibleInfo.getUrl().replace("bible/","");
+        path = path.replace("song/","");
+        File localFile = new File(getActivity().getCacheDir(), path);
         StringBuilder stringBuilder = new StringBuilder();
 
         try {
@@ -751,6 +760,7 @@ public class DataFragment extends Fragment {
                 prepopulateBibleFromJSonFile(stringBuilder.toString(), myViewHolder, bibleInfo);
             if (bibleInfo instanceof SongInfo)
                 prepopulateSongFromJSonFile(stringBuilder.toString(), myViewHolder, bibleInfo);
+
 
 
         } catch (IOException e) {
@@ -853,5 +863,11 @@ public class DataFragment extends Fragment {
         }catch (Exception e){
             return String.valueOf( position );
         }
+    }
+
+    @Override
+    public void onStop() {
+        deleteCache(getContext());
+        super.onStop();
     }
 }

@@ -1,6 +1,7 @@
 package com.churchkit.churchkit.ui;
 
 import static com.churchkit.churchkit.Util.BOOK_MARK;
+import static com.churchkit.churchkit.Util.deleteCache;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -708,5 +709,10 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
 
 
 
+    }
+
+    public void onStop() {
+        deleteCache(getContext());
+        super.onStop();
     }
 }

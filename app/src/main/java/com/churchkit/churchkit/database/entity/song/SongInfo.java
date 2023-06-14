@@ -31,7 +31,7 @@ public class SongInfo extends BaseInfo {
     public static List<SongInfo> getAllSongInfo(){
         if (infoList.size() == 0){
             infoList.add(new SongInfo("songbook","Français, Kreyòl","Chant d'esperance","HTICDE",14,"song/songbook-v1.json",0,"1.43 MB"));
-            infoList.add(new SongInfo("himnario pentecostal","Español","Himanario evangelico pentecostal","ESPHEP",1,"song/himnario pentecostal-v1.json",444,"580.13 KB"));
+                infoList.add(new SongInfo("himnario pentecostal","Español","Himanario evangelico pentecostal","ESPHEP",1,"song/himnario pentecostal-v1.json",444,"580.13 KB"));
 
         }
         return  infoList;
