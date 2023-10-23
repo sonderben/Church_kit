@@ -32,6 +32,7 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
         ckPreferences = new CKPreferences(requireActivity().getApplicationContext());
         langListPreference = findPreference("LANGUAGE");
         seekBarPreference = findPreference("LETTER_SIZE");
+        developperPreference = findPreference("DEVELOPPER");
         switchPreferenceCompat  = findPreference("SONG_ABBR_COLOR");
         fontListPreference = findPreference("FONT");
         isFontBold = findPreference("BOLD");
@@ -40,6 +41,8 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
 
         biblePreference.setSummary( BibleInfo.getBibleInfoNameById( ckPreferences.getBibleName() ));
         songPreference.setSummary(SongInfo.getBibleInfoNameById( ckPreferences.getSongName() ));
+
+
 
      /*   ActivityResultLauncher<Intent> dataActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
@@ -82,6 +85,13 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
             return true;
         });
 
+        developperPreference.setOnPreferenceClickListener( preference -> {
+            NavController navController = Navigation.findNavController( requireView() );
+            //navController.navigate(R.id.action_developerFragment_to_dataFragment);
+            navController.navigate(R.id.action_historyFragment_to_developerFragment);
+            return true;
+        } );
+
 
 
         switchPreferenceCompat.setOnPreferenceChangeListener((preference, newValue) -> true);
@@ -118,7 +128,7 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
     ListPreference fontListPreference;
     CKPreferences ckPreferences;
     SwitchPreferenceCompat switchPreferenceCompat,isFontBold;
-    Preference biblePreference,songPreference;
+    Preference biblePreference,songPreference, developperPreference;
 
     private void isBoldVisibility(int index){
         switch (index){

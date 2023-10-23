@@ -41,6 +41,9 @@
         <action
             android:id="@+id/action_historyFragment_to_dataFragment"
             app:destination="@id/dataFragment" />
+        <action
+            android:id="@+id/action_historyFragment_to_developerFragment"
+            app:destination="@id/developerFragment" />
     </fragment>
 
     <fragment
@@ -179,5 +182,10 @@
         android:label="fragment_image_viewer"
         tools:layout="@layout/fragment_image_viewer" >
     </fragment>
+    <fragment
+        android:id="@+id/developerFragment"
+        android:name="com.churchkit.churchkit.ui.more.DeveloperFragment"
+        android:label="Technologies"
+        tools:layout="@layout/fragment_developer" />
 
 </navigation>

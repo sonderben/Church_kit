@@ -97,7 +97,7 @@ public class BibleFragment extends Fragment {
         bibleBooksLiveData = bibleBookViewModel.getAllBibleBook(bibleInfoId);
 
         bibleBooksLiveData.observe(requireActivity(), bibleBooks -> {
-            mAdapter.config(sharedPreferences.getBoolean(IS_GROUP_BY_TESTAMENT, false) ? 0 : 1, bibleBooks);
+            mAdapter.config(sharedPreferences.getBoolean(IS_GROUP_BY_TESTAMENT, true) ? 0 : 1, bibleBooks);
             mRecyclerView.setAdapter(mAdapter);
             mAdapter.notifyDataSetChanged();
 
@@ -189,6 +189,8 @@ public class BibleFragment extends Fragment {
                 ChapterDialogFragment dialogFragment = ChapterDialogFragment.newInstance(bibleChapter);
                 dialogFragment.show(getChildFragmentManager(), "");
             });
+
+
 
     }
 

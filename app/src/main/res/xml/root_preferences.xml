@@ -68,6 +68,14 @@
             app:title="@string/switch_title_btn_song_abrr_color" />
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="Developper">
+        <Preference
+            android:title="Library/Api"
+            app:key="DEVELOPPER"
+            app:icon="@drawable/developper_24"
+            android:summary="Some technologies used"/>
+    </PreferenceCategory>
 
 
 

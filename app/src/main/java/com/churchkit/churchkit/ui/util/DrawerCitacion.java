@@ -49,11 +49,13 @@ public class DrawerCitacion {
     public DrawerCitacion(Context context, String textToDraw) {
         this.context = context;
         this.text = textToDraw;
-        this.textSize = 40;
+        this.textSize = (int) context.getResources().getDimension(com.intuit.ssp.R.dimen._10ssp);// 40;
 
         appNamePaint = new TextPaint();
         appNamePaint.setShadowLayer(1, 2, 4, Color.BLACK);
         textPaint = new TextPaint();
+
+
         textPaint.setTextSize(textSize);
         textPaint.setColor(Color.WHITE);
         typeface = ResourcesCompat.getFont(context, R.font.robotolight);

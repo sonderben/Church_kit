@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.R;
 import com.churchkit.churchkit.database.entity.bible.BibleBook;
 import com.churchkit.churchkit.ui.util.Util;
@@ -91,7 +92,7 @@ public class BibleAdapter extends RecyclerView.Adapter {
             context = holder.itemView.getContext();
             resource = context.getResources();
         }
-        if (typeView ==0){ // group by testament
+        if (typeView ==0 && (amountNewTestament>0 ||amountOldTestament>0 ) ){ // group by testament
             Bundle bundle = new Bundle();
             if(position == 0) {
                 ((GroupByTestamentViewHolder) holder).textView.setText(R.string.old_testament);
@@ -139,7 +140,7 @@ public class BibleAdapter extends RecyclerView.Adapter {
                     }
                 });
             }
-        }else {
+        }else if(typeView !=0) {
             int tempPosition = holder.getAbsoluteAdapterPosition() + 1;
             int posColor = tempPosition<11?tempPosition:tempPosition%10;
             final int color = Util.getColorByPosition( posColor );
@@ -147,7 +148,10 @@ public class BibleAdapter extends RecyclerView.Adapter {
                 ((AllBookViewHolder) holder).title.setText(bibleBooks.get(position).getTitle());
                 ((AllBookViewHolder) holder).tileAcronym.setText(bibleBooks.get(position).getAbbreviation());
                 ((AllBookViewHolder) holder).number.setText( bibleBooks.get(position).getChildAmount()+" Chapters" );
-            ((AllBookViewHolder) holder).tileAcronym.setTextColor(color);
+
+            if (new CKPreferences( holder.itemView.getContext() ).getabbrColor()) {
+                ((AllBookViewHolder) holder).tileAcronym.setTextColor(color);
+            }
 
             ((AllBookViewHolder) holder).itemView.setOnClickListener(view -> {
                 BibleBook bibleBook = bibleBooks.get(position);

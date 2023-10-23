@@ -61,7 +61,7 @@ public abstract class MyDataDb extends RoomDatabase {
                             //note.put("id",1);
                             note.put("title","Default note");
                             //note.put("note_amount",0);
-                            String noteString = "Welcome to Church kit\nStart creating and editing your notes.\nThe version 2 of Church kit will allow you to do many interesting thing in note\n\n\n\n\n#ChurchKit #defaultNote #"+df.format(time.getTime()).replace(" ","");
+                            String noteString = "Welcome to Church kit\nStart creating and editing your notes.\n\n\n\n\n#ChurchKit #defaultNote #"+df.format(time.getTime()).replace(" ","");
                             note.put("noteText", noteString);
                             note.put("date", Calendar.getInstance().getTimeInMillis());
                             note.put("note_directory_id",(int)a);

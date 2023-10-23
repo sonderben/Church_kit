@@ -1,13 +1,20 @@
 package com.churchkit.churchkit;
 
 import static com.churchkit.churchkit.ui.aboutapp.Payment.startPayment;
+import static com.churchkit.churchkit.util.Constant.NOTIFICATION_CHANNEL_ID;
+import static com.churchkit.churchkit.util.Constant.NOTIFICATION_CHANNEL_NAME;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Html;
+import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -95,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             return false;
         });
+        createNotificationChannel(this);
 
 
 
@@ -240,8 +248,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         developer.setText( Html.fromHtml(
-                " By <br> <a a href=\"https://www.instagram.com/sonderben/\">Bennderson</a>  and <a href=\"https://johnyoute.com/\">John Ersen</a>")
+                " By <br> <a a href=\"https://www.bendersonphanor.site/\">Bennderson</a>  and <a href=\"https://johnyoute.com/\">John Ersen</a>")
         );
+
+
         developer.setMovementMethod(LinkMovementMethod.getInstance());
 
 
@@ -360,7 +370,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     LiveData<Integer> bibleAmountFavoriteLiveData;
     LiveData<Integer> songAmountFavoriteLiveData;
+    public static void createNotificationChannel(Context context) {
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, importance);//channel.setDescription(description);
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
 
     @Override
     protected void onDestroy() {

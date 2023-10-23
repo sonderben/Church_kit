@@ -17,6 +17,9 @@ public interface SongInfoDao extends BaseDao<SongInfo> {
     @Query("Select * from song_info")
     LiveData<List<SongInfo>>getAllSongInfo();
 
+    @Query("Update song_info set isDownloaded =:isDownloaded where id =:id")
+    int updateIsDownloaded(boolean isDownloaded,String id);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(List<SongInfo>songInfoList);
 }

@@ -56,6 +56,7 @@ import com.churchkit.churchkit.ui.bible.ChapterDialogFragment;
 import com.churchkit.churchkit.ui.song.SongDialogFragment;
 import com.churchkit.churchkit.ui.util.ColorPicker;
 import com.churchkit.churchkit.ui.util.DrawerCitacion;
+import com.churchkit.churchkit.ui.util.PermissionUtils;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -130,6 +131,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
 
 
 
+
         imageView.setOnClickListener(v -> {
 
             if ( a % 2 ==0){
@@ -152,6 +154,9 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
         increaseTextSize = root.findViewById(R.id.increase);
         increaseTextSize.setOnClickListener(this::onClick);
         decreaseTextSize.setOnClickListener(this::onClick);
+
+        int s = (int) getResources().getDimension( com.intuit.ssp.R.dimen._10ssp );
+        fontSize.setText( s +" px" );
 
         songBookMarkViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication()).create(SongBookMarkViewModel.class);
         bibleBookMarkViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication()).create(BibleBookMarkViewModel.class);
@@ -298,8 +303,14 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
         });
 
         downloadImage.setOnClickListener(v -> {
-            saveImageToGallery(bitmapToSave);
-            Toast.makeText(applicationContext, R.string.img_save_in_gallery, Toast.LENGTH_LONG).show();
+            if (PermissionUtils.hasWriteExternalStoragePermission(requireActivity())) {
+                saveImageToGallery(bitmapToSave);
+                Toast.makeText(applicationContext, R.string.img_save_in_gallery, Toast.LENGTH_LONG).show();
+
+            }else {
+                PermissionUtils.requestWriteExternalStoragePermission( requireActivity() );
+            }
+
         });
 
         return root;
@@ -356,8 +367,13 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
         File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/MyDirectory/");
         directory.mkdirs();
 
+        String n = mRef.replace("à","a").replace(":","")
+                .replaceAll(" ","")+"_";
 
-        String fileName = "myImage" + new Date().getTime() + ".png";
+        String time = String.valueOf( new Date().getTime() );
+        time = time.substring(8,time.length());
+
+        String fileName = "CK_"+  n + time + ".png";
         File file = new File(directory, fileName);
 
 
@@ -473,11 +489,14 @@ public class EditorBottomSheet extends BottomSheetDialogFragment implements View
                 break;
             case R.id.increase:
                 if (Integer.valueOf(fontSize.getText().toString().split(" ")[0]) <= 120) {
-                    int d = Integer.valueOf(fontSize.getText().toString().split(" ")[0]) + 1;
+
+                    int d = Integer.valueOf(fontSize.getText().toString().split(" ")[0]) +
+                            (int) getResources().getDimension(com.intuit.ssp.R.dimen._1ssp);
                     fontSize.setText(d + " px");
 
                     bitmapToSave = drawerCitacion.getCitationWithDiffSizeText(d);
                     imageView.setImageBitmap(bitmapToSave);
+
                 }
 
                 break;

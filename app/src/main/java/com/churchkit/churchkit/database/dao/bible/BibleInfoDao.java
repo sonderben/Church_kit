@@ -17,6 +17,15 @@ public interface BibleInfoDao extends BaseDao<BibleInfo> {
     @Query("Select * from bible_info")
     LiveData<List<BibleInfo>>getAllBibleInfo();
 
+    /*UPDATE table
+    SET column_1 = new_value_1,
+            column_2 = new_value_2
+    WHERE
+            search_condition*/
+
+    @Query("Update bible_info set isDownloaded =:isDownloaded where id =:id")
+    int updateIsDownloaded(boolean isDownloaded,String id);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(List<BibleInfo>bibleInfoList);
 

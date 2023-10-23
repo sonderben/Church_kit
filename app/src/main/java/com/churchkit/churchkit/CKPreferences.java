@@ -3,8 +3,11 @@ package com.churchkit.churchkit;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
+
+import java.util.UUID;
 
 public class CKPreferences {
 
@@ -148,6 +151,18 @@ public class CKPreferences {
         SharedPreferences.Editor editor = preference.edit();
         editor.putString("DEFAULT_SONG", bibleName);
         return editor.commit(); //commit the changes asynchronously
+    }
+    public void setWorkRequestId(@NonNull String ID_BOOK, UUID requestId){
+        SharedPreferences.Editor editor = preference.edit();
+        editor.putString(ID_BOOK,requestId!=null?requestId.toString():null);
+        editor.commit();
+    }
+
+    public UUID getWorkRequestId(String ID_BOOK){
+       String a = preference.getString(ID_BOOK,null);
+       if (a==null)
+           return null;
+       return UUID.fromString( a );
     }
 
 

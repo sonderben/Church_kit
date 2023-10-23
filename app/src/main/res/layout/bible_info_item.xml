@@ -71,23 +71,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title"
         android:text="Français"/>
-    <TextView
-        android:id="@+id/info"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textColor="#FF8F00"
-        android:visibility="gone"
-        android:textStyle="italic"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/progressBar2"
-        app:layout_constraintTop_toBottomOf="@id/language"
-        android:text="Please keep this window open while this bible is downloading and installing."/>
+
     <TextView
         android:id="@+id/info_prepopulate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="@id/info"
-        app:layout_constraintTop_toBottomOf="@id/info"
+        app:layout_constraintTop_toBottomOf="@id/testament"
         android:maxLines="1"
         android:ellipsize="end"
         android:visibility="gone"/>
@@ -114,15 +103,16 @@
 
     <ProgressBar
         android:id="@+id/progressBar2"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
         android:visibility="gone"
         android:min="0"
         android:max="100"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:indeterminate="true"
+        app:layout_constraintStart_toStartOf="@id/language"
+        app:layout_constraintEnd_toStartOf="@id/checkbox"
+        app:layout_constraintTop_toBottomOf="@id/info_prepopulate" />
 
     <ProgressBar
         android:id="@+id/progressBar3"
@@ -130,9 +120,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:min="0"
+        android:max="100"
         app:layout_constraintStart_toStartOf="@id/language"
         app:layout_constraintEnd_toStartOf="@id/checkbox"
-        app:layout_constraintTop_toBottomOf="@id/info" />
+        app:layout_constraintTop_toBottomOf="@id/info_prepopulate"
+        />
 
 
 
