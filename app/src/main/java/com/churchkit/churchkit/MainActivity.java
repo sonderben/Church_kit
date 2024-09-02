@@ -6,10 +6,15 @@ import static com.churchkit.churchkit.util.Constant.NOTIFICATION_CHANNEL_NAME;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
+import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.media.AudioAttributes;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -92,6 +97,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         init(activityMainBinding);
 
+        Util.deleteCache( this );
+
 
 
         splashScreen.setKeepOnScreenCondition(() -> {
@@ -105,11 +112,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         createNotificationChannel(this);
 
 
+        Application bb =getApplication();
 
         bibleInfoViewModel.getAllBibleInfo().observe(this, bibleInfoList -> {
+            List<BibleInfo> a = BibleInfo.getAllBibleInfo();
+            if ( bibleInfoList.size()!=a.size() ){
 
-            if (bibleInfoList.size()==0){
-                bibleInfoViewModel.insert( BibleInfo.getAllBibleInfo() );
+                a.removeAll( bibleInfoList );
+
+                bibleInfoViewModel.insert( a );
+
             }
         });
 
@@ -377,6 +389,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, importance);//channel.setDescription(description);
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
+
+
+            channel.enableLights( true ) ;
+            channel.setLightColor(Color. RED ) ;
+            channel.enableVibration( true ) ;
+            channel.setVibrationPattern( new long []{ 100 , 200 , 300 , 400 , 500 , 400 , 300 , 200 , 400 }) ;
+            Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+
+
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes. CONTENT_TYPE_SONIFICATION )
+                    .setUsage(AudioAttributes. USAGE_ALARM )
+                    .build() ;
+
+            channel.setSound(sound , audioAttributes) ;
+
         }
     }
 

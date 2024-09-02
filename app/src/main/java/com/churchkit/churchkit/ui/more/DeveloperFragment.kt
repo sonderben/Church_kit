@@ -1,18 +1,15 @@
 package com.churchkit.churchkit.ui.more
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import androidx.recyclerview.widget.RecyclerView.VERTICAL
 import com.churchkit.churchkit.R
 
 
@@ -64,11 +61,7 @@ class DeveloperFragment : Fragment() {
 
 
     class CustomAdapter(private val localDataSet: List<DeveloperData>) : RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
-        private fun openDocumentation(activity:Activity,link: String) {
-            val intent = Intent(activity, DocumentationWebViewActivity::class.java)
-            intent.putExtra("documentation_link", link)
-            activity.startActivity(intent)
-        }
+
         class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val textView: TextView
             init {
@@ -91,7 +84,12 @@ class DeveloperFragment : Fragment() {
             viewHolder.textView.text = localDataSet[position].name
 
             viewHolder.itemView.setOnClickListener{
-                openDocumentation(it.context as Activity,localDataSet[position].link)
+                val bundle = Bundle()
+                bundle.putString("WEB_VIEW_LINK", localDataSet[position].link)
+               val navController = it.findNavController();
+                navController.graph.findNode(R.id.webViewFragment)?.label = localDataSet[position].name
+
+                navController.navigate(R.id.action_developerFragment_to_webViewFragment,bundle)
             }
         }
 

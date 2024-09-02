@@ -6,7 +6,7 @@
     <string name="cancel">Anile</string>
     <string name="update_directory">Aktyalize repètwa a</string>
     <string name="update">Aktyalize</string>
-    <string name="more">Paramèt</string>
+    <string name="more">Plis</string>
     <string name="old_testament">Ansyen Testamant</string>
     <string name="new_testament">Nouvo Testaman</string>
     <string name="song_hope">Chante espwa</string>
@@ -25,7 +25,7 @@
     <string name="switch_title_btn_chorus">Aktive bouton koral</string>
     <string name="switch_summary_btn_chorus">Fè bouton koral la parèt lè gen yon koral nan yon chante.</string>
     <string name="switch_title_btn_song_abrr_color">Koulè abrevyasyon chante.</string>
-    <string name="switch_summary_btn_song_abrr_color">Bay yon koulè diferan a chak abrevyasyon pou chak chante.</string>
+    <string name="switch_summary_btn_song_abrr_color">Bay yon koulè diferan a chak abrevyasyon pou chak liv.</string>
     <string name="dark_mode">Mòd nwa</string>
     <string name="display">Afichaj</string>
     <string name="old">Ansyen</string>
@@ -48,9 +48,19 @@
     <string name="select_bible">Chwazi yon Bib</string>
     <string name="search_by">Tip rechèch</string>
     <string name="note">Nòt</string>
+    <string name="download_a_song_book">Telechaje yon liv chante</string>
+    <string name="download_bible">Telechaje yon Bib</string>
+    <string name="download_song">Telechaje yon chante</string>
     <string name="search_a_note">Chèche yon nòt</string>
     <string name="song_history">Chante istorik</string>
     <string name="song_favorite">Chante ou renmen</string>
     <string name="chapter_history">Saw renmen nan bib la</string>
     <string name="chapter_favorite">Bib istorik</string>
+    <string name="pls_conect_internet">Tanpri konekte ak entènèt.</string>
+    <string name="keep_window_open_for_delete">Kite fenèt sa a louvri pandan Church kit  ap fin efase liv sa a.</string>
+    <string name="delete_book_action_irreversible">Aksyon sa a paka defèt, èske ou  vle efase liv sa a toutbon? Lè w efase liv sa a, li pral efase saw renmen yo, istorik ak makè ki asosye ak liv sa a tou.</string>
+    <string name="image">Imaj</string>
+    <string name="copy">Kopye</string>
+    <string name="bookmark">Makè</string>
+    <string name="technologies">Teknoloji yo</string>
 </resources>

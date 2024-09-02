@@ -110,7 +110,7 @@ public class MoreFragment extends PreferenceFragmentCompat/* Fragment implements
             Bundle bundle = new Bundle();
             bundle.putString("FROM","SONG");
             NavController navController = Navigation.findNavController(requireView());
-            navController.getGraph().findNode(R.id.dataFragment).setLabel(getString(R.string.download_song));
+            navController.getGraph().findNode(R.id.dataFragment).setLabel(getString(R.string.download_a_song_book));
             navController.navigate(R.id.action_historyFragment_to_dataFragment,bundle);
             return true;
         });

@@ -5,15 +5,15 @@
     <item
         android:id="@+id/g_image"
         app:showAsAction="always"
-        android:title="Image" />
+        android:title="@string/image" />
     <item
         android:id="@+id/book_mark"
         app:showAsAction="always"
         android:visible="true"
-        android:title="Bookmark" />
+        android:title="@string/bookmark" />
     <item
         android:id="@+id/copy"
         app:showAsAction="always"
-        android:title="Copy" />
+        android:title="@string/copy" />
 
 </menu>

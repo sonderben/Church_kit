@@ -6,7 +6,7 @@
     <string name="cancel">Cancelar</string>
     <string name="update_directory">Actualizar directorio</string>
     <string name="update">Actualizar</string>
-    <string name="more">Ajustes</string>
+    <string name="more">Mas</string>
     <string name="bible">Biblia</string>
     <string name="song">Canción</string>
     <string name="song_hope">Canción de esperanza</string>
@@ -24,7 +24,7 @@
     <string name="switch_title_btn_chorus">Activar coro de botones</string>
     <string name="switch_summary_btn_chorus">Haga que aparezca el botón Coro cuando haya un coro en una canción.</string>
     <string name="switch_title_btn_song_abrr_color">Color de la abreviatura  de la canción</string>
-    <string name="switch_summary_btn_song_abrr_color">Asigne un color diferente a cada abreviatura de cada canción.</string>
+    <string name="switch_summary_btn_song_abrr_color">Asigna un color diferente a cada abreviatura de cada libro.</string>
     <string name="dark_mode">Modo oscuro</string>
     <string name="display">Visualización</string>
     <string name="history">historial</string>
@@ -48,9 +48,20 @@
     <string name="select_bible">Seleccionar una Biblia</string>
     <string name="search_by">Tipo de búsqueda</string>
     <string name="note">Nota</string>
+    <string name="download_a_song_book">Descargar un cancionero</string>
+    <string name="download_bible">Descargar una Biblia</string>
+    <string name="download_song">Descargar una canción</string>
     <string name="search_a_note">Buscar una nota</string>
     <string name="song_history">Canción historial</string>
     <string name="song_favorite">Canción favorita</string>
     <string name="chapter_history">Biblia favorita</string>
     <string name="chapter_favorite">Biblia historial</string>
+    <string name="pls_conect_internet">Por favor conectarse a Internet.</string>
+    <string name="keep_window_open_for_delete">Mantenga esta ventana abierta mientras Church kit termina de eliminar ese libro.</string>
+    <string name="delete_book_action_irreversible">Esta acción es irreversible. ¿Realmente deseas eliminar este libro? Al eliminar este libro, también se eliminarán sus favoritos, historias y marcadores asociados con este libro.</string>
+    <string name="image">Imagen</string>
+    <string name="copy">Copiar</string>
+    <string name="bookmark">Marcador</string>
+    <string name="technologies">Tecnologías</string>
+
 </resources>

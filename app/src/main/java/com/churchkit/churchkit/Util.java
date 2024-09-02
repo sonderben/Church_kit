@@ -413,6 +413,8 @@ public class Util {
     public static void deleteCache(Context context) {
         try {
             File dir = context.getCacheDir();
+            //dir.delete();
+            //context.deleteFile( dir.getAbsolutePath() );
             deleteDir(dir);
         } catch (Exception e) {}
     }

@@ -27,7 +27,7 @@ public class BibleFavoriteViewModel extends AndroidViewModel {
     }
 
 
-    public LiveData <BibleChapterFavorite>  existed(String id,String bibleInfoId){
+    public LiveData <BibleChapterFavorite> getChapterFavoriteWitBibleId(String id, String bibleInfoId){
         return shr.existed(id,bibleInfoId);
     }
 

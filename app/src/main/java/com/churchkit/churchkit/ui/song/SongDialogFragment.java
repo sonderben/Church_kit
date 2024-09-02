@@ -12,6 +12,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.Spanned;
@@ -54,6 +55,7 @@ import com.churchkit.churchkit.modelview.song.SongHistoryViewModel;
 import com.churchkit.churchkit.modelview.song.SongVerseViewModel;
 import com.churchkit.churchkit.ui.EditorBottomSheet;
 import com.churchkit.churchkit.ui.util.Util;
+import com.churchkit.churchkit.util.CkWakeLock;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.razorpay.Checkout;
 
@@ -80,6 +82,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
           root = (ViewGroup) inflater.inflate(R.layout.fragment_list_chapter,container,false);
 
         ckp = new CKPreferences(getContext());
+
 
 
         songHistoryViewModel = ViewModelProvider.AndroidViewModelFactory.
@@ -124,53 +127,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
           });
 
 
-         /* churchKitDd.bookMarkSongDao().getAllBookMark(mSongId).observe(getViewLifecycleOwner(), bookMarkSongs -> {
 
-              tv.setText(allVerse);
-             if (bookMarkSongs.size() != 0){
-                 Spannable spannable = (Spannable) tv.getText();
-
-
-                 for (int i = 0; i < bookMarkSongs.size(); i++) {
-                     int start = bookMarkSongs.get(i).getStart();
-                     int end = bookMarkSongs.get(i).getEnd();
-
-
-
-                     int color = Color.parseColor(bookMarkSongs.get(i).getColor().replace("#", "#6b"));
-
-
-                     ClickableSpan clickableSpan = new ClickableSpan() {
-                         @Override
-                         public void onClick(@NonNull View widget) {
-                            int index = bookMarkSongs.indexOf( new BookMarkSong("1","1","1",start,end,mSongId) );
-                           BookMarkSong bookMarkSong = bookMarkSongs.get(index);
-
-                           EditorBottomSheet editorBottomSheet = EditorBottomSheet.getInstance(bookMarkSong,tv,SONG_BOOKMARK,2,mSongId);
-                           editorBottomSheet.show(getChildFragmentManager(),"");
-                         }
-                         @Override
-                         public void updateDrawState(TextPaint ds) {
-                             super.updateDrawState(ds);
-                             ds.setUnderlineText(false); // remove underline
-                             ds.setColor(mTextViewColor);
-
-                         }
-                     };
-                     try {
-                         spannable.setSpan(new BackgroundColorSpan(color), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                         spannable.setSpan(clickableSpan,start,end,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                     }catch (IndexOutOfBoundsException io){
-                         
-                     }
-
-                 }
-                 tv.setText(spannable);
-                 tv.setMovementMethod( LinkMovementMethod.getInstance() );
-             }
-
-          });
-          */
 
 
 
@@ -187,9 +144,9 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
 
 
 
-        /*churchKitDd.verseDao()*/songVerseViewModel.getAllVerseByIdSong(mSongId).observe(requireActivity(), verses -> {
+        songVerseViewModel.getAllVerseByIdSong(mSongId).observe(requireActivity(), verses -> {
             System.out.println("msongid: "+mSongId+" "+verses);
-           // System.out.println("verse: "+verses);
+
             allVerse = listVerseToString(verses);
             tv.setText( allVerse );
 
@@ -274,11 +231,9 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()){
             case R.id.g_image:
-                fab.setVisibility(View.GONE);
+                //fab.setVisibility(View.GONE);
                 editorBottomSheet = EditorBottomSheet.getInstanceWithActionMode(mode,tv,SONG_BOOKMARK,IMAGE,mSongId,getReferenceFromTextSelected(tv.getSelectionStart(),tv.getSelectionEnd()));
                 editorBottomSheet.show(SongDialogFragment.this.getChildFragmentManager(),"");
-
-
                 break;
             case R.id.book_mark:
                 editorBottomSheet = EditorBottomSheet.getInstanceWithActionMode(mode,tv,SONG_BOOKMARK,BOOK_MARK,mSongId,null);
@@ -297,7 +252,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
-        fab.setVisibility(View.VISIBLE);
+        //fab.setVisibility(View.VISIBLE);
         editorBottomSheet = null;
     }
 
@@ -306,8 +261,11 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
         return root;
     }
 
-
-
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        wakeLock = CkWakeLock.getInstance( getContext() );
+    }
 
     private void init(){
     //churchKitDd = CKBibleDb.getInstance(requireContext());
@@ -450,6 +408,9 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
         super.onResume();
 
 
+        wakeLock.acquire( CkWakeLock.TEN_MINUTES );
+
+
         if ( ckp.getButtonChorus() && isPhraseVisible( getContext().getString(R.string.chorus) ) ) {
             setChorusButtonVisibility();
             scrollToChorusTextView.setVisibility(View.VISIBLE);
@@ -477,6 +438,10 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
     @Override
     public void onDestroy() {
         mReference = null;
+        if (wakeLock.isHeld() ){
+            wakeLock.release();
+            wakeLock = null;
+        }
         super.onDestroy();
     }
 
@@ -506,6 +471,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
     private LiveData<SongFavorite> songFavoriteLiveData;
     LiveData< List<BookMarkSong> > liveDataBookMarkSong;
     List<Util.VersePosition> versePositionList = new ArrayList<>();
+    private PowerManager.WakeLock wakeLock;
 
 
     @Override
@@ -522,9 +488,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
                     songFavoriteViewModel.insert(
                             new SongFavorite(mSongId,ckp.getSongName(),Calendar.getInstance().getTimeInMillis(), mReference)
                     );
-                    /*Toast toast=Toast.makeText(getContext(),"Add to favorite with success",Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.TOP,0,0);
-                    toast.show();*/
+
                 }
                 break;
             case R.id.more:
@@ -538,7 +502,7 @@ public class SongDialogFragment extends DialogFragment implements View.OnClickLi
                             EditorBottomSheet editorBottomSheet;
                             switch (item.getItemId()){
                                 case R.id.g_image:
-                                    fab.setVisibility(View.GONE);
+                                    //fab.setVisibility(View.GONE);
                                     editorBottomSheet = EditorBottomSheet.getInstance(null,tv,SONG_BOOKMARK,IMAGE,mSongId,getReferenceFromTextSelected(tv.getSelectionStart(),tv.getSelectionEnd()));
                                     editorBottomSheet.show(SongDialogFragment.this.getChildFragmentManager(),"");
                                     break;

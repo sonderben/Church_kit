@@ -18,8 +18,10 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
@@ -45,7 +47,9 @@ import com.churchkit.churchkit.modelview.bible.BibleInfoViewModel;
 import com.churchkit.churchkit.modelview.bible.BibleVerseViewModel;
 import com.churchkit.churchkit.ui.adapter.AutoCompleteTextViewAdapter;
 import com.churchkit.churchkit.ui.adapter.InfoAdapterSpinner;
-import com.churchkit.churchkit.ui.adapter.bible.BibleAdapter;
+//import com.churchkit.churchkit.ui.adapter.bible.BibleAdapter;
+import com.churchkit.churchkit.ui.adapter.bible.BookAdapter;
+import com.churchkit.churchkit.ui.adapter.bible.TestamentAdapter;
 import com.churchkit.churchkit.ui.util.GridSpacingIDeco;
 import com.churchkit.churchkit.ui.util.OptionSearchView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -93,18 +97,17 @@ public class BibleFragment extends Fragment {
 
         bibleInfoId = ckPreferences.getBibleName();
 
-        mAdapter = new BibleAdapter(getActivity().getSupportFragmentManager());
+
         bibleBooksLiveData = bibleBookViewModel.getAllBibleBook(bibleInfoId);
 
         bibleBooksLiveData.observe(requireActivity(), bibleBooks -> {
-            mAdapter.config(sharedPreferences.getBoolean(IS_GROUP_BY_TESTAMENT, true) ? 0 : 1, bibleBooks);
-            mRecyclerView.setAdapter(mAdapter);
-            mAdapter.notifyDataSetChanged();
+            bookAdapter.setBibleBook( bibleBooks );
+
 
         });
 
 
-        onBibleInfoChange(ckPreferences.getBibleName());
+
 
 
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
@@ -167,18 +170,11 @@ public class BibleFragment extends Fragment {
 
     }
 
-    private void onBibleInfoChange(String bibleInfoId) {
-        amountBookOldTestamentLiveData = bibleBookViewModel.getAmountBookOldTestament(bibleInfoId);
-        amountBookOldTestamentLiveData.observe(getViewLifecycleOwner(), integer -> {
-            mAdapter.setAmountOldTestament(integer);
-            mAdapter.notifyItemChanged(0);
-        });
-
-        amountBookNewTestamentLiveData = bibleBookViewModel.getAmountBookNewTestament(bibleInfoId);
-        amountBookNewTestamentLiveData.observe(getViewLifecycleOwner(), integer -> {
-            mAdapter.setAmountNewTestament(integer);
-            mAdapter.notifyItemChanged(1);
-        });
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        bookAdapter = new BookAdapter();
+        testamentAdapter = new TestamentAdapter( getContext() );
     }
 
     private void onItemAutoCompleteClick(int position) {
@@ -204,9 +200,17 @@ public class BibleFragment extends Fragment {
                 menuInflater.inflate(R.menu.menu_song_hope, menu);
 
                 Switch switchMenuItem = menu.findItem(R.id.app_bar_switch).getActionView().findViewById(R.id.switch1);
-                switchMenuItem.setChecked(sharedPreferences.getBoolean(IS_GROUP_BY_TESTAMENT, true));
+
+                boolean isCheck = sharedPreferences.getBoolean(IS_GROUP_BY_TESTAMENT, true);
+                switchMenuItem.setChecked( isCheck );
+
+                mRecyclerView.setAdapter( isCheck? testamentAdapter:bookAdapter );
+
+
+
+
                 switchMenuItem.setOnCheckedChangeListener((compoundButton, isGroupedByLang) -> {
-                    mAdapter.setTypeView(isGroupedByLang ? 0 : 1);
+                    mRecyclerView.setAdapter( isGroupedByLang? testamentAdapter:bookAdapter );
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean(IS_GROUP_BY_TESTAMENT, isGroupedByLang);
                     editor.apply();
@@ -214,22 +218,19 @@ public class BibleFragment extends Fragment {
 
                 spinnerBibleInfo = (Spinner) menu.findItem(R.id.app_bar_spinner).getActionView();
                 List<BaseInfo> baseInfos = new ArrayList<>();
-                bibleInfoViewModel.getAllBibleInfo().observe(getViewLifecycleOwner(), new Observer<List<BibleInfo>>() {
-                    @Override
-                    public void onChanged(List<BibleInfo> bibleInfos) {
+                bibleInfoViewModel.getAllBibleInfo().observe(getViewLifecycleOwner(), bibleInfos -> {
 
-                        if (!isForcingUpdate){
-                            for (int i = 0; i < bibleInfos.size(); i++) {
-                                if (bibleInfos.get(i).isDownloaded())
-                                    baseInfos.add( bibleInfos.get(i) );
-                            }
-
-
-                            infoDownloadSong.setVisibility( baseInfos.size() == 0?View.VISIBLE:View.GONE );
-                            spinnerBibleInfo.setAdapter(new InfoAdapterSpinner(getContext(), baseInfos));
-                        }else{
-                            isForcingUpdate = false;
+                    if (!isForcingUpdate){
+                        for (int i = 0; i < bibleInfos.size(); i++) {
+                            if (bibleInfos.get(i).isDownloaded())
+                                baseInfos.add( bibleInfos.get(i) );
                         }
+
+
+                        infoDownloadSong.setVisibility( baseInfos.size() == 0?View.VISIBLE:View.GONE );
+                        spinnerBibleInfo.setAdapter(new InfoAdapterSpinner(getContext(), baseInfos));
+                    }else{
+                        isForcingUpdate = false;
                     }
                 });
 
@@ -247,13 +248,11 @@ public class BibleFragment extends Fragment {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         BaseInfo baseInfo = ((InfoAdapterSpinner) parent.getAdapter()).getBaseInfoList().get(position);
-
+                        testamentAdapter.setAmountTestament( baseInfo );
                         ckPreferences.setBibleName(baseInfo.getId() );
                         baseInfo.setForceUpdate( !baseInfo.isForceUpdate() );
                         isForcingUpdate = true;
                         bibleInfoViewModel.insert((BibleInfo) baseInfo);
-
-
 
                         if (wasTouch){
                              wasTouch = false;
@@ -261,9 +260,8 @@ public class BibleFragment extends Fragment {
                             bibleBookViewModel.getAllBibleBook(baseInfo.getId()).observe(getViewLifecycleOwner(), new Observer<List<BibleBook>>() {
                                 @Override
                                 public void onChanged(List<BibleBook> bibleBooks) {
-                                    mAdapter.config(sharedPreferences.getBoolean(IS_GROUP_BY_TESTAMENT, false) ? 0 : 1, bibleBooks);
-                                    mRecyclerView.setAdapter(mAdapter);
-                                    mAdapter.notifyDataSetChanged();
+
+                                    bookAdapter.setBibleBook( bibleBooks );
                                 }
                             });
                         }
@@ -287,13 +285,7 @@ public class BibleFragment extends Fragment {
         }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
     }
 
-    private boolean existedBibleDownload(List<BibleInfo> bibleInfos) {
-        for (int i = 0; i < bibleInfos.size(); i++) {
-            if (bibleInfos.get(i).isDownloaded())
-                return true;
-        }
-        return false;
-    }
+
 
     @Override
     public void onResume() {
@@ -314,7 +306,6 @@ public class BibleFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     FragmentBibleBinding bookmarkBinding;
-    private BibleAdapter mAdapter;
     private TextView infoDownloadSong;
     BibleInfoViewModel bibleInfoViewModel;
     private MaterialAutoCompleteTextView autoCompleteTextView;
@@ -329,23 +320,22 @@ public class BibleFragment extends Fragment {
     private BibleVerseViewModel bibleVerseViewModel;
 
     private LiveData<List<BibleBook>> bibleBooksLiveData;
-    private LiveData<Integer> amountBookOldTestamentLiveData;
-    private LiveData<Integer> amountBookNewTestamentLiveData;
+
     private LiveData<List<BibleChapter>> searchBibleChapterLiveData;
     private LiveData<List<BibleVerse>> searchBibleVerseLiveData;
     private LiveData<BibleChapter> bibleChapterByVerseIdLiveData;
     private String bibleInfoId;
+    private BookAdapter bookAdapter;
+    private TestamentAdapter testamentAdapter;
+
     private boolean isForcingUpdate = false;
 
     Spinner spinnerBibleInfo;
 
     @Override
     public void onDestroy() {
-        //removeLiveDataObservers();
-        bookmarkBinding = null;
-
         super.onDestroy();
-
+        bookmarkBinding = null;
     }
 
     @Override
@@ -355,18 +345,7 @@ public class BibleFragment extends Fragment {
     }
 
     private void removeLiveDataObservers() {
-        if (bibleBooksLiveData != null && bibleBooksLiveData.hasObservers()) {
-            bibleBooksLiveData.removeObservers(getViewLifecycleOwner());
-            bibleBooksLiveData = null;
-        }
-        if (amountBookOldTestamentLiveData != null && amountBookOldTestamentLiveData.hasObservers()) {
-            amountBookOldTestamentLiveData.removeObservers(getViewLifecycleOwner());
-            amountBookOldTestamentLiveData = null;
-        }
-        if (amountBookNewTestamentLiveData != null && amountBookNewTestamentLiveData.hasObservers()) {
-            amountBookNewTestamentLiveData.removeObservers(getViewLifecycleOwner());
-            amountBookOldTestamentLiveData = null;
-        }
+
         if (searchBibleChapterLiveData != null && searchBibleChapterLiveData.hasObservers()) {
             searchBibleChapterLiveData.removeObservers(getViewLifecycleOwner());
             searchBibleChapterLiveData = null;
@@ -374,10 +353,6 @@ public class BibleFragment extends Fragment {
         if (searchBibleVerseLiveData != null && searchBibleVerseLiveData.hasObservers()) {
             searchBibleVerseLiveData.removeObservers(getViewLifecycleOwner());
             searchBibleVerseLiveData = null;
-        }
-        if (bibleChapterByVerseIdLiveData != null && bibleChapterByVerseIdLiveData.hasObservers()) {
-            bibleChapterByVerseIdLiveData.removeObservers(getViewLifecycleOwner());
-            bibleChapterByVerseIdLiveData = null;
         }
 
     }

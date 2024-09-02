@@ -10,6 +10,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.text.Spannable;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -17,7 +18,6 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ClickableSpan;
 import android.view.ActionMode;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -51,6 +51,7 @@ import com.churchkit.churchkit.modelview.bible.BibleHistoryViewModel;
 import com.churchkit.churchkit.modelview.bible.BibleVerseViewModel;
 import com.churchkit.churchkit.ui.EditorBottomSheet;
 import com.churchkit.churchkit.ui.util.Util;
+import com.churchkit.churchkit.util.CkWakeLock;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.razorpay.Checkout;
 
@@ -62,6 +63,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
     public static final int BIBLE_BOOKMARK = 2;
     private String allVersets="";
     private int mTextViewColor;
+    private PowerManager.WakeLock ckWakeLock;
     LiveData< List<BibleVerse> > bibleVerseLiveData;
 
     public ChapterDialogFragment(){
@@ -77,8 +79,10 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ConstraintLayout root = (ConstraintLayout) inflater.inflate(R.layout.fragment_list_chapter,container,false);
-
+         ckWakeLock = CkWakeLock.getInstance( getContext() );
         ckPreferences = new CKPreferences(getContext());
+
+
 
         versets = root.findViewById(R.id.text);
         bookReference = root.findViewById(R.id.book_name);
@@ -90,7 +94,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         fab = root.findViewById(R.id.fab_clos);
         donate = root.findViewById(R.id.donate);
         fab.setOnClickListener(x->this.dismiss());
-        endingFavoriteImageView = root.findViewById(R.id.favorite);
+        favorite = root.findViewById(R.id.favorite);
         more = root.findViewById(R.id.more);
         more.setOnClickListener(this::onClick);
         donate.setOnClickListener(this::onClick);
@@ -139,7 +143,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()){
                 case R.id.g_image:
-                    fab.setVisibility(View.GONE);
+                    //fab.setVisibility(View.GONE);
                     editorBottomSheet = EditorBottomSheet.getInstanceWithActionMode(mode,versets,BIBLE_BOOKMARK,IMAGE,mId,getReferenceFromTextSelected(versets.getSelectionStart(),versets.getSelectionEnd()) );
                     editorBottomSheet.show(ChapterDialogFragment.this.getChildFragmentManager(),"");
                     break;
@@ -154,18 +158,14 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
             return false;
         }
 
-
-
-
-
         @Override
         public void onDestroyActionMode(ActionMode mode) {
-            fab.setVisibility(View.VISIBLE);
+            //fab.setVisibility(View.VISIBLE);
             editorBottomSheet = null;
 
-            if(bibleFavoriteLiveData != null && bibleFavoriteLiveData.hasActiveObservers()){
+            /*if(bibleFavoriteLiveData != null && bibleFavoriteLiveData.hasActiveObservers()){
                 bibleFavoriteLiveData.removeObservers(getViewLifecycleOwner());
-            }
+            }*/
         }
 
     });
@@ -231,20 +231,19 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
             });
         });
 
-        endingFavoriteImageView.setOnClickListener(this::onClick);
+        favorite.setOnClickListener(this::onClick);
 
 
-         bibleFavoriteLiveData = bibleFavoriteViewModel.existed(mId, ckPreferences.getBibleName());
+         bibleFavoriteLiveData = bibleFavoriteViewModel.getChapterFavoriteWitBibleId(mId, ckPreferences.getBibleName());
         bibleFavoriteLiveData.observe(getViewLifecycleOwner(), songFavorite -> {
-
-            endingFavoriteImageView.setEnabled(true);
-            Drawable drawable = endingFavoriteImageView.getDrawable();
+            favorite.setEnabled(true);
+            Drawable drawable = favorite.getDrawable();
             if (songFavorite != null){
 
                 if (drawable != null) {
                     drawable.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
                     drawable.setTint(Color.RED);
-                    endingFavoriteImageView.setImageDrawable(drawable);
+                    favorite.setImageDrawable(drawable);
                 }
             }
             else{
@@ -252,7 +251,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
                 if (drawable != null) {
                     drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
                     drawable.setTint(Color.WHITE);
-                    endingFavoriteImageView.setImageDrawable(drawable);
+                    favorite.setImageDrawable(drawable);
                 }
             }
 
@@ -278,6 +277,8 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         super.onResume();
         CKPreferences ckp = new CKPreferences(getContext());
         int typeFaceInt = ckp.getTypeFace();
+
+        ckWakeLock.acquire(CkWakeLock.TEN_MINUTES );
 
         Typeface typeface = typeFaceInt == 0 ? Typeface.DEFAULT : ResourcesCompat.getFont(getContext(), typeFaceInt);
 
@@ -358,7 +359,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
     }
 
     private LiveData< List<BookMarkChapter> > liveDataBookMark;
-    private ImageView donate, endingFavoriteImageView,more;
+    private ImageView donate, favorite,more;
     private TextView versets,bookReference,chapTitle;
     private static String mId;
     private static String mReference, mChapterhapter;
@@ -425,7 +426,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
         switch (v.getId()){
             case R.id.favorite:
                 BibleChapterFavorite songFavorite= bibleFavoriteLiveData.getValue();
-                endingFavoriteImageView.setEnabled(false);
+                favorite.setEnabled(false);
 
                 if (songFavorite != null)
                     bibleFavoriteViewModel.delete(songFavorite);
@@ -434,9 +435,6 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
                     bibleFavoriteViewModel.insert(
                             new BibleChapterFavorite(mId,ckPreferences.getBibleName(), Calendar.getInstance().getTimeInMillis(), mReference)
                     );
-                    /*Toast toast=Toast.makeText(getContext(),"Add to favorite with success",Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.TOP,0,0);
-                    toast.show();*/
                 }
                 break;
             case R.id.more:
@@ -450,7 +448,7 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
                             EditorBottomSheet editorBottomSheet;
                             switch (item.getItemId()){
                                 case R.id.g_image:
-                                    fab.setVisibility(View.GONE);
+                                    //fab.setVisibility(View.GONE);
                                     editorBottomSheet = EditorBottomSheet.getInstance(null,versets,BIBLE_BOOKMARK,IMAGE,mId,getReferenceFromTextSelected(versets.getSelectionStart(),versets.getSelectionEnd()));
                                     editorBottomSheet.show(ChapterDialogFragment.this.getChildFragmentManager(),"");
                                     break;
@@ -476,6 +474,15 @@ public class ChapterDialogFragment extends DialogFragment implements View.OnClic
             case R.id.fab_clos:
                 ChapterDialogFragment.this.dismiss();
                 break;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if ( ckWakeLock.isHeld() ){
+            ckWakeLock.release();
+            ckWakeLock = null;
         }
     }
 }

@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="@dimen/_4sdp"
-    android:minWidth="@dimen/_200sdp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/main_bg"
-    android:layout_height="wrap_content">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
+    <ImageView
+        android:id="@+id/gif"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="@dimen/_15sdp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@mipmap/delete"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
     <TextView
-        android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/_12sdp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="This action is irreversible, do you really want to delete this book?\nBy deleting this book, your favorite, history and bookmark associated with this book will also be deleted."/>
-
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:padding="@dimen/_15sdp"
+        android:textColor="@color/color_primary"
+        app:layout_constraintTop_toBottomOf="@id/gif"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/keep_window_open_for_delete"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,7 +10,7 @@
     <string name="cancel">Cancel</string>
     <string name="update_directory">Update directory</string>
     <string name="update">update</string>
-    <string name="more">Settings</string>
+    <string name="more">More</string>
     <string name="about_app">Welcome to Church Kit, the perfect app to enhance your worship and connection with God. \nCreated by two computer systems students, Benderson and Ersen, Church Kit is a practical and useful tool for those looking to deepen their Christian faith.\n\n
 The app has two main sections: the Bible section and the songs section. The Bible section allows you to access different versions of the Bible, with all the features you need to study and analyze the Word of God. You can also save your favorite verses, perform advanced searches, and read additional notes to help you better understand the texts.\n\n
 The songs section provides access to a wide variety of worship songs, from classic hymns to modern songs. You can view the lyrics, listen to the songs, and add your favorites to a personalized playlist. You can also find the chords and lyrics to play them in your church or worship meetings.\n\n
@@ -71,7 +71,7 @@ In summary, Church Kit is the ideal app for anyone looking to get closer to God 
     <string name="switch_title_btn_chorus">Activate button chorus</string>
     <string name="switch_summary_btn_chorus">Make the Chorus button appear when there is a chorus in a song.</string>
     <string name="switch_title_btn_song_abrr_color">Song color abbreviation</string>
-    <string name="switch_summary_btn_song_abrr_color">Assign a different color to each abbreviation for each song.</string>
+    <string name="switch_summary_btn_song_abrr_color">Assign a different color to each abbreviation for each book.</string>
     <string name="display">Display</string>
     <string name="dark_mode">Dark mode</string>
     <string name="title_activity_list_song">ListSongActivity</string>
@@ -113,8 +113,15 @@ In summary, Church Kit is the ideal app for anyone looking to get closer to God 
     <string name="select_bible">Select a Bible</string>
     <string name="search_by">Search Type</string>
     <string name="note">Note</string>
-    <string name="download_a_song_book"> <u>Download a Song book</u> </string>
-    <string name="download_bible"> <u>Download a  Bible</u> </string>
-    <string name="download_song"> <u>Download a  Song</u> </string>
+    <string name="download_a_song_book">Download a Song book</string>
+    <string name="download_bible">Download a  Bible</string>
+    <string name="download_song">Download a  Song</string>
     <string name="search_a_note">Search a note</string>
+    <string name="pls_conect_internet">Please connect to the internet.</string>
+    <string name="keep_window_open_for_delete">Keep this window open while Church kit finishes deleting that book.</string>
+    <string name="delete_book_action_irreversible">This action is irreversible, do you really want to delete this book? By deleting this book, your favorites, histories and bookmarks associated with this book will also be deleted.</string>
+    <string name="image">Image</string>
+    <string name="copy">Copy</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="technologies">Technologies</string>
 </resources>

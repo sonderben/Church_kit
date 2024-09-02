@@ -15,15 +15,11 @@ import java.util.List;
 
 public class BibleBookViewModel extends AndroidViewModel {
     BibleBookRepository repository;
-    //LiveData<Integer> amountBookOldTestament;
-    //LiveData<Integer> amountBookNewTestament;
 
     public BibleBookViewModel(@NonNull Application application) {
         super(application);
         BibleBookDao dao = CKBibleDb.getInstance( application.getApplicationContext() ).bibleBookDao();
         repository = new BibleBookRepository(dao);
-       // amountBookOldTestament = repository.getAmountBookOldTestament();
-       // amountBookNewTestament = repository.getAmountBookNewTestament();
     }
     public void delete(BibleBook bibleBook){
         repository.delete(bibleBook);
@@ -44,20 +40,10 @@ public class BibleBookViewModel extends AndroidViewModel {
     public LiveData<List<BibleBook>> getAllOldTestamentBibleBook(String bibleInfoId){
         return repository.getAllOldTestamentBibleBook(bibleInfoId);
     }
-    public LiveData<Integer>getAmountBookOldTestament(String bibleInfoId)  {
-            return repository.getAmountBookOldTestament(bibleInfoId);
-    }
-    public LiveData<Integer>getAmountBookNewTestament(String bibleInfoId)  {
-        return repository.getAmountBookNewTestament(bibleInfoId);
-    }
 
 
-    /*public int getAmountBookOldTest()  {
-        return amountBookOldTestament.getValue();
-    }
-    public int getAmountBookNewTest()  {
-        return amountBookNewTestament.getValue();
-    }*/
+
+
 
 
 }

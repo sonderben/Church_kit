@@ -29,6 +29,9 @@ public class BibleBook extends Book {
         super(id, abbreviation, title, position, childAmount,color,image);
         this.testament = testament;
         this.bibleInfoId = bibleInfoId;
+
+
+
     }
 
     public int getTestament() {

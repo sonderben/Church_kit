@@ -4,17 +4,17 @@ import static com.churchkit.churchkit.util.Constant.BIBLE;
 import static com.churchkit.churchkit.util.Constant.NOTIFICATION_CHANNEL_ID;
 import static com.churchkit.churchkit.util.Constant.SONG;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
 import android.util.Log;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.work.Data;
-import androidx.work.ListenableWorker;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
@@ -24,22 +24,13 @@ import com.churchkit.churchkit.database.dao.bible.BibleDaoGeneral4Insert;
 import com.churchkit.churchkit.database.dao.bible.BibleInfoDao;
 import com.churchkit.churchkit.database.dao.song.SongDaoGeneral4Insert;
 import com.churchkit.churchkit.database.dao.song.SongInfoDao;
-import com.churchkit.churchkit.database.entity.base.BaseInfo;
 import com.churchkit.churchkit.database.entity.bible.BibleBook;
 import com.churchkit.churchkit.database.entity.bible.BibleChapter;
-import com.churchkit.churchkit.database.entity.bible.BibleInfo;
 import com.churchkit.churchkit.database.entity.bible.BibleVerse;
 import com.churchkit.churchkit.database.entity.song.Song;
 import com.churchkit.churchkit.database.entity.song.SongBook;
-import com.churchkit.churchkit.database.entity.song.SongInfo;
 import com.churchkit.churchkit.database.entity.song.Verse;
-import com.churchkit.churchkit.modelview.bible.BibleInfoViewModel;
-import com.churchkit.churchkit.modelview.song.SongInfoViewModel;
-import com.churchkit.churchkit.ui.data.DataFragmentDelete;
-import com.churchkit.churchkit.ui.data.DataViewModel;
 import com.google.android.gms.tasks.OnCanceledListener;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -48,7 +39,6 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.reactivestreams.Subscription;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -61,9 +51,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.FlowableSubscriber;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class DownloadDataWork extends Worker {
@@ -81,7 +69,7 @@ public class DownloadDataWork extends Worker {
     public static final String PROGRESS = "PROGRESS";
     public static final String INFO_PREPOPULATE = "INFO_PREPOPULATE";
 
-    private DataViewModel dataViewModel;
+
     private CKPreferences ckPreferences;
 
     public DownloadDataWork(@NonNull Context context, @NonNull WorkerParameters workerParams) {
@@ -112,7 +100,7 @@ public class DownloadDataWork extends Worker {
         return Result.failure();
     }
 
-    public void prepopulateBibleFromJSonFile(String jsonStr, String bibleInfoId) {
+    public void prepopulateBibleFromJSonFile(String jsonStr,String name, String bibleInfoId) {
 
         CKBibleDb ckBibleDb = CKBibleDb.getInstance( context.getApplicationContext() );
         BibleDaoGeneral4Insert bibleDaoGeneral4Insert = ckBibleDb.bibleDaoGeneral4Insert();
@@ -216,6 +204,7 @@ public class DownloadDataWork extends Worker {
 
                         bibleInfoDao.updateIsDownloaded(true, bibleInfoId );
                         ckPreferences.setWorkRequestId( bibleInfoId,null );
+                        createNotification(name,context);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -233,7 +222,7 @@ public class DownloadDataWork extends Worker {
         }*/
     }
 
-    public void prepopulateSongFromJSonFile(String jsonStr, String songInfoId) {
+    public void prepopulateSongFromJSonFile(String jsonStr,String name, String songInfoId) {
         CKSongDb ckBibleDb = CKSongDb.getInstance( context.getApplicationContext() );
         SongDaoGeneral4Insert bibleDaoGeneral4Insert = ckBibleDb.songDaoGeneral4Insert();
         SongInfoDao songInfoDao =  ckBibleDb.songInfoDao();
@@ -323,6 +312,7 @@ public class DownloadDataWork extends Worker {
                         }
                         songInfoDao.updateIsDownloaded(true, songInfoId );
                         ckPreferences.setWorkRequestId( songInfoId,null );
+                        createNotification(name,context);
 
 
                     } catch (JSONException e) {
@@ -415,13 +405,13 @@ public class DownloadDataWork extends Worker {
                 stringBuilder.append(line);
             }
             if (TYPE_BASE_INFO.equals( BIBLE )) {
-                prepopulateBibleFromJSonFile(stringBuilder.toString(), bibleInfoId);
+                prepopulateBibleFromJSonFile(stringBuilder.toString(),name, bibleInfoId);
 
             }
             if ( TYPE_BASE_INFO.equals( SONG ) ) {
-                prepopulateSongFromJSonFile(stringBuilder.toString(), bibleInfoId);
+                prepopulateSongFromJSonFile(stringBuilder.toString(),name, bibleInfoId);
             }
-            createNotification(name,context);
+
 
 
         } catch (IOException e) {
@@ -442,6 +432,10 @@ public class DownloadDataWork extends Worker {
                 .setContentText(name)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent( pendingIntent )
+                .setVibrate( new long[] {Notification.DEFAULT_VIBRATE})
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+
+               // .setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + soundResourceId))
                 .setAutoCancel( true );
 
 

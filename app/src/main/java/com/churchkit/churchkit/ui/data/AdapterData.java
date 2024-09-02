@@ -4,7 +4,10 @@ import static com.churchkit.churchkit.util.Constant.BIBLE;
 import static com.churchkit.churchkit.util.Constant.SONG;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.graphics.Color;
+import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +20,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -28,6 +33,7 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
+import com.bumptech.glide.Glide;
 import com.churchkit.churchkit.CKPreferences;
 import com.churchkit.churchkit.DownloadDataWork;
 import com.churchkit.churchkit.R;
@@ -42,10 +48,12 @@ import com.churchkit.churchkit.modelview.song.SongInfoViewModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.rxjava3.subscribers.DisposableSubscriber;
 
 
 public  class AdapterData extends RecyclerView.Adapter<AdapterData.MyViewHolder> {
@@ -53,14 +61,14 @@ public  class AdapterData extends RecyclerView.Adapter<AdapterData.MyViewHolder>
 
     private boolean isConnected = false;
     private String ORIGIN ;
-    private Activity activity;
+    private FragmentActivity activity;
     public void setIsConnected(boolean isConnected){
         this.isConnected = isConnected;
     }
     List<BaseInfo> baseInfoList = new ArrayList<>();
     private BibleInfoViewModel bibleInfoViewModel;
     private SongInfoViewModel songInfoViewModel;
-    private DataViewModel dataViewModel ;
+
 
     public List<BaseInfo> getBaseInfoList() {
         return baseInfoList;
@@ -95,11 +103,10 @@ public  class AdapterData extends RecyclerView.Adapter<AdapterData.MyViewHolder>
 
     CKPreferences ckPreferences;
 
-    public AdapterData( Activity activity, CKPreferences ckPreferences,String origin){
+    public AdapterData( FragmentActivity activity, CKPreferences ckPreferences,String origin){
         this.ckPreferences = ckPreferences;
         this.activity = activity;
         this.ORIGIN = origin;
-        dataViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance( activity.getApplication() ).create( DataViewModel.class );
         if ( ORIGIN.equals("SONG") ){
             songInfoViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(activity.getApplication()).create(SongInfoViewModel.class);
             songInfoViewModel.getAllSongInfo().observe((LifecycleOwner) activity, new Observer<List<SongInfo>>() {
@@ -141,16 +148,15 @@ public  class AdapterData extends RecyclerView.Adapter<AdapterData.MyViewHolder>
         holder.download.setVisibility(bibleInfo.isDownloaded() ? View.GONE : View.VISIBLE);
         holder.deleteImg.setVisibility(!bibleInfo.isDownloaded() ? View.GONE : View.VISIBLE);
 
-        holder.deleteImg.setOnClickListener(v ->  deleteBookDialog( bibleInfo) );
+        holder.deleteImg.setOnClickListener(v -> deleteBookDialogInfo( bibleInfo) );
 
         downloadInBackground( null,holder, bibleInfo.getId() );
 
 
         holder.download.setOnClickListener(download -> {
 
-           // if (isConnected){
+            if (isConnected){
                 download.setVisibility(View.GONE);
-                Toast.makeText(activity,"click",Toast.LENGTH_SHORT).show();
                 if (bibleInfo instanceof BibleInfo) {
                     downloadInBackground(bibleInfo,holder,null);
                 }
@@ -159,10 +165,12 @@ public  class AdapterData extends RecyclerView.Adapter<AdapterData.MyViewHolder>
                 }
 
 
-           /* }
+            }
             else {
-                setToolTop("Please connect to the internet").showAlignBottom(holder.itemView);
-            }*/
+                Toast toast = Toast.makeText(activity, R.string.pls_conect_internet,Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.TOP,0,20);
+                toast.show();
+            }
         });
 
 
@@ -236,25 +244,26 @@ public  class AdapterData extends RecyclerView.Adapter<AdapterData.MyViewHolder>
         }
     }
 
-    private void deleteBookDialog(BaseInfo bibleInfo) {
+    private void deleteBookDialogInfo(BaseInfo bibleInfo) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder( activity );
 
         LayoutInflater layoutInflater = activity.getLayoutInflater();
-        final View view = layoutInflater.inflate(R.layout.dialog_delete_book, (ViewGroup)null);
+        final View view = layoutInflater.inflate(R.layout.dialog_delete_book_info, (ViewGroup)null);
         TextView title = view.findViewById(R.id.description);
 
 
         builder.setView(view);
 
 
-
-
+         DeleteDataDialogFragment deleteDataDialogFragment = new DeleteDataDialogFragment();
+         deleteDataDialogFragment.setActivity( activity );
 
         builder.setPositiveButton(activity.getResources().getString(R.string.delete), (dialog, which) -> {
             bibleInfo.setDownloaded(false);
             if (ORIGIN.equalsIgnoreCase("BIBLE")){
 
+                deleteDataDialogFragment.show(activity.getSupportFragmentManager(),bibleInfo.getId());
                 Flowable.fromAction(() -> CKBibleDb.getInstance( activity.getApplicationContext()).runInTransaction(new Runnable() {
                             @Override
                             public void run() {
@@ -263,10 +272,27 @@ public  class AdapterData extends RecyclerView.Adapter<AdapterData.MyViewHolder>
                                 CKBibleDb.getInstance(activity.getApplicationContext())
                                         .bibleBookDao().deleteAll( bibleInfo.getId() );
                                 ckPreferences.setBibleName("");
+
+
                             }
                         })).subscribeOn(Schedulers.single())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe();
+                        .subscribe(new DisposableSubscriber<Object>() {
+                            @Override
+                            public void onNext(Object o) {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable t) {
+                                deleteDataDialogFragment.dismissNow();
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                deleteDataDialogFragment.dismissNow();
+                            }
+                        });
 
             }else {
 
@@ -279,10 +305,26 @@ public  class AdapterData extends RecyclerView.Adapter<AdapterData.MyViewHolder>
                                         .songBookDao().deleteAll(bibleInfo.getId());
                                 ckPreferences.setSongName("");
 
+
                             }
                         })).subscribeOn(Schedulers.single())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe();
+                        .subscribe(new DisposableSubscriber<Object>() {
+                            @Override
+                            public void onNext(Object o) {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable t) {
+                                deleteDataDialogFragment.dismissNow();
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                deleteDataDialogFragment.dismissNow();
+                            }
+                        });
             }
         });
 
@@ -322,6 +364,46 @@ public  class AdapterData extends RecyclerView.Adapter<AdapterData.MyViewHolder>
             infiniteProgressBar = itemView.findViewById(R.id.progressBar2);
             infoPrepopulate = itemView.findViewById(R.id.info_prepopulate);
 
+        }
+    }
+    public static class DeleteDataDialogFragment extends DialogFragment {
+        private FragmentActivity activity;
+        public void setActivity(FragmentActivity activity){
+            this.activity = activity;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+            LayoutInflater layoutInflater = activity.getLayoutInflater();
+            View view = layoutInflater.inflate(R.layout.dialog_delete_book,null);
+
+            ImageView imageView = view.findViewById( R.id.gif) ;
+
+
+            Glide.with(activity)
+                    .load(R.mipmap.delete)
+                    .into(imageView);
+
+            builder.setView( view );
+
+            /*builder.setMessage(R.string.dialog_start_game)
+                    .setPositiveButton(R.string.start, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // START THE GAME!
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+            */
+
+            // Create the AlertDialog object and return it
+            return builder.create();
         }
     }
 }
